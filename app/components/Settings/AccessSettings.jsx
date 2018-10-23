@@ -652,19 +652,26 @@ class AccessSettings extends React.Component {
     }
 }
 
-AccessSettings = connect(AccessSettings, {
-    listenTo() {
-        return [SettingsStore];
-    },
-    getProps() {
-        return {
-            // apiServer and activeNode are ambiguous definition when dealing with isActive, autoSelectionActive etc..
-            // using distinct names
-            selectedNode: SettingsStore.getState().settings.get("apiServer"),
-            connectedNode: SettingsStore.getState().settings.get("activeNode"),
-            apiLatencies: SettingsStore.getState().apiLatencies
-        };
+AccessSettings = connect(
+    AccessSettings,
+    {
+        listenTo() {
+            return [SettingsStore];
+        },
+        getProps() {
+            return {
+                // apiServer and activeNode are ambiguous definition when dealing with isActive, autoSelectionActive etc..
+                // using distinct names
+                selectedNode: SettingsStore.getState().settings.get(
+                    "apiServer"
+                ),
+                connectedNode: SettingsStore.getState().settings.get(
+                    "activeNode"
+                ),
+                apiLatencies: SettingsStore.getState().apiLatencies
+            };
+        }
     }
-});
+);
 
 export default AccessSettings;
