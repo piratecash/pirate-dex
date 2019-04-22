@@ -32,6 +32,10 @@ class TradingViewPriceChart extends React.Component {
         if (!dataFeed) return;
         if (!!this.tvWidget) return;
 
+        dataFeed.update({
+            onMarketChange: this._setSymbol.bind(this)
+        });
+
         if (__DEV__)
             console.log(
                 "currentResolution",
@@ -122,48 +126,13 @@ class TradingViewPriceChart extends React.Component {
             custom_css_url: props.theme + ".css",
             enabled_features: enabled_features,
             disabled_features: disabled_features,
-            debug: false,
+            debug: true,
             preset: this.props.mobile ? "mobile" : ""
         });
 
         this.tvWidget.onChartReady(() => {
             if (__DEV__) console.log("*** Chart Ready ***");
             if (__DEV__) console.timeEnd("*** Chart load time: ");
-            this.tvWidget
-                .createButton()
-                .attr(
-                    "title",
-                    counterpart.translate("exchange.load_custom_charts")
-                )
-                .addClass("apply-common-tooltip")
-                .on("click", () => {
-                    that.setState({showLoadModal: true});
-                })
-                .append(
-                    `<span>${counterpart.translate(
-                        "exchange.chart_load"
-                    )}</span>`
-                );
-            this.tvWidget
-                .createButton()
-                .attr(
-                    "title",
-                    counterpart.translate("exchange.save_custom_charts")
-                )
-                .addClass("apply-common-tooltip")
-                .on("click", () => {
-                    that.setState({showSaveModal: true});
-                })
-                .append(
-                    `<span>${counterpart.translate(
-                        "exchange.chart_save"
-                    )}</span>`
-                );
-
-            dataFeed.update({
-                onMarketChange: this._setSymbol.bind(this)
-            });
-            this.loadLastChart();
         });
 
         this._onWheel = this._onWheel.bind(this);
@@ -172,7 +141,7 @@ class TradingViewPriceChart extends React.Component {
     componentWillReceiveProps(np) {
         if (!np.marketReady) return;
         if (!this.props.dataFeed && np.dataFeed) {
-            loadTradingView(np);
+            this.loadTradingView(np);
         }
     }
 
@@ -392,16 +361,13 @@ class TradingViewPriceChart extends React.Component {
     }
 }
 
-export default connect(
-    TradingViewPriceChart,
-    {
-        listenTo() {
-            return [SettingsStore];
-        },
-        getProps() {
-            return {
-                charts: SettingsStore.getState().chartLayouts
-            };
-        }
+export default connect(TradingViewPriceChart, {
+    listenTo() {
+        return [SettingsStore];
+    },
+    getProps() {
+        return {
+            charts: SettingsStore.getState().chartLayouts
+        };
     }
-);
+});
