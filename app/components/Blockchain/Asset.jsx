@@ -22,6 +22,7 @@ import {connect} from "alt-react";
 import counterpart from "counterpart";
 import AssetOwnerUpdate from "./AssetOwnerUpdate";
 import AssetPublishFeed from "./AssetPublishFeed";
+import AssetResolvePrediction from "./AssetResolvePrediction";
 import BidCollateralOperation from "./BidCollateralOperation";
 import {Tab, Tabs} from "../Utility/Tabs";
 import {Tooltip, Icon, Table, Tabs as AntTabs} from "bitshares-ui-style-guide";
@@ -1888,6 +1889,29 @@ class Asset extends React.Component {
         );
     }
 
+    renderAssetResolvePrediction(asset) {
+        return (
+            <div
+                className="grid-content small-no-padding"
+                style={{overflowY: "visible"}}
+            >
+                <div className="asset-card no-padding">
+                    <div className="card-divider">
+                        <Translate content="account.user_issued_assets.resolve_prediction" />
+                    </div>
+                    <Translate
+                        component="p"
+                        content="account.user_issued_assets.resolve_prediction_text"
+                    />
+                    <AssetResolvePrediction
+                        asset={asset}
+                        account={this.props.currentAccount}
+                    />
+                </div>
+            </div>
+        );
+    }
+
     render() {
         var asset = this.props.asset.toJS();
         var priceFeed =
@@ -1965,6 +1989,7 @@ class Asset extends React.Component {
                                         : null}
                                     {this.state.collateralBids.length > 0 &&
                                         this.renderCollateralBid(asset)}
+                                    {this.renderAssetResolvePrediction(asset)}
                                 </div>
                             </Tab>
                         </Tabs>
