@@ -20,6 +20,7 @@ import counterpart from "counterpart";
 import {connect} from "alt-react";
 import {getWalletName} from "branding";
 import {Form, Modal, Button, Tooltip, Input} from "bitshares-ui-style-guide";
+import SetDefaultFeeAssetModal from "./SetDefaultFeeAssetModal";
 
 const EqualWidthContainer = ({children}) => (
     <div
@@ -665,7 +666,21 @@ class SendModal extends React.Component {
             from_account.get("id") == to_account.get("id");
 
         let tabIndex = this.props.tabIndex; // Continue tabIndex on props count
-
+        const cantPayFee = false;
+        if (cantPayFee) {
+            return (
+                <SetDefaultFeeAssetModal
+                    className="modal"
+                    show={this.state.isModalVisible}
+                    fee_asset_types={fee_asset_types}
+                    asset_types={asset_types}
+                    account={this.props.currentAccount}
+                    close={() => {
+                        this.setState({isModalVisible: false});
+                    }}
+                />
+            );
+        }
         return !this.state.open ? null : (
             <div
                 id="send_modal_wrapper"
