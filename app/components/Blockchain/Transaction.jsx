@@ -22,6 +22,7 @@ import ReactTooltip from "react-tooltip";
 import moment from "moment";
 import {Link, DirectLink} from "react-scroll";
 import {Tooltip} from "bitshares-ui-style-guide";
+import JSONModal from "components/Modal/JSONModal";
 import asset_utils from "../../lib/common/asset_utils";
 import sanitize from "sanitize";
 
@@ -75,27 +76,36 @@ class NoLinkDecorator extends React.Component {
 }
 
 class OperationTable extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            visible: false
+        };
+    }
+
+    openJSONModal = () => {
+        this.setState({visible: true});
+    };
+
+    closeJSONModal = () => {
+        this.setState({visible: false});
+    };
+
     render() {
+        const {operation} = this.props;
         let fee_row = (
             <tr>
                 <td>
                     <Translate component="span" content="transfer.fee" />
                 </td>
                 <td>
-                    {this.props.fee.amount > 0 ? (
-                        <span>
-                            <FormattedAsset
-                                color="fee"
-                                amount={this.props.fee.amount}
-                                asset={this.props.fee.asset_id}
-                                style={{marginRight: "10px"}}
-                            />
-                            &nbsp;&nbsp;
-                            <Icon
-                                name="question-circle"
-                                title="settings.can_change_default_fee_asset_tooltip"
-                            />
-                        </span>
+                    {operation[1].fee.amount > 0 ? (
+                        <FormattedAsset
+                            color="fee"
+                            amount={operation[1].fee.amount}
+                            asset={operation[1].fee.asset_id}
+                        />
                     ) : (
                         <label>
                             <Translate content="transfer.free" />
@@ -104,6 +114,7 @@ class OperationTable extends React.Component {
                 </td>
             </tr>
         );
+        const trxTypes = counterpart.translate("transaction.trxTypes");
 
         return (
             <div>
@@ -113,13 +124,30 @@ class OperationTable extends React.Component {
                     <tbody>
                         <OpType
                             txIndex={this.props.txIndex}
-                            type={this.props.type}
+                            type={operation[0]}
                             color={this.props.color}
                         />
                         {this.props.children}
                         {fee_row}
+                        <tr>
+                            <td
+                                className="json-link"
+                                onClick={this.openJSONModal}
+                            >
+                                <Translate
+                                    component="a"
+                                    content="transaction.view_json"
+                                />
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
+                <JSONModal
+                    visible={this.state.visible}
+                    operation={operation}
+                    title={trxTypes[ops[operation[0]] || ""]}
+                    hideModal={this.closeJSONModal}
+                />
             </div>
         );
     }
@@ -2374,8 +2402,7 @@ class Transaction extends React.Component {
                     opCount={opCount}
                     index={opIndex}
                     color={color}
-                    type={op[0]}
-                    fee={op[1].fee}
+                    operation={op}
                 >
                     {rows}
                 </OperationTable>
