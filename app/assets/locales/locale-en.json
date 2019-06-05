@@ -804,7 +804,8 @@
                 "max_supply": "Max supply",
                 "title": "Permissions",
                 "whitelist_authorities": "Whitelist authorities",
-                "whitelist_markets": "Whitelist markets"
+                "whitelist_markets": "Whitelist markets",
+                "accounts_in_whitelist_market_fee_sharing": "Accounts included in Market fee sharing whitelist"
             },
             "prediction_market_asset": {
                 "prediction": "Prediction",
