@@ -1,5 +1,11 @@
 import {getFaucet} from "../branding";
 
+export const pirateCashAPIs = {
+    BASE: "https://piratecash.net/dexapi",
+    COINS_LIST: "/coins",
+};
+
+
 export const blockTradesAPIs = {
     BASE: "https://api.blocktrades.us/v2",
     COINS_LIST: "/coins",
@@ -9,6 +15,7 @@ export const blockTradesAPIs = {
     ESTIMATE_OUTPUT: "/estimate-output-amount",
     ESTIMATE_INPUT: "/estimate-input-amount"
 };
+
 
 export const openledgerAPIs = {
     BASE: "https://ol-api1.openledger.info/api/v0/ol/support",

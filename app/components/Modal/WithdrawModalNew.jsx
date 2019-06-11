@@ -264,8 +264,8 @@ class WithdrawModalNew extends React.Component {
                     withdrawalCurrencyPrecision = item.get("precision");
                 }
                 if (item.get("symbol") == selectedAsset) {
-                    fromAsset = item;
-                    withdrawalCurrencyPrecision = item.get("precision");
+                    //fromAsset = item;
+                    //withdrawalCurrencyPrecision = item.get("precision");
                 }
             });
 

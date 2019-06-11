@@ -1,4 +1,4 @@
-BitShares-UI
+PIRATE-DEX UI
 ============
 
 这是一个连接 BitShares API 的轻钱包。BitShares API 由 *witness_node* 程序提供。
@@ -22,8 +22,8 @@ nvm use v9
 Node 安装完成后，获取项目的源代码：
 
 ```
-git clone https://github.com/bitshares/bitshares-ui.git
-cd bitshares-ui
+git clone https://github.com/piratecash/pirate-dex.git
+cd pirate-dex
 ```
 
 在启动之前，需要先安装 npm 软件包：
@@ -44,13 +44,6 @@ npm start
 
 编译完成后，即可通过浏览器访问 `localhost:8080` 或 `127.0.0.1:8080` 打开钱包。服务器启用了热加载功能，在编辑源文件后，浏览器中的内容会实时更新。
 
-## 测试网络
-
-默认情况下，bitshares-ui 会连接到正常比特股网络。切换到 Xeroc 运行的测试网络也很容易，在设置页面的接入点设置中选择 *Public Testnet Server* 即可。如果你需要创建帐号，你同时需要修改水龙头设置。测试网络的水龙头地址是 https://testnet.bitshares.eu 。
-
-UI 会刷新并连接到测试网络，你可以通过水龙头创建账户并收到一些用于测试的 BTS。
-
-![image](https://cloud.githubusercontent.com/assets/6890015/22055747/f8e15e68-dd5c-11e6-84cd-692749b578d8.png)
 
 ## 生产环境
 如果你想自己架设钱包，你应该进行生产环境构建，并使用 NGINX 或 Apache 托管。只需要运行以下命令构建生产环境应用包：

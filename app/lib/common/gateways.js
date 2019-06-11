@@ -10,6 +10,7 @@ import {
     openledgerAPIs,
     cryptoBridgeAPIs,
     gdex2APIs,
+    pirateCashAPIs,
     xbtsxAPIs,
     citadelAPIs
 } from "api/apiConfig";
@@ -73,6 +74,20 @@ export const availableGateways = {
         name: "GDEX",
         baseAPI: gdex2APIs,
         isEnabled: allowedGateway("GDEX"),
+        options: {
+            enabled: false,
+            selected: false
+        }
+    },
+    PIRATE: {
+        id: "PIRATE",
+        name: "PIRATE",
+        baseAPI: pirateCashAPIs,
+        isEnabled: allowedGateway("PIRATE"),
+        isSimple: true,
+        selected: false,
+        simpleAssetGateway: false,
+        addressValidatorMethod: "POST",
         options: {
             enabled: false,
             selected: false
