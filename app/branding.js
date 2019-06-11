@@ -33,7 +33,7 @@ export function getWalletName() {
  * @returns {string}
  */
 export function getWalletURL() {
-    return "https://wallet.bitshares.org";
+    return "https://wallet.piratecash.net";
 }
 
 /**
@@ -95,7 +95,7 @@ export function getUnits() {
  */
 
 export function getMyMarketsBases() {
-    return ["PIRATE.BTC","PIRATE.DOGE","BTS"];
+    return ["PIRATE.BTC", "PIRATE.DOGE", "BTS"];
 }
 
 /**
@@ -112,11 +112,7 @@ export function getMyMarketsQuotes() {
         rudexTokens: [],
         sparkTokens: [],
         xbtsxTokens: [],
-        otherTokens: [
-    	    "PIRATE.PIRATE",
-    	    "PIRATE.BTC",
-    	    "PIRATE.DOGE",        
-        ]
+        otherTokens: ["PIRATE.PIRATE", "PIRATE.BTC", "PIRATE.DOGE"]
     };
 
     let allTokens = [];
@@ -138,7 +134,7 @@ export function getFeaturedMarkets(quotes = []) {
         ["PIRATE.BTC", "PIRATE.DOGE"],
         ["BTS", "PIRATE.PIRATE"],
         ["BTS", "PIRATE.BTC"],
-        ["BTS", "PIRATE.DOGE"],
+        ["BTS", "PIRATE.DOGE"]
     ].filter(a => {
         if (!quotes.length) return true;
         return quotes.indexOf(a[0]) !== -1;
@@ -151,9 +147,7 @@ export function getFeaturedMarkets(quotes = []) {
  * @returns {[string,string,string,string,string,string,string]}
  */
 export function getAssetNamespaces() {
-    return [
-        "PIRATE.",
-    ];
+    return ["PIRATE."];
 }
 
 /**
@@ -171,11 +165,7 @@ export function getAssetHideNamespaces() {
  * @returns {boolean}
  */
 export function allowedGateway(gateway) {
-    return (
-        [
-            "PIRATE",
-        ].indexOf(gateway) >= 0
-    );
+    return ["PIRATE"].indexOf(gateway) >= 0;
 }
 
 export function getSupportedLanguages() {
