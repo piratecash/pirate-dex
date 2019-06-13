@@ -1671,6 +1671,15 @@
         "newer": "Newer",
         "older": "Older"
     },
+    "prediction": {
+        "overview": {
+            "issuer": "House",
+            "prediction": "Prediction",
+            "description": "Description",
+            "odds": "Odds",
+            "action": "Action"
+        }
+    },
     "proposal": {
         "action": "Actions",
         "add": "Add",
@@ -2087,8 +2096,8 @@
             "title": "Paper Wallet"
         },
         "prediction_market": {
-            "description": "Create a prediction into the future that others can agree or disagree with, leveraged with collateral.",
-            "title": "Prediction Markets"
+            "description": "Prediction markets",
+            "title": "Prediction markets"
         },
         "timed_transfer": {
             "description": "Initiate a transfer that will execute at a specified time.",
