@@ -95,7 +95,7 @@ export function getUnits() {
  */
 
 export function getMyMarketsBases() {
-    return ["PIRATE.BTC", "PIRATE.DOGE", "BTS"];
+    return ["PIRATE.PIRATE", "PIRATE.BTC", "PIRATE.DOGE", "BTS"];
 }
 
 /**
@@ -156,7 +156,7 @@ export function getAssetNamespaces() {
  */
 export function getAssetHideNamespaces() {
     // e..g "OPEN.", "bit"
-    return [];
+    return ["PIRATE."];
 }
 
 /**
