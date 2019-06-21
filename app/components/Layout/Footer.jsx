@@ -82,7 +82,7 @@ class Footer extends React.Component {
     componentDidMount() {
         this.checkNewVersionAvailable.call(this);
 
-        this.downloadLink = "https://piratecash.net/dex/download";
+        this.downloadLink = "https://piratecash.net/en/dex/#download";
 
         let ensure = this._ensureConnectivity.bind(this);
         ifvisible.on("wakeup", function() {
