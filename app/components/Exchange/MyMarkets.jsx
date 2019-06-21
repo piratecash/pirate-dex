@@ -1114,7 +1114,7 @@ class MyMarkets extends React.Component {
                                           active: activeMarketTab === index
                                       })}
                                   >
-                                      {base}
+                                      {base.replace("PIRATE.", "")}
                                   </li>
                               );
                           })}
