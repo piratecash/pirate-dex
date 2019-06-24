@@ -112,7 +112,12 @@ export function getMyMarketsQuotes() {
         rudexTokens: [],
         sparkTokens: [],
         xbtsxTokens: [],
-        otherTokens: ["PIRATE.PIRATE", "PIRATE.BTC", "PIRATE.DOGE"]
+        otherTokens: [
+            "PIRATE.PIRATE",
+            "PIRATE.BTC",
+            "PIRATE.BCCX",
+            "PIRATE.DOGE"
+        ]
     };
 
     let allTokens = [];
@@ -132,8 +137,10 @@ export function getFeaturedMarkets(quotes = []) {
         ["PIRATE.PIRATE", "PIRATE.BTC"],
         ["PIRATE.PIRATE", "PIRATE.DOGE"],
         ["PIRATE.BTC", "PIRATE.DOGE"],
+        ["PIRATE.BTC", "PIRATE.BCCX"],
         ["BTS", "PIRATE.PIRATE"],
         ["BTS", "PIRATE.BTC"],
+        ["BTS", "PIRATE.BCCX"],
         ["BTS", "PIRATE.DOGE"]
     ].filter(a => {
         if (!quotes.length) return true;

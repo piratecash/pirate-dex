@@ -11,7 +11,9 @@ require("file-loader?name=asset-symbols/silver.png!./silver.png");
 
 // PIRATE
 require("file-loader?name=asset-symbols/[name].png!./pirate.png");
+require("file-loader?name=asset-symbols/[name].png!./bccx.png");
 require("file-loader?name=asset-symbols/[name].png!./pirate.btc.png");
+require("file-loader?name=asset-symbols/[name].png!./pirate.bccx.png");
 require("file-loader?name=asset-symbols/[name].png!./pirate.doge.png");
 require("file-loader?name=asset-symbols/[name].png!./pirate.pirate.png");
 // 3rd party assets
