@@ -1706,6 +1706,9 @@
             "yes": "YES",
             "no": "NO",
             "amount": "Amount"
+        },
+        "resolve_modal": {
+            "title": "Resolve"
         }
     },
     "proposal": {
