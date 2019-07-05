@@ -83,7 +83,7 @@ export function getUnits() {
     if (_isTestnet()) {
         return ["TEST"];
     } else {
-        return ["BTS", "USD", "CNY", "BTC", "EUR", "GBP"];
+        return ["BTS", "PIRATE.BTC", "PIRATE.DOGE", "PIRATE.PIRATE"];
     }
 }
 
