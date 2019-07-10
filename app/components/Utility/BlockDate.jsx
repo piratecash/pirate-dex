@@ -39,13 +39,17 @@ class BlockDate extends React.Component {
 
     render() {
         const {blockHeader, tooltip, component, format} = this.props;
+
         if (!blockHeader) return React.createElement(component);
         return React.createElement(
             component,
             {
                 className: tooltip ? "tooltip" : ""
             },
-            <Tooltip title={tooltip ? blockHeader.timestamp : ""}>
+            <Tooltip
+                title={tooltip ? blockHeader.timestamp.toString() : ""}
+                placement="left"
+            >
                 <span>
                     {counterpart.localize(blockHeader.timestamp, {
                         type: "date",
@@ -57,20 +61,17 @@ class BlockDate extends React.Component {
     }
 }
 
-BlockDate = connect(
-    BlockDate,
-    {
-        listenTo() {
-            return [BlockchainStore];
-        },
-        getProps(props) {
-            return {
-                blockHeader: BlockchainStore.getState().blockHeaders.get(
-                    props.block_number
-                )
-            };
-        }
+BlockDate = connect(BlockDate, {
+    listenTo() {
+        return [BlockchainStore];
+    },
+    getProps(props) {
+        return {
+            blockHeader: BlockchainStore.getState().blockHeaders.get(
+                props.block_number
+            )
+        };
     }
-);
+});
 
 export default BlockDate;
