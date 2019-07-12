@@ -22,18 +22,6 @@ import ReactTooltip from "react-tooltip";
 import moment from "moment";
 import {Link, DirectLink} from "react-scroll";
 import {Tooltip} from "bitshares-ui-style-guide";
-import SetDefaultFeeAssetModal from "../Modal/SetDefaultFeeAssetModal";
-import {
-    Link,
-    DirectLink,
-    Element,
-    Events,
-    animateScroll as scroll,
-    scrollSpy,
-    scroller
-} from "react-scroll";
-import {Tooltip, Button} from "bitshares-ui-style-guide";
-import {Tooltip} from "bitshares-ui-style-guide";
 import asset_utils from "../../lib/common/asset_utils";
 import sanitize from "sanitize";
 

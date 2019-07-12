@@ -804,8 +804,7 @@
                 "max_supply": "Max supply",
                 "title": "Permissions",
                 "whitelist_authorities": "Whitelist authorities",
-                "whitelist_markets": "Whitelist markets",
-                "accounts_in_whitelist_market_fee_sharing": "Accounts included in Market fee sharing whitelist"
+                "whitelist_markets": "Whitelist markets"
             },
             "prediction_market_asset": {
                 "prediction": "Prediction",
@@ -1801,8 +1800,8 @@
         "confirm_remove": "Are you sure you want to remove %(name)s from your available nodes?",
         "confirm_yes": "Always",
         "connection_error": "Unable to connect to API node %(url)s, falling back to known working nodes. Error was: %(error)s",
-        "custom": "Custom",
         "current_fee_asset": "Current fee asset is: ",
+        "custom": "Custom",
         "darkTheme": "Dark",
         "delete_select": "Select local wallet to delete",
         "disabled": "Disabled",
