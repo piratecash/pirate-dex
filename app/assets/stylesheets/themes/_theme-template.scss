@@ -1712,10 +1712,7 @@
         @include button-focus($primary-text-color, $panel-bg-color, 10);
     }
     li.stat.clickable {
-        color: $secondary-text-color;
-        // &:hover{
-        // @include button-focus($primary-text-color, $panel-bg-color, 10);
-        // }
+        color: $secondary-text-color; // &:hover{ // @include button-focus($primary-text-color, $panel-bg-color, 10); // }
     }
     .mymarkets-tabs {
         > li {
@@ -2631,12 +2628,10 @@
     .asset-collapse {
         .ant-collapse-header {
             background: $panel-bg-color;
-            color: $primary-text-color !important;            
+            color: $primary-text-color !important;
             border: solid 1.2px $panel-bg-color !important;
         }
     }
-
-
 }
 .rc-time-picker-panel {
     z-index: 9999 !important;
