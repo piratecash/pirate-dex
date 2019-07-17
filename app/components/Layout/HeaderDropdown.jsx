@@ -207,8 +207,8 @@ export default class DropDownMenu extends React.Component {
                         disabled: !enableDepositWithdraw,
                         mainText: "modal.deposit.submit",
                         mainCallback: this.props.showDeposit,
-                        subText: "header.deposit_legacy",
-                        subURL: "/deposit-withdraw"
+                        subText: null,
+                        subURL: null
                     },
                     {
                         icon: {
@@ -218,8 +218,8 @@ export default class DropDownMenu extends React.Component {
                         disabled: !enableDepositWithdraw,
                         mainText: "modal.withdraw.submit",
                         mainCallback: this.props.showWithdraw,
-                        subText: "header.withdraw_legacy",
-                        subURL: "/deposit-withdraw"
+                        subText: null,
+                        subURL: null
                     }
                 ].map(
                     (
@@ -296,7 +296,6 @@ export default class DropDownMenu extends React.Component {
                     </div>
                 </li>
 
-
                 <li
                     className={cnames(
                         {
@@ -315,7 +314,6 @@ export default class DropDownMenu extends React.Component {
                         <Translate content="header.settings" />{" "}
                     </div>
                 </li>
-
 
                 <li
                     className={cnames({
@@ -338,7 +336,6 @@ export default class DropDownMenu extends React.Component {
                         <Translate content="account.signedmessages.menuitem" />
                     </div>
                 </li>
-
 
                 <li
                     className={cnames({
