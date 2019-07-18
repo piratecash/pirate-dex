@@ -77,7 +77,7 @@ class Asset extends React.Component {
             sortDirection: true,
             showCollateralBidInInfo: false,
             cumulativeGrouping: false,
-            activeFeedTab: "feed"
+            activeFeedTab: "margin"
         };
     }
 
@@ -2044,16 +2044,6 @@ class Asset extends React.Component {
             >
                 <AntTabs.TabPane
                     tab={counterpart.translate(
-                        "explorer.asset.price_feed_data.title"
-                    )}
-                    key="feed"
-                >
-                    {this.state.activeFeedTab == "feed"
-                        ? this._renderFeedTable(asset)
-                        : null}
-                </AntTabs.TabPane>
-                <AntTabs.TabPane
-                    tab={counterpart.translate(
                         isGlobalSettlement
                             ? "explorer.asset.collateral_bid.title"
                             : "explorer.asset.margin_positions.title"
@@ -2066,6 +2056,16 @@ class Asset extends React.Component {
                             : this._renderMarginTable()
                         : null}
                 </AntTabs.TabPane>
+                <AntTabs.TabPane
+                    tab={counterpart.translate(
+                        "explorer.asset.price_feed_data.title"
+                    )}
+                    key="feed"
+                >
+                    {this.state.activeFeedTab == "feed"
+                        ? this._renderFeedTable(asset)
+                        : null}
+                </AntTabs.TabPane>                
             </AntTabs>
         );
     }
