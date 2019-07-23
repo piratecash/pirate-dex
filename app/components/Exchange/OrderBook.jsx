@@ -72,8 +72,8 @@ class OrderBookRowVertical extends React.Component {
         let integerClass = isCall
             ? "orderHistoryCall"
             : isBid
-                ? "orderHistoryBid"
-                : "orderHistoryAsk";
+            ? "orderHistoryBid"
+            : "orderHistoryAsk";
 
         let price = (
             <PriceText price={order.getPrice()} quote={quote} base={base} />
@@ -130,8 +130,8 @@ class OrderBookRowHorizontal extends React.Component {
         let integerClass = isCall
             ? "orderHistoryCall"
             : isBid
-                ? "orderHistoryBid"
-                : "orderHistoryAsk";
+            ? "orderHistoryBid"
+            : "orderHistoryAsk";
 
         let price = (
             <PriceText price={order.getPrice()} quote={quote} base={base} />
@@ -548,8 +548,8 @@ class OrderBook extends React.Component {
                         ? this.props.groupedAsks
                         : this.props.groupedBids
                     : !this.props.orderBookReversed
-                        ? this.props.combinedAsks
-                        : this.props.combinedBids;
+                    ? this.props.combinedAsks
+                    : this.props.combinedBids;
 
             const rowsHeight = rows.length * singleRowHeight;
 
@@ -856,7 +856,7 @@ class OrderBook extends React.Component {
                             />
                             <a
                                 onClick={() => this.toggleTotalAsset(true)}
-                                className="header-sub-title"
+                                className="header-sub-title underline-title"
                             >
                                 {" "}
                                 <AssetName
@@ -924,7 +924,7 @@ class OrderBook extends React.Component {
                             />
                             <a
                                 onClick={() => this.toggleTotalAsset()}
-                                className="header-sub-title"
+                                className="header-sub-title underline-title"
                             >
                                 {" "}
                                 <AssetName

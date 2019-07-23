@@ -943,12 +943,8 @@ tbody.orderbook > tr.my-order > td {
     z-index: 100;
 }
 
-.withdraw-fee-selector {
-    .amount-selector-field--label {
-        text-align: left !important;
-        margin-bottom: 0;
-    }
-    :after {
-        content: none !important;
+.underline-title {
+    > * {
+        text-decoration: underline;
     }
 }
