@@ -123,6 +123,14 @@ class ShowcaseGrid extends Component {
                 icon: "alarm",
                 disabled: true,
                 comingSoon: true
+            },
+            {
+                title: "showcases.merchant_protocol.title",
+                target: () => {},
+                description: "showcases.merchant_protocol.description",
+                icon: "people",
+                disabled: true,
+                comingSoon: true
             }
             // .... even more tiles in this list
         ];
@@ -166,20 +174,17 @@ class ShowcaseGrid extends Component {
     }
 }
 
-ShowcaseGrid = connect(
-    ShowcaseGrid,
-    {
-        listenTo() {
-            return [AccountStore];
-        },
-        getProps() {
-            return {
-                currentAccount:
-                    AccountStore.getState().currentAccount ||
-                    AccountStore.getState().passwordAccount
-            };
-        }
+ShowcaseGrid = connect(ShowcaseGrid, {
+    listenTo() {
+        return [AccountStore];
+    },
+    getProps() {
+        return {
+            currentAccount:
+                AccountStore.getState().currentAccount ||
+                AccountStore.getState().passwordAccount
+        };
     }
-);
+});
 
 export default ShowcaseGrid;
