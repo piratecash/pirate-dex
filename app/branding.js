@@ -115,7 +115,8 @@ export function getMyMarketsQuotes() {
             "PIRATE.PIRATE",
             "PIRATE.BTC",
             "PIRATE.BCCX",
-            "PIRATE.DOGE"
+            "PIRATE.DOGE",
+            "PIRATE.DLX"
         ]
     };
 
@@ -133,14 +134,18 @@ export function getMyMarketsQuotes() {
  */
 export function getFeaturedMarkets(quotes = []) {
     return [
+        ["PIRATE.PIRATE", "BTS"],
         ["PIRATE.PIRATE", "PIRATE.BTC"],
         ["PIRATE.PIRATE", "PIRATE.DOGE"],
-        ["PIRATE.BTC", "PIRATE.DOGE"],
-        ["PIRATE.BTC", "PIRATE.BCCX"],
-        ["BTS", "PIRATE.PIRATE"],
-        ["BTS", "PIRATE.BTC"],
-        ["BTS", "PIRATE.BCCX"],
-        ["BTS", "PIRATE.DOGE"]
+        ["PIRATE.BCCX", "BTS"],
+        ["PIRATE.BCCX", "PIRATE.BTC"],
+        ["PIRATE.BCCX", "PIRATE.DOGE"],
+        ["PIRATE.DLX", "BTS"],
+        ["PIRATE.DLX", "PIRATE.BTC"],
+        ["PIRATE.DLX", "PIRATE.DOGE"],
+        ["PIRATE.DOGE", "BTS"],
+        ["PIRATE.DOGE", "PIRATE.BTC"],
+        ["PIRATE.BTC", "BTS"]
     ].filter(a => {
         if (!quotes.length) return true;
         return quotes.indexOf(a[0]) !== -1;
