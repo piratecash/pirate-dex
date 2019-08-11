@@ -51,7 +51,11 @@ export const availableGateways = {
         isSimple: true,
         selected: false,
         simpleAssetGateway: true,
-        fixedMemo: {prepend: "dex:", append: ""},
+        fixedMemo: {
+            prepend_default: "dex:",
+            prepend_btsid: "btsid-",
+            append: ""
+        },
         addressValidatorMethod: "POST",
         options: {
             enabled: false,
@@ -123,7 +127,6 @@ export const availableGateways = {
             : allowedGateway("XBTSX"),
         isSimple: true,
         selected: false,
-        simpleAssetGateway: false,
         addressValidatorMethod: "POST",
         options: {
             enabled: false,
