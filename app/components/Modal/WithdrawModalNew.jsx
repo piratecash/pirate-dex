@@ -1198,7 +1198,6 @@ class WithdrawModalNew extends React.Component {
                                     style={{paddingRight: 5}}
                                 >
                                     <FeeAssetSelector
-                                        label="transfer.fee"
                                         account={this.props.account}
                                         trxInfo={{
                                             type: "transfer",
