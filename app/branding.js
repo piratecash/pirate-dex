@@ -83,7 +83,13 @@ export function getUnits() {
     if (_isTestnet()) {
         return ["TEST"];
     } else {
-        return ["BTS", "PIRATE.BTC", "PIRATE.DOGE", "PIRATE.PIRATE"];
+        return [
+            "BTS",
+            "PIRATE.BTC",
+            "PIRATE.LTC",
+            "PIRATE.DOGE",
+            "PIRATE.PIRATE"
+        ];
     }
 }
 
@@ -94,7 +100,7 @@ export function getUnits() {
  */
 
 export function getMyMarketsBases() {
-    return ["PIRATE.PIRATE", "PIRATE.BTC", "PIRATE.DOGE", "BTS"];
+    return ["PIRATE.PIRATE", "PIRATE.BTC", "PIRATE.LTC", "PIRATE.DOGE", "BTS"];
 }
 
 /**
@@ -114,6 +120,7 @@ export function getMyMarketsQuotes() {
         otherTokens: [
             "PIRATE.PIRATE",
             "PIRATE.BTC",
+            "PIRATE.LTC",
             "PIRATE.BCCX",
             "PIRATE.DOGE",
             "PIRATE.DLX"
@@ -136,16 +143,22 @@ export function getFeaturedMarkets(quotes = []) {
     return [
         ["PIRATE.PIRATE", "BTS"],
         ["PIRATE.PIRATE", "PIRATE.BTC"],
+        ["PIRATE.PIRATE", "PIRATE.LTC"],
         ["PIRATE.PIRATE", "PIRATE.DOGE"],
         ["PIRATE.BCCX", "BTS"],
         ["PIRATE.BCCX", "PIRATE.BTC"],
+        ["PIRATE.BCCX", "PIRATE.LTC"],
         ["PIRATE.BCCX", "PIRATE.DOGE"],
         ["PIRATE.DLX", "BTS"],
         ["PIRATE.DLX", "PIRATE.BTC"],
+        ["PIRATE.DLX", "PIRATE.LTC"],
         ["PIRATE.DLX", "PIRATE.DOGE"],
         ["PIRATE.DOGE", "BTS"],
         ["PIRATE.DOGE", "PIRATE.BTC"],
-        ["PIRATE.BTC", "BTS"]
+        ["PIRATE.DOGE", "PIRATE.LTC"],
+        ["PIRATE.BTC", "PIRATE.LTC"][("PIRATE.BTC", "BTS")][
+            ("PIRATE.BTC", "BTS")
+        ]
     ].filter(a => {
         if (!quotes.length) return true;
         return quotes.indexOf(a[0]) !== -1;
