@@ -121,6 +121,7 @@ export function getMyMarketsQuotes() {
             "PIRATE.PIRATE",
             "PIRATE.BTC",
             "PIRATE.LTC",
+            "PIRATE.BCC",
             "PIRATE.BCCX",
             "PIRATE.DOGE",
             "PIRATE.DLX"
@@ -153,6 +154,10 @@ export function getFeaturedMarkets(quotes = []) {
         ["PIRATE.DLX", "PIRATE.BTC"],
         ["PIRATE.DLX", "PIRATE.LTC"],
         ["PIRATE.DLX", "PIRATE.DOGE"],
+        ["PIRATE.BCC", "BTS"],
+        ["PIRATE.BCC", "PIRATE.BTC"],
+        ["PIRATE.BCC", "PIRATE.LTC"],
+        ["PIRATE.BCC", "PIRATE.DOGE"],
         ["PIRATE.DOGE", "BTS"],
         ["PIRATE.DOGE", "PIRATE.BTC"],
         ["PIRATE.DOGE", "PIRATE.LTC"],
