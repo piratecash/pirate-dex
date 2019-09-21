@@ -1727,6 +1727,7 @@
         "total": "交易额"
     },
     "settings": {
+        "showProposedTx": "Show proposed transactions in dashboard",
         "access": "接入点",
         "access_text": "",
         "accounts": "账户",

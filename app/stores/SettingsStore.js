@@ -124,7 +124,8 @@ class SettingsStore {
                 }
             },
             rememberMe: true,
-            viewOnlyMode: true
+            viewOnlyMode: true,
+            showProposedTx: false
         };
     }
 
@@ -151,6 +152,7 @@ class SettingsStore {
             filteredApiServers: [],
             unit: getUnits(),
             fee_asset: getUnits(),
+            showProposedTx: [{translate: "yes"}, {translate: "no"}],
             showSettles: [{translate: "yes"}, {translate: "no"}],
             showAssetPercent: [{translate: "yes"}, {translate: "no"}],
             themes: ["darkTheme", "lightTheme", "midnightTheme"],
