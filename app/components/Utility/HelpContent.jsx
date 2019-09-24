@@ -140,15 +140,6 @@ class HelpContent extends React.PureComponent {
 
         let value = HelpData[locale][this.props.path];
 
-        if (!value && locale !== "en") {
-            console.warn(
-                `missing path '${
-                    this.props.path
-                }' for locale '${locale}' help files, rolling back to 'en'`
-            );
-            value = HelpData["en"][this.props.path];
-        }
-
         if (!value && this.props.alt_path) {
             console.warn(
                 `missing path '${
@@ -158,6 +149,15 @@ class HelpContent extends React.PureComponent {
                 }'`
             );
             value = HelpData[locale][this.props.alt_path];
+        }
+
+        if (!value && locale !== "en") {
+            console.warn(
+                `missing path '${
+                    this.props.path
+                }' for locale '${locale}' help files, rolling back to 'en'`
+            );
+            value = HelpData["en"][this.props.path];
         }
 
         if (!value && this.props.alt_path && locale != "en") {
