@@ -23,9 +23,7 @@ class AssetName extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            assetIssuerName: ChainStore.getAccountName(
-                props.asset.get("issuer")
-            )
+            assetIssuerName: null
         };
         this._load();
     }
@@ -112,8 +110,8 @@ class AssetName extends React.Component {
                 prefix && prefix === "bit"
                     ? prefix
                     : !!prefix
-                        ? prefix.toUpperCase()
-                        : prefix;
+                    ? prefix.toUpperCase()
+                    : prefix;
             let assetDiv = (
                 <div
                     className={

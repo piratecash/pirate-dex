@@ -80,84 +80,34 @@ function BindToChainState(Component, options = {}) {
                 this.all_chain_props = this.chain_objects;
             } else {
                 this.chain_objects = prop_types_array
-                    .filter(
-                        flow(
-                            secondEl,
-                            isObjectType
-                        )
-                    )
+                    .filter(flow(secondEl, isObjectType))
                     .map(firstEl);
                 this.chain_accounts = prop_types_array
-                    .filter(
-                        flow(
-                            secondEl,
-                            isAccountType
-                        )
-                    )
+                    .filter(flow(secondEl, isAccountType))
                     .map(firstEl);
                 this.chain_account_names = prop_types_array
-                    .filter(
-                        flow(
-                            secondEl,
-                            isAccountNameType
-                        )
-                    )
+                    .filter(flow(secondEl, isAccountNameType))
                     .map(firstEl);
                 this.chain_key_refs = prop_types_array
-                    .filter(
-                        flow(
-                            secondEl,
-                            isKeyRefsType
-                        )
-                    )
+                    .filter(flow(secondEl, isKeyRefsType))
                     .map(firstEl);
                 this.chain_address_balances = prop_types_array
-                    .filter(
-                        flow(
-                            secondEl,
-                            isAddressBalancesType
-                        )
-                    )
+                    .filter(flow(secondEl, isAddressBalancesType))
                     .map(firstEl);
                 this.chain_assets = prop_types_array
-                    .filter(
-                        flow(
-                            secondEl,
-                            isAssetType
-                        )
-                    )
+                    .filter(flow(secondEl, isAssetType))
                     .map(firstEl);
                 this.chain_objects_list = prop_types_array
-                    .filter(
-                        flow(
-                            secondEl,
-                            isObjectsListType
-                        )
-                    )
+                    .filter(flow(secondEl, isObjectsListType))
                     .map(firstEl);
                 this.chain_accounts_list = prop_types_array
-                    .filter(
-                        flow(
-                            secondEl,
-                            isAccountsListType
-                        )
-                    )
+                    .filter(flow(secondEl, isAccountsListType))
                     .map(firstEl);
                 this.chain_assets_list = prop_types_array
-                    .filter(
-                        flow(
-                            secondEl,
-                            isAssetsListType
-                        )
-                    )
+                    .filter(flow(secondEl, isAssetsListType))
                     .map(firstEl);
                 this.required_props = prop_types_array
-                    .filter(
-                        flow(
-                            secondEl,
-                            checkIfRequired
-                        )
-                    )
+                    .filter(flow(secondEl, checkIfRequired))
                     .map(firstEl);
                 this.all_chain_props = [
                     ...this.chain_objects,
@@ -625,6 +575,23 @@ function BindToChainState(Component, options = {}) {
                             <span>
                                 Error rendering component, please report
                             </span>
+                        );
+                    } else if (
+                        typeof options !== "undefined" &&
+                        options.show_loader
+                    ) {
+                        console.error(
+                            "Required prop " +
+                                prop +
+                                " isn't given, but still loading, this indicates that the rendering transitions are not well defined"
+                        );
+                        return (
+                            <React.Fragment>
+                                <LoadingIndicator />
+                                <span className="text-center">
+                                    Component re-rendering ...
+                                </span>
+                            </React.Fragment>
                         );
                     } else {
                         // returning a temp component of the desired type prevents invariant violation errors, notably when rendering tr components
