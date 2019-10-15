@@ -9,6 +9,7 @@ import cnames from "classnames";
 import Icon from "../Icon/Icon";
 import LoadingButton from "../Utility/LoadingButton";
 import {Switch, Button} from "bitshares-ui-style-guide";
+import NodeSelector from "../Utility/NodeSelector";
 
 const autoSelectionUrl = "wss://fake.automatic-selection.com";
 
@@ -101,6 +102,9 @@ class AutoSelectionNode extends React.Component {
                             content="settings.automatic"
                             totalNodes={totalNodes}
                         />
+                    </div>
+                    <div style={{float: "right", minWidth: "200px"}}>
+                        <NodeSelector />
                     </div>
                 </div>
             );
@@ -654,26 +658,19 @@ class AccessSettings extends React.Component {
     }
 }
 
-AccessSettings = connect(
-    AccessSettings,
-    {
-        listenTo() {
-            return [SettingsStore];
-        },
-        getProps() {
-            return {
-                // apiServer and activeNode are ambiguous definition when dealing with isActive, autoSelectionActive etc..
-                // using distinct names
-                selectedNode: SettingsStore.getState().settings.get(
-                    "apiServer"
-                ),
-                connectedNode: SettingsStore.getState().settings.get(
-                    "activeNode"
-                ),
-                apiLatencies: SettingsStore.getState().apiLatencies
-            };
-        }
+AccessSettings = connect(AccessSettings, {
+    listenTo() {
+        return [SettingsStore];
+    },
+    getProps() {
+        return {
+            // apiServer and activeNode are ambiguous definition when dealing with isActive, autoSelectionActive etc..
+            // using distinct names
+            selectedNode: SettingsStore.getState().settings.get("apiServer"),
+            connectedNode: SettingsStore.getState().settings.get("activeNode"),
+            apiLatencies: SettingsStore.getState().apiLatencies
+        };
     }
-);
+});
 
 export default AccessSettings;

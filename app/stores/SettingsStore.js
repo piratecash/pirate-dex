@@ -108,6 +108,7 @@ class SettingsStore {
         return {
             locale: "en",
             apiServer: settingsAPIs.DEFAULT_WS_NODE,
+            filteredApiServers: [],
             faucet_address: settingsAPIs.DEFAULT_FAUCET,
             unit: CORE_ASSET,
             fee_asset: CORE_ASSET,
@@ -147,6 +148,7 @@ class SettingsStore {
                 "ja"
             ],
             apiServer: settingsAPIs.WS_NODE_LIST.slice(0), // clone all default servers as configured in apiConfig.js
+            filteredApiServers: [],
             unit: getUnits(),
             fee_asset: getUnits(),
             showSettles: [{translate: "yes"}, {translate: "no"}],
@@ -209,8 +211,10 @@ class SettingsStore {
                 }
                 // must be of same type to be compatible
                 if (typeof settings[key] === typeof defaultSettings[key]) {
-                    // incompatible settings, dont store
-                    if (typeof settings[key] == "object") {
+                    if (
+                        !(settings[key] instanceof Array) &&
+                        typeof settings[key] == "object"
+                    ) {
                         let newSetting = this._replaceDefaults(
                             "saving",
                             settings[key],
@@ -234,7 +238,10 @@ class SettingsStore {
                     if (typeof settings[key] !== typeof defaultSettings[key]) {
                         // incompatible types, use default
                         setDefaults = true;
-                    } else if (typeof settings[key] == "object") {
+                    } else if (
+                        !(settings[key] instanceof Array) &&
+                        typeof settings[key] == "object"
+                    ) {
                         // check all subkeys
                         returnSettings[key] = this._replaceDefaults(
                             "loading",
@@ -526,7 +533,6 @@ class SettingsStore {
             default:
                 break;
         }
-
         // check current settings
         if (this.settings.get(payload.setting) !== payload.value) {
             this.settings = this.settings.set(payload.setting, payload.value);
