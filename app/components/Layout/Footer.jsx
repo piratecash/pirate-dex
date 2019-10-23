@@ -414,7 +414,8 @@ class Footer extends React.Component {
                             }
                         },
                         {
-                            translationKey: "connection.manual_ping",
+                            translationKey:
+                                "connection.manual_ping_and_narrow_down",
                             callback: () => {
                                 if (!this.props.synced) {
                                     this.onAccess();

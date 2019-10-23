@@ -104,7 +104,7 @@ class AutoSelectionNode extends React.Component {
                             totalNodes={totalNodes}
                         />
                     </div>
-                    <div style={{float: "right", minWidth: "200px"}}>
+                    <div style={{float: "right", marginBottom: "0.5rem"}}>
                         <NodeSelector />
                     </div>
                 </div>
@@ -570,7 +570,7 @@ class AccessSettings extends React.Component {
         ) : (
             <div style={{paddingTop: "1em"}}>
                 {this.renderAutoSelection(connectedNode)}
-
+                <div style={{clear: "both"}} />
                 <div className="active-node">
                     <LoadingButton
                         style={{float: "right"}}
