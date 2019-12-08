@@ -2563,6 +2563,7 @@
         "understand_1": "パスワードを紛失または忘れた場合、回復することができないことを理解しました",
         "understand_2": "パスワードを書き留めました、または他の方法で保存しました",
         "understand_3": "パスワードを紛失した場合、資金にアクセスできなくなることを理解しました",
+        "understand_4": " I'm not a citizen of USA",
         "use_different": "Use different file",
         "use_password": "アカウントモデルを使用する",
         "use_wallet": "ウォレットモデルを使用する",

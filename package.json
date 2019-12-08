@@ -1,6 +1,6 @@
 {
     "name": "PirateDEX",
-    "version": "3.1.130917",
+    "version": "3.1.081219",
     "description": "Reference UI to showcase all features of the BitShares blockchain.",
     "homepage": "https://github.com/piratecash/pirate-dex",
     "author": "BitShares UI Worker <ui-dev@bitshares.org>",

@@ -2569,6 +2569,7 @@
         "understand_1": "我理解如果我忘记或丢失了密码，将没有任何人能够帮助我恢复",
         "understand_2": "我已经写下了或者用其它方式保存了我的密码",
         "understand_3": "我理解如果我丢失了密码，我将永远无法访问我的资产",
+        "understand_4": " I'm not a citizen of USA",
         "use_different": "使用不同文件",
         "use_password": "使用账号模式",
         "use_wallet": "使用本地钱包模式",
