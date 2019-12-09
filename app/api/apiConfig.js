@@ -1,4 +1,4 @@
-import {getFaucet} from "../branding";
+import {getFaucet, getTestFaucet} from "../branding";
 
 export const pirateCashAPIs = {
     BASE: "https://piratecash.net/dexapi",
@@ -726,5 +726,5 @@ export const settingsAPIs = {
         }
     ],
     DEFAULT_FAUCET: getFaucet().url,
-    TESTNET_FAUCET: "https://faucet.testnet.bitshares.eu"
+    TESTNET_FAUCET: getTestFaucet().url
 };
