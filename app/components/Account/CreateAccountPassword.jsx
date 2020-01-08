@@ -92,7 +92,8 @@ class CreateAccountPassword extends React.Component {
             valid &&
             this.state.understand_1 &&
             this.state.understand_2 &&
-            this.state.understand_4
+            this.state.understand_4 &&
+            this.state.understand_5
         );
     }
 
@@ -386,6 +387,32 @@ class CreateAccountPassword extends React.Component {
 
                     <div
                         className="confirm-checks"
+                        onClick={this._onInput.bind(this, "understand_5")}
+                    >
+                        <label
+                            htmlFor="checkbox-5"
+                            style={{position: "relative"}}
+                        >
+                            <input
+                                type="checkbox"
+                                id="checkbox-5"
+                                onChange={() => {}}
+                                checked={this.state.understand_5}
+                                style={{
+                                    position: "absolute",
+                                    top: "-5px",
+                                    left: "0"
+                                }}
+                            />
+                            <div style={{paddingLeft: "30px"}}>
+                                <Translate content="wallet.understand_5" />
+                            </div>
+                        </label>
+                    </div>
+                    <br />
+
+                    <div
+                        className="confirm-checks"
                         onClick={this._onInput.bind(this, "understand_1")}
                     >
                         <label
@@ -617,9 +644,7 @@ class CreateAccountPassword extends React.Component {
                             </td>
                             <td>
                                 <Link
-                                    to={`/account/${
-                                        this.state.accountName
-                                    }/overview`}
+                                    to={`/account/${this.state.accountName}/overview`}
                                 >
                                     <Translate content="wallet.link_account" />
                                 </Link>
@@ -732,14 +757,11 @@ class CreateAccountPassword extends React.Component {
 
 CreateAccountPassword = withRouter(CreateAccountPassword);
 
-export default connect(
-    CreateAccountPassword,
-    {
-        listenTo() {
-            return [AccountStore];
-        },
-        getProps() {
-            return {};
-        }
+export default connect(CreateAccountPassword, {
+    listenTo() {
+        return [AccountStore];
+    },
+    getProps() {
+        return {};
     }
-);
+});

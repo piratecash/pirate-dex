@@ -2564,6 +2564,7 @@
         "understand_2": "I have written down or otherwise stored my password",
         "understand_3": " I understand that I will lose access to my funds if I lose my password",
         "understand_4": " I'm not a citizen of USA",
+        "understand_5": " I'm not citizen of the European Union (EU)",
         "use_different": "Use different file",
         "use_password": "Use the account model",
         "use_wallet": "Use the wallet model",
