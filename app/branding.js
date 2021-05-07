@@ -88,7 +88,8 @@ export function getUnits() {
             "PIRATE.BTC",
             "PIRATE.LTC",
             "PIRATE.DOGE",
-            "PIRATE.PIRATE"
+            "PIRATE.PIRATE",
+            "PIRATE.COSA"
         ];
     }
 }
@@ -100,7 +101,14 @@ export function getUnits() {
  */
 
 export function getMyMarketsBases() {
-    return ["PIRATE.PIRATE", "PIRATE.BTC", "PIRATE.LTC", "PIRATE.DOGE", "BTS"];
+    return [
+        "PIRATE.PIRATE",
+        "PIRATE.BTC",
+        "PIRATE.LTC",
+        "PIRATE.DOGE",
+        "PIRATE.COSA",
+        "BTS"
+    ];
 }
 
 /**
@@ -124,10 +132,7 @@ export function getMyMarketsQuotes() {
             "PIRATE.BCC",
             "PIRATE.BCCX",
             "PIRATE.DOGE",
-            "PIRATE.DLX",
-            "PIRATE.PNY",
-            "PIRATE.PZM"
-
+            "PIRATE.COSA"
         ]
     };
 
@@ -154,28 +159,20 @@ export function getFeaturedMarkets(quotes = []) {
         ["PIRATE.BCCX", "PIRATE.LTC"],
         ["PIRATE.BCCX", "PIRATE.DOGE"],
         ["PIRATE.BCCX", "PIRATE.PIRATE"],
-        ["PIRATE.DLX", "BTS"],
-        ["PIRATE.DLX", "PIRATE.BTC"],
-        ["PIRATE.DLX", "PIRATE.LTC"],
-        ["PIRATE.DLX", "PIRATE.DOGE"],
-        ["PIRATE.DLX", "PIRATE.PIRATE"],
+        ["PIRATE.COSA", "BTS"],
+        ["PIRATE.COSA", "PIRATE.BTC"],
+        ["PIRATE.COSA", "PIRATE.LTC"],
+        ["PIRATE.COSA", "PIRATE.DOGE"],
+        ["PIRATE.COSA", "PIRATE.PIRATE"],
         ["PIRATE.BCC", "BTS"],
         ["PIRATE.BCC", "PIRATE.BTC"],
         ["PIRATE.BCC", "PIRATE.LTC"],
         ["PIRATE.BCC", "PIRATE.DOGE"],
         ["PIRATE.BCC", "PIRATE.PIRATE"],
-        ["PIRATE.PNY", "PIRATE.BTC"],
-        ["PIRATE.PNY", "PIRATE.LTC"],
-        ["PIRATE.PNY", "PIRATE.DOGE"],
-        ["PIRATE.PNY", "PIRATE.PIRATE"],
-        ["PIRATE.PZM", "PIRATE.BTC"],
-        ["PIRATE.PZM", "PIRATE.LTC"],
-        ["PIRATE.PZM", "PIRATE.DOGE"],
-        ["PIRATE.PZM", "PIRATE.PIRATE"],
         ["PIRATE.DOGE", "BTS"],
         ["PIRATE.DOGE", "PIRATE.BTC"],
         ["PIRATE.DOGE", "PIRATE.LTC"],
-        ["PIRATE.DOGE", "PIRATE.PIRATE"],
+        ["PIRATE.DOGE", "PIRATE.PIRATE"]
     ].filter(a => {
         if (!quotes.length) return true;
         return quotes.indexOf(a[0]) !== -1;

@@ -11,12 +11,14 @@ require("file-loader?name=asset-symbols/silver.png!./silver.png");
 
 // PIRATE
 require("file-loader?name=asset-symbols/[name].png!./pirate.png");
+require("file-loader?name=asset-symbols/[name].png!./cosa.png");
 require("file-loader?name=asset-symbols/[name].png!./bcc.png");
 require("file-loader?name=asset-symbols/[name].png!./bccx.png");
 require("file-loader?name=asset-symbols/[name].png!./dlx.png");
 require("file-loader?name=asset-symbols/[name].png!./ltc.png");
 require("file-loader?name=asset-symbols/[name].png!./pny.png");
 require("file-loader?name=asset-symbols/[name].png!./pzm.png");
+require("file-loader?name=asset-symbols/[name].png!./pirate.cosa.png");
 require("file-loader?name=asset-symbols/[name].png!./pirate.pzm.png");
 require("file-loader?name=asset-symbols/[name].png!./pirate.pny.png");
 require("file-loader?name=asset-symbols/[name].png!./pirate.ltc.png");
