@@ -397,14 +397,6 @@ export const settingsAPIs = {
             contact: "telegram:gordoor;wechat:overyard"
         },
         {
-            url: "wss://bts-seoul.clockwork.gr",
-            region: "Southeastern Asia",
-            country: "Korea",
-            location: "Seoul",
-            operator: "Witness: clockwork",
-            contact: "telegram:clockworkgr"
-        },
-        {
             url: "wss://api.61bts.com",
             region: "Eastern Asia",
             country: "China",
