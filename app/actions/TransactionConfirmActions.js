@@ -37,7 +37,7 @@ class TransactionConfirmActions {
                         trx_block_num: res[0].block_num,
                         broadcasted_transaction: true
                     });
-                    if (resolve) resolve();
+                    if (resolve) resolve(res);
                 })
                 .catch(error => {
                     console.error(error);
@@ -50,7 +50,9 @@ class TransactionConfirmActions {
                     // try to break down the error in human readable pieces
                     let splitError = error.message.split("\n");
                     let data, code;
-                    if (splitError.length > 1) {
+                    if (splitError.length == 1) {
+                        message = splitError[0];
+                    } else if (splitError.length > 1) {
                         try {
                             jsonError = JSON.parse(splitError[1]);
                             data = jsonError.data;

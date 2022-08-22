@@ -85,6 +85,10 @@ div.header-right-menu {
     }
 }
 
+ul.top-stats {
+    margin-bottom: 0px !important; // remove margin for top-bar
+}
+
 .grp-menu-items-group {
     flex-flow: row nowrap;
     display: flex;
@@ -189,7 +193,7 @@ ul.dropdown.header-menu {
             cursor: not-allowed;
             opacity: 50%;
 
-            svg > path {
+            svg path {
                 fill: grey !important;
             }
         }

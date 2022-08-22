@@ -38,7 +38,7 @@ class PiratecashGateway extends React.Component {
         return activeCoin;
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (nextProps.provider !== this.props.provider) {
             this.setState({
                 activeCoin: this._getActiveCoin(nextProps, this.state.action)
@@ -124,7 +124,8 @@ class PiratecashGateway extends React.Component {
                             >
                                 <Translate
                                     content={"gateway.choose_" + action}
-                                />:{" "}
+                                />
+                                :{" "}
                             </label>
                             <select
                                 className="external-coin-types bts-select"

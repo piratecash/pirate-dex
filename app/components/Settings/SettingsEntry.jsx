@@ -5,7 +5,8 @@ import AssetName from "../Utility/AssetName";
 import Notify from "notifyjs";
 import FeeAssetSettings from "./FeeAssetSettings";
 
-import {Checkbox, Select, Input, Form} from "bitshares-ui-style-guide";
+import {Checkbox, Select, Input, Form, Button} from "bitshares-ui-style-guide";
+import GatewaySelectorModal from "../Gateways/GatewaySelectorModal";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -15,12 +16,27 @@ export default class SettingsEntry extends React.Component {
         super();
 
         this.state = {
-            message: null
+            message: null,
+            isGatewaySelectorModalVisible: false,
+            isGatewaySelectorModalRendered: false
         };
 
         this.handleNotificationChange = this.handleNotificationChange.bind(
             this
         );
+    }
+
+    hideGatewaySelectorModal() {
+        this.setState({
+            isGatewaySelectorModalVisible: false
+        });
+    }
+
+    showGatewaySelectorModal() {
+        this.setState({
+            isGatewaySelectorModalRendered: true,
+            isGatewaySelectorModalVisible: true
+        });
     }
 
     _setMessage(key) {
@@ -41,6 +57,17 @@ export default class SettingsEntry extends React.Component {
         return evt => {
             this.props.onNotificationChange(path, !!evt.target.checked);
         };
+    }
+
+    shouldComponentUpdate(nextProps, nextState, nextContext) {
+        if (nextProps.setting === "filteredServiceProviders") {
+            // only rerender for the modal, not when settings changed (visualized in the modal!)
+            return (
+                nextState.isGatewaySelectorModalVisible !==
+                this.state.isGatewaySelectorModalVisible
+            );
+        }
+        return true;
     }
 
     render() {
@@ -123,21 +150,20 @@ export default class SettingsEntry extends React.Component {
                                 </div>
                             </div>
                         </div>
-                        {!!value.allow &&
-                            Notify.needsPermission && (
-                                <a
-                                    href="https://goo.gl/zZ7NHY"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="external-link"
-                                >
-                                    <Translate
-                                        component="div"
-                                        className="settings--notifications--no-browser-support"
-                                        content="settings.browser_notifications_disabled_by_browser_notify"
-                                    />
-                                </a>
-                            )}
+                        {!!value.allow && Notify.needsPermission && (
+                            <a
+                                href="https://goo.gl/zZ7NHY"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="external-link"
+                            >
+                                <Translate
+                                    component="div"
+                                    className="settings--notifications--no-browser-support"
+                                    content="settings.browser_notifications_disabled_by_browser_notify"
+                                />
+                            </a>
+                        )}
                     </div>
                 );
 
@@ -147,6 +173,30 @@ export default class SettingsEntry extends React.Component {
                 options = null;
                 value = true;
                 component = <FeeAssetSettings key="fee_asset_component" />;
+                break;
+
+            case "filteredServiceProviders":
+                options = null;
+                value = true;
+                component = (
+                    <React.Fragment>
+                        <Button
+                            onClick={this.showGatewaySelectorModal.bind(this)}
+                        >
+                            Choose external Service Providers
+                        </Button>
+                        {this.state.isGatewaySelectorModalRendered && (
+                            <GatewaySelectorModal
+                                visible={
+                                    this.state.isGatewaySelectorModalVisible
+                                }
+                                hideModal={this.hideGatewaySelectorModal.bind(
+                                    this
+                                )}
+                            />
+                        )}
+                    </React.Fragment>
+                );
                 break;
 
             case "defaultMarkets":

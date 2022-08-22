@@ -6,6 +6,9 @@ import counterpart from "counterpart";
 import PropTypes from "prop-types";
 import {Popover} from "bitshares-ui-style-guide";
 import {ChainStore, FetchChainObjects} from "bitsharesjs";
+import GatewayStore from "../../stores/GatewayStore";
+import {getAssetAndGateway} from "../../lib/common/gatewayUtils";
+import {Icon, Tooltip} from "bitshares-ui-style-guide";
 
 class AssetName extends React.Component {
     static propTypes = {
@@ -41,18 +44,32 @@ class AssetName extends React.Component {
 
     _load() {
         // cache asset issuer name
-        if (!this.state.assetIssuerName) {
+        if (
+            !this.state.assetIssuerName &&
+            this.props.asset &&
+            this.props.asset.get
+        ) {
             FetchChainObjects(ChainStore.getAccountName, [
                 this.props.asset.get("issuer")
             ]).then(result => {
-                // re-render, ChainStore cache now has the object
-                this.setState({assetIssuerName: result[0]});
+                if (this._isMounted) {
+                    // re-render, ChainStore cache now has the object
+                    this.setState({assetIssuerName: result[0]});
+                }
             });
         }
     }
 
+    componentDidMount() {
+        this._isMounted = true;
+    }
+
     componentDidUpdate() {
         this._load();
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     render() {
@@ -205,6 +222,69 @@ AssetName = AssetWrapper(AssetName);
 
 export default class AssetNameWrapper extends React.Component {
     render() {
-        return <AssetName {...this.props} asset={this.props.name} />;
+        const gatewaySplit = getAssetAndGateway(this.props.name);
+        let postfix = undefined;
+        if (!!gatewaySplit && !!gatewaySplit.selectedGateway) {
+            const onChainConfig = GatewayStore.getOnChainConfig(
+                getAssetAndGateway(this.props.name).selectedGateway
+            );
+            const isDisabledGatewayAsset =
+                !!onChainConfig && !onChainConfig.enabled;
+            postfix = isDisabledGatewayAsset && (
+                <Tooltip
+                    placement="topLeft"
+                    title={
+                        <span>
+                            <span
+                                dangerouslySetInnerHTML={{
+                                    __html:
+                                        counterpart.translate(
+                                            "external_service_provider.disabled_asset_1"
+                                        ) + ". "
+                                }}
+                            />
+                            <span>{onChainConfig.comment}</span>
+                            <br />
+                            <br />
+                            <span>
+                                {counterpart.translate(
+                                    "external_service_provider.disabled_asset_2"
+                                )}
+                            </span>
+                        </span>
+                    }
+                >
+                    &nbsp;
+                    <Icon type="warning" />
+                </Tooltip>
+            );
+        }
+        let warning = undefined;
+        if (GatewayStore.isAssetBlacklisted(this.props.name)) {
+            warning = (
+                <Tooltip
+                    placement="topLeft"
+                    title={
+                        <React.Fragment>
+                            <span>
+                                {counterpart.translate(
+                                    "explorer.assets.blacklisted"
+                                )}
+                            </span>
+                        </React.Fragment>
+                    }
+                >
+                    &nbsp;
+                    <Icon style={{color: "white"}} type="warning" />
+                </Tooltip>
+            );
+        }
+        return !this.props.name ? null : (
+            <React.Fragment>
+                <AssetName {...this.props} asset={this.props.name} />
+                {postfix}
+                {warning}
+            </React.Fragment>
+        );
     }
 }

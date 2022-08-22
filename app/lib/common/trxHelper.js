@@ -13,7 +13,11 @@ function estimateFeeAsync(type, options = null, data = {}) {
     return new Promise((res, rej) => {
         FetchChain("getObject", "2.0.0")
             .then(obj => {
-                res(estimateFee(type, options, obj, data));
+                try {
+                    res(estimateFee(type, options, obj, data));
+                } catch (err) {
+                    rej(err);
+                }
             })
             .catch(rej);
     });
@@ -25,17 +29,19 @@ function checkFeePoolAsync({
     options = null,
     data
 } = {}) {
-    return new Promise(res => {
+    return new Promise((res, rej) => {
         if (assetID === "1.3.0") {
             res(true);
         } else {
             Promise.all([
                 estimateFeeAsync(type, options, data),
                 FetchChain("getObject", assetID.replace(/^1\./, "2."))
-            ]).then(result => {
-                const [fee, dynamicObject] = result;
-                res(parseInt(dynamicObject.get("fee_pool"), 10) >= fee);
-            });
+            ])
+                .then(result => {
+                    const [fee, dynamicObject] = result;
+                    res(parseInt(dynamicObject.get("fee_pool"), 10) >= fee);
+                })
+                .catch(rej);
         }
     });
 }
@@ -127,9 +133,9 @@ function checkFeeStatusAsync({
                     let hasValidCER = true;
 
                     /*
-                ** If the fee is to be paid in a non-core asset, check the fee
-                ** pool and convert the amount using the CER
-                */
+                     ** If the fee is to be paid in a non-core asset, check the fee
+                     ** pool and convert the amount using the CER
+                     */
                     if (feeID !== "1.3.0") {
                         // Convert the amount using the CER
                         let cer = feeAsset.getIn([
@@ -151,9 +157,9 @@ function checkFeeStatusAsync({
                         let quote = new Asset(q);
 
                         /*
-                    ** If the CER is incorrectly configured, the multiplication
-                    ** will fail, so catch the error and default to core
-                    */
+                         ** If the CER is incorrectly configured, the multiplication
+                         ** will fail, so catch the error and default to core
+                         */
                         try {
                             let price = new Price({base, quote});
                             fee = fee.times(price, true);
@@ -192,9 +198,9 @@ function checkFeeStatusAsync({
                     }, feeStatusTTL);
                 });
             })
-            .catch(() => {
+            .catch(err => {
                 asyncCache[key].queue.forEach(promise => {
-                    promise.rej();
+                    promise.rej(err);
                 });
             });
     });
@@ -209,9 +215,9 @@ let _feeCache = {};
 function estimateFee(op_type, options, globalObject, data = {}) {
     // console.time("estimateFee");
     /*
-    * The actual content doesn't matter, only the length of it, so we use a
-    * string of equal length to improve caching
-    */
+     * The actual content doesn't matter, only the length of it, so we use a
+     * string of equal length to improve caching
+     */
     if (!!data.content)
         data.content = new Array(data.content.length + 1).join("a");
     if (!globalObject) return 0;
@@ -221,15 +227,19 @@ function estimateFee(op_type, options, globalObject, data = {}) {
         return _feeCache[cacheKey];
     }
     let op_code = operations[op_type];
-    let currentFees = globalObject.getIn([
+    let currentFees = null;
+
+    // The data returned by the API is not necessarily continuous.
+    let params = globalObject.getIn([
         "parameters",
         "current_fees",
-        "parameters",
-        op_code,
-        1
+        "parameters"
     ]);
-    /* Default to transfer fees if the op is missing in globalObject */
-    if (!currentFees)
+    let index = params.findIndex(item => item.get(0) == op_code);
+    if (index > -1) {
+        currentFees = params.getIn([index, 1]);
+    } else {
+        /* Default to transfer fees if the op is missing in globalObject */
         currentFees = globalObject.getIn([
             "parameters",
             "current_fees",
@@ -237,6 +247,8 @@ function estimateFee(op_type, options, globalObject, data = {}) {
             0,
             1
         ]);
+    }
+
     currentFees = currentFees.toJS();
 
     let fee = 0;

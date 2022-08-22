@@ -1,8 +1,10 @@
 import ls from "./localStorage";
 import {pirateCashAPIs} from "api/apiConfig";
-const xbtsxStorage = new ls("");
+const xbtsxStorage = ls("");
 
-export function fetchCoinList(url = pirateCashAPIs.BASE + pirateCashAPIs.COINS_LIST) {
+export function fetchCoinList(
+    url = pirateCashAPIs.BASE + pirateCashAPIs.COINS_LIST
+) {
     return fetch(url, {method: "post"})
         .then(reply =>
             reply.json().then(result => {

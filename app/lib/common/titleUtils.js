@@ -1,4 +1,5 @@
 import counterpart from "counterpart";
+import {getWalletName} from "../../branding";
 
 export default class TitleUtils {
     /**

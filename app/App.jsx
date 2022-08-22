@@ -44,6 +44,14 @@ const Exchange = Loadable({
     loading: LoadingIndicator
 });
 
+const CreditOfferPage = Loadable({
+    loader: () =>
+        import(
+            /* webpackChunkName: "explorer" */ "./components/Account/CreditOffer/CreditOfferPage"
+        ),
+    loading: LoadingIndicator
+});
+
 const Explorer = Loadable({
     loader: () =>
         import(
@@ -182,7 +190,17 @@ const DirectDebit = Loadable({
 
 const QuickTrade = Loadable({
     loader: () =>
-        import(/* webpackChunkName: "QuickTrade" */ "./components/QuickTrade/QuickTradeRouter"),
+        import(
+            /* webpackChunkName: "QuickTrade" */ "./components/QuickTrade/QuickTradeRouter"
+        ),
+    loading: LoadingIndicator
+});
+
+const PoolmartPage = Loadable({
+    loader: () =>
+        import(
+            /* webpackChunkName: "poolmart" */ "./components/Poolmart/PoolmartPage"
+        ),
     loading: LoadingIndicator
 });
 
@@ -194,6 +212,10 @@ import AccountRegistration from "./components/Registration/AccountRegistration";
 import {CreateWalletFromBrainkey} from "./components/Wallet/WalletCreate";
 import ShowcaseGrid from "./components/Showcases/ShowcaseGrid";
 import PriceAlertNotifications from "./components/PriceAlertNotifications";
+import GatewaySelectorModal from "./components/Gateways/GatewaySelectorModal";
+import SettingsStore from "./stores/SettingsStore";
+import GatewayActions from "./actions/GatewayActions";
+import {allowedGateway} from "./branding";
 
 class App extends React.Component {
     constructor() {
@@ -207,6 +229,7 @@ class App extends React.Component {
                 : false;
         this.state = {
             isBrowserSupportModalVisible: false,
+            isGatewaySelectorModalVisible: false,
             loading: false,
             synced: this._syncStatus(),
             syncFail,
@@ -222,6 +245,9 @@ class App extends React.Component {
 
         this.showBrowserSupportModal = this.showBrowserSupportModal.bind(this);
         this.hideBrowserSupportModal = this.hideBrowserSupportModal.bind(this);
+        this.hideGatewaySelectorModal = this.hideGatewaySelectorModal.bind(
+            this
+        );
 
         Notification.config({
             duration: DEFAULT_NOTIFICATION_DURATION,
@@ -274,6 +300,12 @@ class App extends React.Component {
     hideBrowserSupportModal() {
         this.setState({
             isBrowserSupportModalVisible: false
+        });
+    }
+
+    hideGatewaySelectorModal() {
+        this.setState({
+            isGatewaySelectorModalVisible: false
         });
     }
 
@@ -332,7 +364,39 @@ class App extends React.Component {
                 this.setState({incognito});
             }.bind(this)
         );
-        updateGatewayBackers();
+        GatewayActions.loadOnChainGatewayConfig();
+
+        if (allowedGateway()) {
+            this._ensureExternalServices();
+        }
+    }
+
+    _ensureExternalServices() {
+        setTimeout(() => {
+            let hasLoggedIn =
+                AccountStore.getState().myActiveAccounts.length > 0 ||
+                !!AccountStore.getState().passwordAccount;
+            if (!hasLoggedIn) {
+                this._ensureExternalServices();
+            } else {
+                this._checkExternalServices();
+            }
+        }, 5000);
+    }
+
+    _checkExternalServices() {
+        if (
+            SettingsStore.getState().viewSettings.get(
+                "hasSeenExternalServices",
+                false
+            )
+        ) {
+            updateGatewayBackers();
+        } else {
+            this.setState({
+                isGatewaySelectorModalVisible: true
+            });
+        }
     }
 
     componentDidUpdate(prevProps) {
@@ -454,11 +518,18 @@ class App extends React.Component {
                                     component={Exchange}
                                 />
                                 <Route
+                                    path="/credit-offer"
+                                    component={CreditOfferPage}
+                                />
+                                <Route
                                     path="/settings/:tab"
                                     component={Settings}
                                 />
                                 <Route path="/settings" component={Settings} />
-
+                                <Route
+                                    path="/invoice/:data"
+                                    component={Invoice}
+                                />
                                 <Route
                                     path="/deposit-withdraw"
                                     exact
@@ -575,6 +646,7 @@ class App extends React.Component {
                                     path="/instant-trade/:marketID"
                                     component={QuickTrade}
                                 />
+                                <Route path="/pools" component={PoolmartPage} />
                                 <Route path="*" component={Page404} />
                             </Switch>
                         </div>
@@ -627,6 +699,10 @@ class App extends React.Component {
                             visible={this.state.isBrowserSupportModalVisible}
                             hideModal={this.hideBrowserSupportModal}
                             showModal={this.showBrowserSupportModal}
+                        />
+                        <GatewaySelectorModal
+                            visible={this.state.isGatewaySelectorModalVisible}
+                            hideModal={this.hideGatewaySelectorModal}
                         />
                     </div>
                 </BodyClassName>

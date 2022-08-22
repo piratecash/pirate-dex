@@ -9,19 +9,23 @@ import PropTypes from "prop-types";
  *
  *  Expects one property, 'balance' which should be a balance_object id
  */
-
 class BalanceComponent extends React.Component {
     static propTypes = {
         balance: ChainTypes.ChainObject.isRequired,
         assetInfo: PropTypes.node,
-        hide_asset: PropTypes.bool
+        hide_asset: PropTypes.bool,
+        trimZero: PropTypes.bool
     };
 
     static defaultProps = {
-        hide_asset: false
+        hide_asset: false,
+        trimZero: false
     };
 
     render() {
+        if (!this.props.balance || !this.props.balance.toJS) {
+            return null;
+        }
         let amount = this.props.balance.get("balance");
         if (amount || amount == 0) {
             amount = Number(this.props.balance.get("balance"));
@@ -37,6 +41,7 @@ class BalanceComponent extends React.Component {
                 assetInfo={this.props.assetInfo}
                 replace={this.props.replace}
                 hide_asset={this.props.hide_asset}
+                trimZero={this.props.trimZero}
             />
         );
     }

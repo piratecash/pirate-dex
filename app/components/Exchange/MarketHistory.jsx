@@ -62,7 +62,7 @@ class MarketHistory extends React.Component {
         }
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (nextProps.activeTab !== this.props.activeTab) {
             this.changeTab(nextProps.activeTab);
         }

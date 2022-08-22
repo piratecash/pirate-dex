@@ -1,5 +1,7 @@
 import React from "react";
+import {ChainStore} from "bitsharesjs";
 import AccountSelector from "../Account/AccountSelector";
+import AssetSelect from "../Utility/AssetSelect";
 import {compress} from "lzma";
 import bs58 from "common/base58";
 import Translate from "react-translate-component";
@@ -14,7 +16,6 @@ import {
 } from "bitshares-ui-style-guide";
 import counterpart from "counterpart";
 import CopyButton from "../Utility/CopyButton";
-import CopyToClipboard from "react-copy-to-clipboard";
 
 let id = 1;
 
@@ -25,7 +26,9 @@ class InvoiceRequest extends React.Component {
             invoice: null,
             invoiceData: null,
             recipient_name: null,
-            recipient_name_account: null
+            recipient_name_account: null,
+            currency: "BTS",
+            defaultAssets: ["BTS", "CNY", "USD"]
         };
     }
 
@@ -47,7 +50,7 @@ class InvoiceRequest extends React.Component {
         }
     }
 
-    componentWillReceiveProps(nextProps, nextContext) {
+    UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
         if (this.state.recipient_name == null && this.props.currentAccount) {
             this.setState({
                 recipient_name: this.props.currentAccount.get("name")
@@ -66,7 +69,6 @@ class InvoiceRequest extends React.Component {
     hasErrors = () => {
         let formError = false;
         const values = this.props.form.getFieldsValue([
-            "currency",
             "line_items",
             "memo",
             "keys"
@@ -96,9 +98,9 @@ class InvoiceRequest extends React.Component {
         if (keys.length === 1) {
             return;
         }
-
+        const nextKeys = keys.filter(key => key !== k);
         form.setFieldsValue({
-            keys: keys.filter(key => key !== k)
+            keys: nextKeys
         });
     };
 
@@ -112,10 +114,13 @@ class InvoiceRequest extends React.Component {
     };
 
     handleSubmit(e) {
+        const {currency} = this.state;
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                const {currency, line_items, memo, note, to_label} = values;
+                let {line_items, memo, note, to_label} = values;
+                // remove empty lines
+                line_items = line_items.filter(item => !!item);
                 this._printInvoice({
                     currency,
                     line_items,
@@ -128,8 +133,14 @@ class InvoiceRequest extends React.Component {
         });
     }
 
+    onChangeCurrency(e) {
+        const asset = ChainStore.getAsset(e);
+        this.setState({currency: asset.get("symbol")});
+    }
+
     render() {
         const {getFieldValue, getFieldDecorator} = this.props.form;
+        const {currency, defaultAssets} = this.state;
         getFieldDecorator("keys", {initialValue: [0]});
         let keys = getFieldValue("keys");
         const formItems = (
@@ -240,6 +251,7 @@ class InvoiceRequest extends React.Component {
                     >
                         {getFieldDecorator("memo")(<Input />)}
                     </Form.Item>
+
                     <Form.Item
                         className="invoice-request-input"
                         label={
@@ -262,7 +274,11 @@ class InvoiceRequest extends React.Component {
                             </span>
                         }
                     >
-                        {getFieldDecorator("currency")(<Input />)}
+                        <AssetSelect
+                            value={currency}
+                            assets={defaultAssets}
+                            onChange={this.onChangeCurrency.bind(this)}
+                        />
                     </Form.Item>
 
                     <Form.Item
@@ -319,7 +335,7 @@ class InvoiceRequest extends React.Component {
                             htmlType="submit"
                             disabled={error}
                         >
-                            <Translate content="invoice.request.submit" />
+                            <Translate content="invoice.request.create_invoice_string" />
                         </Button>
                     </Form.Item>
                 </Form>
@@ -333,7 +349,10 @@ class InvoiceRequest extends React.Component {
                             />
                         </div>
                         <div style={{float: "right"}}>
-                            <CopyButton useDiv={false} text={"asdasd!"} />
+                            <CopyButton
+                                useDiv={false}
+                                text={this.state.invoiceData}
+                            />
                         </div>
                     </React.Fragment>
                 )}

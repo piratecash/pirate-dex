@@ -144,7 +144,35 @@ div.bordered-header {
     }
 }
 
+.search-input {
+    .ant-input-suffix {
+        right: 0px !important;
+        .anticon {
+            width: 32px;
+            height: 32px;
+            svg {
+                margin: 9px;
+            }
+        }
+    }
+}
+
 .json-link {
     cursor: pointer;
-    text-transform: uppercase;
+
+    .anticon {
+        padding-right: 5px;
+    }
+}
+.mt-10 {
+    margin-top: 10px;
+}
+.mb-10 {
+    margin-bottom: 10px;
+}
+.mt-16 {
+    margin-top: 16px;
+}
+.mb-16 {
+    margin-bottom: 16px;
 }

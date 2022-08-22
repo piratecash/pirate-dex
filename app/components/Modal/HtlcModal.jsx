@@ -21,7 +21,6 @@ import {
     Button,
     Select,
     Input,
-    Icon as AntIcon,
     DatePicker,
     Tooltip,
     Radio
@@ -209,8 +208,8 @@ class Preimage extends React.Component {
                                     hashMatch == null
                                         ? undefined
                                         : hashMatch
-                                            ? "green"
-                                            : "red"
+                                        ? "green"
+                                        : "red"
                             }}
                             name="preimage"
                             id="preimage"
@@ -381,13 +380,12 @@ class HtlcModal extends React.Component {
             preimage_size,
             preimage_hash,
             preimage_cipher,
-            claim_period
+            claim_period,
+            feeAmount
         } = this.state;
         const {
             operation: {type: operationType}
         } = this.props;
-
-        const fee_asset_id = this.state.feeAmount.asset_id;
 
         if (operationType === "create") {
             HtlcActions.create({
@@ -400,7 +398,7 @@ class HtlcModal extends React.Component {
                 preimage_size,
                 preimage_hash,
                 preimage_cipher,
-                fee_asset_id
+                fee_asset: feeAmount.asset_id
             })
                 .then(result => {
                     this.props.hideModal();
@@ -436,6 +434,7 @@ class HtlcModal extends React.Component {
                     console.error(err);
                 });
         }
+        this.props.hideModal();
     };
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
@@ -477,7 +476,16 @@ class HtlcModal extends React.Component {
                     preimage_hash:
                         operation.payload.conditions.hash_lock.preimage_hash[1],
                     preimage_size:
-                        operation.payload.conditions.hash_lock.preimage_hash[0]
+                        operation.payload.conditions.hash_lock.preimage_hash[0],
+                    expirationDate: moment(
+                        new Date(
+                            utils.makeISODateString(
+                                operation.payload.conditions.time_lock
+                                    .expiration
+                            )
+                        )
+                    ),
+                    period: null
                 });
             } else {
                 this.setState({
@@ -485,7 +493,16 @@ class HtlcModal extends React.Component {
                     preimage_hash:
                         operation.payload.conditions.hash_lock.preimage_hash[1],
                     preimage_size:
-                        operation.payload.conditions.hash_lock.preimage_hash[0]
+                        operation.payload.conditions.hash_lock.preimage_hash[0],
+                    expirationDate: moment(
+                        new Date(
+                            utils.makeISODateString(
+                                operation.payload.conditions.time_lock
+                                    .expiration
+                            )
+                        )
+                    ),
+                    period: null
                 });
             }
         } else {
@@ -808,8 +825,8 @@ class HtlcModal extends React.Component {
             operation && operation.type === "create"
                 ? counterpart.translate("showcases.htlc.create_htlc")
                 : isExtend
-                    ? counterpart.translate("showcases.htlc.extend_htlc")
-                    : counterpart.translate("showcases.htlc.redeem_htlc");
+                ? counterpart.translate("showcases.htlc.extend_htlc")
+                : counterpart.translate("showcases.htlc.redeem_htlc");
         let sendButtonText =
             operation && operation.type === "create"
                 ? counterpart.translate("showcases.direct_debit.create")
@@ -908,8 +925,8 @@ class HtlcModal extends React.Component {
                                     asset_types.length > 0 && asset
                                         ? asset.get("id")
                                         : asset_id
-                                            ? asset_id
-                                            : asset_types[0]
+                                        ? asset_id
+                                        : asset_types[0]
                                 }
                                 assets={asset_types}
                                 display_balance={
@@ -982,8 +999,13 @@ class HtlcModal extends React.Component {
                                     <div className="no-margin no-padding">
                                         <FeeAssetSelector
                                             account={from_account}
-                                            trxInfo={{
-                                                type: "htlc_create"
+                                            transaction={{
+                                                type: "htlc_create",
+                                                options: ["price_per_kbyte"],
+                                                data: {
+                                                    type: "memo",
+                                                    content: null
+                                                }
                                             }}
                                             onChange={this.onFeeChanged.bind(
                                                 this
@@ -1000,18 +1022,13 @@ class HtlcModal extends React.Component {
     }
 }
 
-export default connect(
-    HtlcModal,
-    {
-        listenTo() {
-            return [SettingsStore];
-        },
-        getProps(props) {
-            return {
-                fee_asset_symbol: SettingsStore.getState().settings.get(
-                    "fee_asset"
-                )
-            };
-        }
+export default connect(HtlcModal, {
+    listenTo() {
+        return [SettingsStore];
+    },
+    getProps(props) {
+        return {
+            fee_asset_symbol: SettingsStore.getState().settings.get("fee_asset")
+        };
     }
-);
+});

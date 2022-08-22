@@ -10,18 +10,11 @@
  * [Permissions](accounts/permissions.md)
  * [Memberships](accounts/membership.md)
  * [Market Pegged Assets](assets/mpa.md)
-    * bitUSD
-    * bitEUR
-    * bitGOLD
  * [User Issued Assets](assets/uia.md)
  * [Privatized BitAssets](assets/privbitassets.md)
  * [Decentralized Exchange](dex/introduction.md)
  * [Trading](dex/trading.md)
  * [Short Selling BitAssets](dex/shorting.md)
- * Gateways
-    * [Citadel](gateways/citadel.md)
-    * [OpenLedger](gateways/openledger.md)
-    * [Rudex](gateways/rudex.md)
-    * [CryptoBridge](gateways/cryptobridge.md)
-	* [Xbts](gateways/xbtsx.md)
-	* [SparkDEX](gateways/spark.md)
+ * [Gateways](gateways/introduction.md)
+    * [Xbts](gateways/xbtsx.md)
+    * [ioxbank](gateways/ioxbank.md)

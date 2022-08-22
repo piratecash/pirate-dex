@@ -16,10 +16,10 @@ class SymbolInfo {
             quoteGateway === baseGateway
                 ? quoteGateway
                 : quoteGateway && !baseGateway
-                    ? quoteGateway
-                    : !quoteGateway && baseGateway
-                        ? baseGateway
-                        : `${quoteGateway} / ${baseGateway}`;
+                ? quoteGateway
+                : !quoteGateway && baseGateway
+                ? baseGateway
+                : `${quoteGateway} / ${baseGateway}`;
 
         let {name: baseSymbol, prefix: basePrefix} = utils.replaceName(
             options.baseAsset
@@ -70,36 +70,30 @@ class SymbolInfo {
     }
 }
 
-function getResolutionsFromBuckets(buckets) {
+function getResolutionsFromBuckets(buckets, convertToFrame = false) {
     let resolutions = buckets
         .map(r => {
             let minute = r / 60;
             let day = minute / 60 / 24;
             let week = day / 7;
 
-            if (minute < 1) {
+            if (minute < 1 && !convertToFrame) {
                 // below 1 minute we return Seconds
                 return r + "S";
-            } else if (day < 1 && parseInt(minute, 10) === minute) {
+            } else if (
+                day < 1 &&
+                parseInt(minute, 10) === minute &&
+                !convertToFrame
+            ) {
                 // below 1 day we return Minutes
                 return minute.toString();
-            } else if (week < 1) {
-                // below 1 week we return Days
-                if (day >= 1) {
-                    if (parseInt(day, 10) === day) {
-                        if (day === 1) return "D";
-                        return day + "D";
-                    }
-                }
             } else {
-                // we return weeks
-                if (week >= 1) {
-                    if (parseInt(week, 10) === week) {
-                        return week + "D";
-                    }
-                }
+                // below 1 week we return Days
+                day = parseInt(day, 10);
+                if (day === 1 && !convertToFrame) return "D";
+                if (day === 0) return "1D";
+                return day + "D";
             }
-
             return null;
         })
         .filter(a => !!a);
@@ -313,12 +307,12 @@ class DataFeed {
 
     unsubscribeBars() {
         /*
-        * This is ALWAYS called after subscribeBars for some reason, but
-        * sometimes it executes BEFORE the subscribe call in subscribeBars and
-        * sometimes AFTER. This causes the callback to be cleared and we stop
-        * receiving updates from the MarketStore. Unless we find it causes bugs,
-        * it's best to just not use this.
-        */
+         * This is ALWAYS called after subscribeBars for some reason, but
+         * sometimes it executes BEFORE the subscribe call in subscribeBars and
+         * sometimes AFTER. This causes the callback to be cleared and we stop
+         * receiving updates from the MarketStore. Unless we find it causes bugs,
+         * it's best to just not use this.
+         */
         // MarketsStore.unsubscribe("subscribeBars");
         // this.latestBar = null;
     }
@@ -393,9 +387,7 @@ function getTVTimezone() {
             if (zoneTime.format() === actual) {
                 if (__DEV__)
                     console.log(
-                        `Found a match for ${current} timezone, using ${
-                            supportedTimeZones[i]
-                        }`
+                        `Found a match for ${current} timezone, using ${supportedTimeZones[i]}`
                     );
                 // Found a match, return that zone
                 return supportedTimeZones[i];

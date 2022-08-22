@@ -1,7 +1,10 @@
 import ls from "./localStorage";
 import {blockTradesAPIs, openledgerAPIs} from "api/apiConfig";
 import {availableGateways} from "common/gateways";
-const blockTradesStorage = new ls("");
+const blockTradesStorage = ls("");
+let oidcStorage = ls(
+    "oidc.user:https://blocktrades.us/:10ecf048-b982-467b-9965-0b0926330869"
+);
 
 let fetchInProgess = {};
 let fetchCache = {};
@@ -333,6 +336,52 @@ export function requestDepositAddress({
         });
 }
 
+export function getMappingData(inputCoinType, outputCoinType, outputAddress) {
+    let body = JSON.stringify({
+        inputCoinType,
+        outputCoinType,
+        outputAddress: {
+            address: outputAddress
+        }
+    });
+    let mapping = inputCoinType + outputCoinType + outputAddress;
+    if (blockTradesStorage.has(`history_mapping_${mapping}`)) {
+        return Promise.resolve(
+            blockTradesStorage.get(`history_mapping_${mapping}`)
+        );
+    } else {
+        return new Promise((resolve, reject) => {
+            let headers = {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${oidcStorage.get("")["access_token"]}`
+            };
+            fetch(`${blockTradesAPIs.BASE}/mappings`, {
+                method: "post",
+                headers: headers,
+                body: body
+            })
+                .then(reply => {
+                    reply.json().then(result => {
+                        if (result["inputAddress"]) {
+                            blockTradesStorage.set(
+                                `history_mapping_${mapping}`,
+                                result["inputAddress"]
+                            );
+                            resolve(result && result["inputAddress"]);
+                        } else {
+                            reject();
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.log("Error: ", error);
+                    reject();
+                });
+        });
+    }
+}
+
 export function getBackedCoins({allCoins, tradingPairs, backer}) {
     let gatewayStatus = availableGateways[backer];
     let coins_by_type = {};
@@ -444,7 +493,7 @@ export function validateAddress({
 }
 
 let _conversionCache = {};
-export function getConversionJson(inputs) {
+export function getConversionJson(inputs, userAccessToken = null) {
     const {input_coin_type, output_coin_type, url, account_name} = inputs;
     if (!input_coin_type || !output_coin_type) return Promise.reject();
     const body = JSON.stringify({
@@ -463,12 +512,20 @@ export function getConversionJson(inputs) {
     return new Promise((resolve, reject) => {
         if (_conversionCache[_cacheString])
             return resolve(_conversionCache[_cacheString]);
+        let headers = {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+        };
+        if (userAccessToken) {
+            headers = {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${userAccessToken}`
+            };
+        }
         fetch(url + "/simple-api/initiate-trade", {
             method: "post",
-            headers: new Headers({
-                Accept: "application/json",
-                "Content-Type": "application/json"
-            }),
+            headers,
             body: body
         })
             .then(reply => {

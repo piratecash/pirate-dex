@@ -2,11 +2,71 @@ import Immutable from "immutable";
 import alt from "alt-instance";
 import GatewayActions from "actions/GatewayActions";
 import ls from "common/localStorage";
+import {allowedGateway} from "../branding";
 
 const STORAGE_KEY = "__graphene__";
-let ss = new ls(STORAGE_KEY);
+let ss = ls(STORAGE_KEY);
 
 class GatewayStore {
+    static isAllowed(backer) {
+        return allowedGateway(backer);
+    }
+
+    static anyAllowed() {
+        return allowedGateway();
+    }
+
+    static isDown(backer) {
+        // call another static method with this
+        return !!this.getState().down.get(backer);
+    }
+
+    static getOnChainConfig(gatewayKey) {
+        if (!gatewayKey) {
+            return {};
+        }
+        // call another static method with this
+        const onChainConfig = this.getState().onChainGatewayConfig;
+
+        if (!onChainConfig || !onChainConfig.gateways) return undefined;
+
+        return onChainConfig.gateways[gatewayKey];
+    }
+
+    static getGlobalOnChainConfig() {
+        return this.getState().onChainGatewayConfig;
+    }
+
+    /**
+     * FIXME: This does not belong into GatewayStore, but only creating a new store for it seems excessive
+     * @param asset
+     * @returns {boolean}
+     */
+    static isAssetBlacklisted(asset) {
+        let symbol = null;
+        if (typeof asset == "object") {
+            if (asset.symbol) {
+                symbol = asset.symbol;
+            } else if (asset.get) {
+                symbol = asset.get("symbol");
+            }
+        } else {
+            // string
+            symbol = asset;
+        }
+        const globalOnChainConfig = this.getState().onChainGatewayConfig;
+        if (
+            !!globalOnChainConfig &&
+            !!globalOnChainConfig.blacklists &&
+            !!globalOnChainConfig.blacklists.assets
+        ) {
+            if (globalOnChainConfig.blacklists.assets.includes) {
+                return globalOnChainConfig.blacklists.assets.includes(symbol);
+            }
+        }
+        return false;
+    }
+
     constructor() {
         this.backedCoins = Immutable.Map(ss.get("backedCoins", {}));
         this.bridgeCoins = Immutable.Map(
@@ -33,10 +93,14 @@ class GatewayStore {
         ];
         this.down = Immutable.Map({});
 
+        this.onChainGatewayConfig = null;
+
         this.bindListeners({
             onFetchCoins: GatewayActions.fetchCoins,
             onFetchCoinsSimple: GatewayActions.fetchCoinsSimple,
-            onFetchPairs: GatewayActions.fetchPairs
+            onFetchPairs: GatewayActions.fetchPairs,
+            onTemporarilyDisable: GatewayActions.temporarilyDisable,
+            onLoadOnChainGatewayConfig: GatewayActions.loadOnChainGatewayConfig
         });
     }
 
@@ -79,9 +143,9 @@ class GatewayStore {
                     return (
                         a &&
                         coins_by_type[a.outputCoinType] &&
-                        (coins_by_type[a.outputCoinType].walletType ===
+                        coins_by_type[a.outputCoinType].walletType ===
                             "bitshares2" && // Only use bitshares2 wallet types
-                            this.bridgeInputs.indexOf(a.inputCoinType) !== -1) // Only use coin types defined in bridgeInputs
+                        this.bridgeInputs.indexOf(a.inputCoinType) !== -1 // Only use coin types defined in bridgeInputs
                     );
                 })
                 .forEach(coin => {
@@ -102,6 +166,23 @@ class GatewayStore {
         if (down) {
             this.down = this.down.set(down, true);
         }
+    }
+
+    onTemporarilyDisable({backer}) {
+        this.down = this.down.set(backer, true);
+
+        if (this.backedCoins.get(backer)) {
+            this.backedCoins = this.backedCoins.remove(backer);
+            ss.set("backedCoins", this.backedCoins.toJS());
+        }
+        if (this.bridgeCoins.get(backer)) {
+            this.bridgeCoins = this.bridgeCoins.remove(backer);
+            ss.set("bridgeCoins", this.bridgeCoins.toJS());
+        }
+    }
+
+    onLoadOnChainGatewayConfig(config) {
+        this.onChainGatewayConfig = config || {};
     }
 }
 

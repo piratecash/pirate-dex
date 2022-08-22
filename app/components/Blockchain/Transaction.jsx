@@ -8,6 +8,7 @@ import classNames from "classnames";
 import {FormattedDate} from "react-intl";
 import Inspector from "react-json-inspector";
 import utils from "common/utils";
+import {Icon as AntIcon} from "bitshares-ui-style-guide";
 import LinkToAccountById from "../Utility/LinkToAccountById";
 import LinkToAssetById from "../Utility/LinkToAssetById";
 import FormattedPrice from "../Utility/FormattedPrice";
@@ -24,7 +25,6 @@ import {Link, DirectLink} from "react-scroll";
 import {Tooltip} from "bitshares-ui-style-guide";
 import JSONModal from "components/Modal/JSONModal";
 import asset_utils from "../../lib/common/asset_utils";
-import sanitize from "sanitize";
 
 require("./operations.scss");
 require("./json-inspector.scss");
@@ -63,7 +63,10 @@ class OpType extends React.Component {
                         {trxTypes[ops[this.props.type]]}
                     </span>
                 </td>
-                <td />
+                <td className="json-link" onClick={this.props.openJSONModal}>
+                    <AntIcon type="file-search" />
+                    <Translate component="a" content="transaction.view_json" />
+                </td>
             </tr>
         );
     }
@@ -101,11 +104,19 @@ class OperationTable extends React.Component {
                 </td>
                 <td>
                     {operation[1].fee.amount > 0 ? (
-                        <FormattedAsset
-                            color="fee"
-                            amount={operation[1].fee.amount}
-                            asset={operation[1].fee.asset_id}
-                        />
+                        <span>
+                            <FormattedAsset
+                                color="fee"
+                                amount={operation[1].fee.amount}
+                                asset={operation[1].fee.asset_id}
+                                style={{marginRight: "10px"}}
+                            />
+                            &nbsp;&nbsp;
+                            <Icon
+                                name="question-circle"
+                                title="settings.can_change_default_fee_asset_tooltip"
+                            />
+                        </span>
                     ) : (
                         <label>
                             <Translate content="transfer.free" />
@@ -126,20 +137,10 @@ class OperationTable extends React.Component {
                             txIndex={this.props.txIndex}
                             type={operation[0]}
                             color={this.props.color}
+                            openJSONModal={this.openJSONModal}
                         />
                         {this.props.children}
                         {fee_row}
-                        <tr>
-                            <td
-                                className="json-link"
-                                onClick={this.openJSONModal}
-                            >
-                                <Translate
-                                    component="a"
-                                    content="transaction.view_json"
-                                />
-                            </td>
-                        </tr>
                     </tbody>
                 </table>
                 <JSONModal

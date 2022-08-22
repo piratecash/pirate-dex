@@ -4,219 +4,304 @@ import Immutable from "immutable";
 import counterpart from "counterpart";
 import AssetWrapper from "./AssetWrapper";
 import PropTypes from "prop-types";
-import {Form, Input, Button, Tooltip} from "bitshares-ui-style-guide";
+import {Form, Input, Button, Tooltip, Icon} from "bitshares-ui-style-guide";
 import AssetSelect from "./AssetSelect";
-import {ChainStore} from "bitsharesjs";
+import {FetchChain} from "bitsharesjs";
 import SetDefaultFeeAssetModal from "../Modal/SetDefaultFeeAssetModal";
-import {debounce} from "lodash-es";
+import debounceRender from "react-debounce-render";
 import {connect} from "alt-react";
 import SettingsStore from "../../stores/SettingsStore";
 import {checkFeeStatusAsync} from "common/trxHelper";
 
+const DEBUG = __DEV__ && false;
+
 class FeeAssetSelector extends React.Component {
+    static propTypes = {
+        // injected
+        defaultFeeAsset: PropTypes.any,
+
+        // object wih data required for fee calculation
+        transaction: PropTypes.any,
+
+        // assets to choose from
+        assets: PropTypes.any,
+
+        // a translation key for the input label, defaults to "Fee"
+        label: PropTypes.string,
+
+        // handler for changedFee (asset, or amount)
+        onChange: PropTypes.func,
+
+        // account which pays fee
+        account: PropTypes.any,
+
+        // tab index if needed
+        tabIndex: PropTypes.number,
+
+        // do not allow to switch the asset or amount
+        disabled: PropTypes.bool
+    };
+
+    static defaultProps = {
+        label: "transfer.fee",
+        disabled: false
+    };
+
     constructor(props) {
         super(props);
 
         this.state = {
-            asset: null,
-            assets: [],
-            fee_amount: 0,
-            fee_asset_id:
-                ChainStore.assets_by_symbol.get(
-                    props.settings.get("fee_asset")
-                ) || "1.3.0",
-            fees: {},
-            feeStatus: {},
+            feeAsset: props.defaultFeeAsset,
+
+            calculatedFeeAmount: null,
+
+            assets: null,
+            assetsLoading: false,
+
             isModalVisible: false,
-            error: null,
-            assets_fetched: false,
-            last_fee_check_params: {}
+            error: null
         };
-        this._updateFee = debounce(this._updateFee.bind(this), 250);
     }
 
-    async _getFees(assets, account, trxInfo) {
-        const accountID = account.get("id");
-        let result = this.state.fees;
-        for (let asset_id of assets) {
-            const {fee} = await checkFeeStatusAsync({
-                ...trxInfo,
-                accountID,
-                feeID: asset_id
-            });
-            result[asset_id] = fee.getAmount({real: true});
+    async _calculateFee(asset = null) {
+        const {account, transaction} = this.props;
+        const setState = asset == null;
+        if (!asset) {
+            asset = this.state.feeAsset;
         }
-        this.setState({fees: result});
+        const feeID = typeof asset == "string" ? asset : asset.get("id");
+        try {
+            const {fee, hasPoolBalance} = await checkFeeStatusAsync({
+                ...transaction,
+                accountID: account.get("id"),
+                feeID
+            });
+
+            if (setState) {
+                this.setState(
+                    {
+                        calculatedFeeAmount: fee.getAmount({real: true}),
+                        error: !hasPoolBalance
+                            ? {
+                                  key: "noPoolBalanceShort",
+                                  tooltip: "noPoolBalance"
+                              }
+                            : false
+                    },
+                    () => {
+                        if (this.props.onChange) {
+                            this.props.onChange(fee);
+                        }
+                    }
+                );
+            }
+            return {
+                fee,
+                hasPoolBalance
+            };
+        } catch (err) {
+            if (setState) {
+                this.setState({
+                    calculatedFeeAmount: 0,
+                    error: {
+                        key: "unknown"
+                    }
+                });
+            }
+            console.error(err);
+            throw err;
+        }
+    }
+
+    _accountChanges(oldProps, newProps) {
+        return (
+            newProps.account &&
+            (!oldProps.account ||
+                newProps.account.get("id") !== oldProps.account.get("id"))
+        );
+    }
+
+    _feeNeedCalculation(oldProps, newProps, oldState, newState) {
+        const accountChanged = this._accountChanges(oldProps, newProps);
+        const transactionChanged =
+            newProps.transaction &&
+            JSON.stringify(newProps.transaction) !==
+                JSON.stringify(oldProps.transaction);
+        const feeAssetChanged =
+            newState.feeAsset &&
+            (!oldState.feeAsset ||
+                newState.feeAsset.get("id") !== oldState.feeAsset.get("id"));
+        let calculationIsPossible =
+            newProps.account && newProps.transaction && newState.feeAsset;
+        return (
+            calculationIsPossible &&
+            (accountChanged || transactionChanged || feeAssetChanged)
+        );
     }
 
     shouldComponentUpdate(np, ns) {
+        if (DEBUG)
+            console.log(
+                "FeeAssetSelector.shouldComponentUpdate",
+                this.props,
+                np
+            );
+        if (ns.assets) {
+            if (!this.state.assets) {
+                return true;
+            }
+            if (ns.assets.length !== this.state.assets.length) {
+                return true;
+            }
+        }
         return (
-            ns.fee_amount !== this.state.fee_amount ||
-            ns.fee_asset_id !== this.state.fee_asset_id ||
+            this._feeNeedCalculation(this.props, np, this.state, ns) ||
+            ns.calculatedFeeAmount !== this.state.calculatedFeeAmount ||
+            ns.assetsLoading !== this.state.assetsLoading ||
             ns.isModalVisible !== this.state.isModalVisible ||
-            ns.assets_fetched !== this.state.assets_fetched ||
-            ns.assets.length !== this.state.assets.length ||
-            np.multiplier !== this.props.multiplier
+            ns.error !== this.state.error
         );
-    }
-
-    __are_equal_shallow(o1, o2) {
-        for (var p in o1) {
-            if (o1.hasOwnProperty(p)) {
-                if (o1[p] !== o2[p]) {
-                    return false;
-                }
-            }
-        }
-        for (var p in o2) {
-            if (o2.hasOwnProperty(p)) {
-                if (o1[p] !== o2[p]) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    _updateFee(asset_id, trxInfo, onChange, account = this.props.account) {
-        if (!account) return null;
-        const availableAssets = this._getAvailableAssets(account);
-
-        let feeID = asset_id || this.state.fee_asset_id;
-        if (!availableAssets.includes(feeID)) feeID = "1.3.0";
-
-        this._getFees(this.state.assets, account, trxInfo);
-        const options = {
-            ...trxInfo,
-            accountID: account.get("id"),
-            feeID
-        };
-        if (
-            JSON.stringify(this.state.last_fee_check_params) !==
-            JSON.stringify(options)
-        ) {
-            checkFeeStatusAsync(options)
-                .then(({fee, hasPoolBalance}) => {
-                    this.setState({
-                        fee_amount: fee.getAmount({real: true}),
-                        fee_asset_id: fee.asset_id,
-                        error: !hasPoolBalance,
-                        last_fee_check_params: options
-                    });
-                    if (onChange) {
-                        onChange(fee);
-                    }
-                    this.setState({
-                        assets: availableAssets,
-                        fee_amount: fee.getAmount({real: true}),
-                        fee_asset_id: fee.asset_id
-                    });
-                })
-                .catch(err => {
-                    console.warn(err);
-                });
-        }
-    }
-
-    componentWillReceiveProps(np, ns) {
-        const {fee_amount, fee_asset_id} = this.state;
-        const trxInfoChanged = !this.__are_equal_shallow(
-            np.trxInfo,
-            this.props.trxInfo
-        );
-        const account_changed =
-            np.account &&
-            this.props.account &&
-            np.account.get("id") !== this.props.account.get("id");
-        const needsFeeCalculation =
-            trxInfoChanged || !fee_amount || account_changed;
-        if (needsFeeCalculation) {
-            this._updateFee(fee_asset_id, np.trxInfo, np.onChange, np.account);
-        }
-        if (account_changed) {
-            this.setState({
-                assets_fetched: false,
-                assets: []
-            });
-        }
     }
 
     _getAsset() {
-        const {assets, fee_asset_id} = this.state;
-        return ChainStore.getAsset(
-            fee_asset_id
-                ? fee_asset_id
-                : assets.length === 1
-                ? assets[0]
-                : "1.3.0"
-        );
+        const {assets, feeAsset} = this.state;
+        return feeAsset
+            ? feeAsset
+            : assets && assets.length > 0
+            ? assets[0]
+            : null;
     }
 
-    _getAvailableAssets(account = this.props.account) {
-        if (this.state.assets_fetched && this.state.assets.length > 0) {
+    _getSelectableAssets() {
+        return this.state.assets
+            ? this.state.assets
+            : [this._getAsset().get("symbol")];
+    }
+
+    async _syncAvailableAssets(opened, account = this.props.account) {
+        if (DEBUG)
+            console.log(
+                "FeeAssetSelector.syncAvailableAssets",
+                opened,
+                account
+            );
+        if (this.state.assets) {
             return this.state.assets;
         }
-        let fee_asset_types = [];
-        if (!(account && account.get("balances"))) {
-            return fee_asset_types;
-        }
-        const account_balances = account.get("balances").toJS();
-        fee_asset_types = Object.keys(account_balances).sort(utils.sortID);
-        for (let key in account_balances) {
-            let balanceObject = ChainStore.getObject(account_balances[key]);
-            if (balanceObject && balanceObject.get("balance") === 0) {
-                if (fee_asset_types.includes(key)) {
-                    fee_asset_types.splice(fee_asset_types.indexOf(key), 1);
+        this.setState({
+            assetsLoading: true
+        });
+        let possibleAssets = [this._getAsset().get("id")];
+        const accountBalances = account.get("balances").toJS();
+        const sortedKeys = Object.keys(accountBalances).sort(utils.sortID);
+        for (let i = 0, key; (key = sortedKeys[i]); i++) {
+            const balanceObject = await FetchChain(
+                "getObject",
+                accountBalances[key]
+            );
+            try {
+                const requiredForFee = await this._calculateFee(key);
+                if (DEBUG) {
+                    console.log(
+                        "FeeAssetSelector.syncAvailableAssets: Checking " +
+                            key +
+                            " ... ",
+                        requiredForFee
+                    );
+                }
+                if (
+                    balanceObject &&
+                    balanceObject.get("balance") >=
+                        requiredForFee.fee.getAmount() &&
+                    !possibleAssets.includes(key)
+                ) {
+                    possibleAssets.push(key);
+                    possibleAssets = possibleAssets.sort(utils.sortID);
+                    this.setState({
+                        assets: possibleAssets
+                    });
+                }
+            } catch (err) {
+                if (DEBUG) {
+                    console.log(" ... not possible");
                 }
             }
         }
 
         this.setState({
-            balances: account_balances,
-            assets: fee_asset_types,
-            assets_fetched: true
+            assetsLoading: false
         });
-        this._updateFee(
-            this.state.fee_asset_id,
-            this.props.trxInfo,
-            this.props.onChange
-        );
-        return fee_asset_types;
     }
 
     componentDidMount() {
-        this.onAssetChange(this.state.fee_asset_id);
+        if (this._feeNeedCalculation({}, this.props, {}, this.state)) {
+            this._calculateFee();
+        }
+        if (DEBUG) {
+            console.log("FeeAssetSelector.componentDidMount", this.props);
+        }
     }
 
-    onAssetChange(selected_asset) {
-        this.setState({fee_asset_id: selected_asset});
-        this._updateFee(
-            selected_asset,
-            this.props.trxInfo,
-            this.props.onChange
+    componentDidUpdate(prevProps, prevState) {
+        if (DEBUG) {
+            console.log(
+                "FeeAssetSelector.componentDidUpdate",
+                prevProps,
+                this.props
+            );
+        }
+        if (this._accountChanges(prevProps, this.props)) {
+            this.setState({assets: null});
+        }
+        if (
+            this._feeNeedCalculation(
+                prevProps,
+                this.props,
+                prevState,
+                this.state
+            )
+        ) {
+            this._calculateFee();
+        }
+    }
+
+    UNSAFE_componentWillReceiveProps(np, ns) {
+        // don't do async loading in componentWillReceiveProps
+    }
+
+    async onAssetChange(selectedAssetId) {
+        const asset = await FetchChain("getAsset", selectedAssetId);
+        this.setState(
+            {
+                feeAsset: asset
+            },
+            this._calculateFee.bind(this)
         );
     }
 
     render() {
         const currentAsset = this._getAsset();
-        const assets =
-            this.state.assets.length > 0
-                ? this.state.assets
-                : [currentAsset.get("id") || "1.3.0"];
-        const multiplier = this.props.multiplier || 1;
-
-        let value = this.state.error
-            ? counterpart.translate("transfer.errors.insufficient")
-            : this.state.fee_amount * multiplier;
+        // noPoolBalanceShort
+        let feeInputString = this.state.error
+            ? counterpart.translate("transfer.errors." + this.state.error.key)
+            : this.state.calculatedFeeAmount;
 
         const label = this.props.label ? (
             <div className="amount-selector-field--label">
                 {counterpart.translate(this.props.label)}
+                {this.state.error && this.state.error.tooltip && (
+                    <Tooltip
+                        title={counterpart.translate(
+                            "transfer.errors." + this.state.error.tooltip
+                        )}
+                    >
+                        &nbsp; <Icon type="question-circle" />
+                    </Tooltip>
+                )}
             </div>
         ) : null;
 
-        const canChangeFeeParams =
-            !this.props.selectDisabled && this.props.account;
+        const canChangeFeeParams = !this.props.disabled && !!this.props.account;
 
         const changeDefaultButton = (
             <Tooltip
@@ -236,6 +321,8 @@ class FeeAssetSelector extends React.Component {
             </Tooltip>
         );
 
+        const selectableAssets = this._getSelectableAssets();
+
         return (
             <div>
                 <Form.Item
@@ -249,7 +336,7 @@ class FeeAssetSelector extends React.Component {
                                 width: "calc(100% - 130px)"
                             }}
                             disabled={true}
-                            value={value || ""}
+                            value={feeInputString || ""}
                             tabIndex={this.props.tabIndex}
                             suffix={
                                 this.state.error
@@ -259,33 +346,43 @@ class FeeAssetSelector extends React.Component {
                         />
 
                         <AssetSelect
+                            loading={this.state.assetsLoading}
+                            onDropdownVisibleChange={this._syncAvailableAssets.bind(
+                                this
+                            )}
                             style={{width: "130px"}}
                             selectStyle={{width: "100%"}}
                             value={currentAsset.get("symbol")}
                             assets={
-                                canChangeFeeParams ? Immutable.List(assets) : []
+                                canChangeFeeParams
+                                    ? Immutable.List(selectableAssets)
+                                    : []
                             }
                             onChange={this.onAssetChange.bind(this)}
                         />
                     </Input.Group>
                 </Form.Item>
 
-                <SetDefaultFeeAssetModal
-                    className="modal"
-                    show={this.state.isModalVisible}
-                    currentAccount={this.props.account}
-                    asset_types={this.state.assets.map(asset => ({
-                        asset,
-                        fee: this.state.fees[asset]
-                    }))}
-                    displayFees={true}
-                    forceDefault={false}
-                    current_asset={this.state.fee_asset_id}
-                    onChange={this.onAssetChange.bind(this)}
-                    close={() => {
-                        this.setState({isModalVisible: false});
-                    }}
-                />
+                {this.state.isModalVisible && (
+                    <SetDefaultFeeAssetModal
+                        className="modal"
+                        show={this.state.isModalVisible}
+                        currentAccount={this.props.account}
+                        asset_types={
+                            undefined //this.state.assets.map(asset => ({
+                            //asset,
+                            //fee: this.state.fees[asset]
+                            //}))
+                        }
+                        displayFees={true}
+                        forceDefault={false}
+                        current_asset={currentAsset.get("id")}
+                        onChange={this.onAssetChange.bind(this)}
+                        close={() => {
+                            this.setState({isModalVisible: false});
+                        }}
+                    />
+                )}
             </div>
         );
     }
@@ -295,45 +392,22 @@ class FeeAssetSelector extends React.Component {
     }
 }
 
-FeeAssetSelector.propTypes = {
-    // a translation key for the input label
-    label: PropTypes.string,
-    // account which pays fee
-    account: PropTypes.any,
-    // handler for changed Fee (asset, or amount)
-    onChange: PropTypes.func,
-    tabIndex: PropTypes.number,
-    selectDisabled: PropTypes.bool,
-    settings: PropTypes.any,
-    // Object wih data required for fee calculation
-    trxInfo: PropTypes.any
-};
+FeeAssetSelector = debounceRender(FeeAssetSelector, 150, {
+    leading: false
+});
 
-FeeAssetSelector.defaultProps = {
-    disabled: true,
-    tabIndex: 0,
-    selectDisabled: false,
-    label: "transfer.fee",
-    account: null,
-    trxInfo: {
-        type: "transfer",
-        options: null,
-        data: {}
+FeeAssetSelector = AssetWrapper(FeeAssetSelector, {
+    propNames: ["defaultFeeAsset"]
+});
+
+export default connect(FeeAssetSelector, {
+    listenTo() {
+        return [SettingsStore];
+    },
+    getProps() {
+        return {
+            defaultFeeAsset:
+                SettingsStore.getState().settings.get("fee_asset") || "1.3.0"
+        };
     }
-};
-
-FeeAssetSelector = AssetWrapper(FeeAssetSelector);
-
-export default connect(
-    FeeAssetSelector,
-    {
-        listenTo() {
-            return [SettingsStore];
-        },
-        getProps(props) {
-            return {
-                settings: SettingsStore.getState().settings
-            };
-        }
-    }
-);
+});

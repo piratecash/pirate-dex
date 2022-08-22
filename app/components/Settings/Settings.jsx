@@ -31,6 +31,7 @@ class Settings extends React.Component {
             "locale",
             "unit",
             "fee_asset",
+            "filteredServiceProviders",
             "browser_notifications",
             "showSettles",
             "walletLockTimeout",
@@ -78,7 +79,7 @@ class Settings extends React.Component {
         }
     }
 
-    componentWillReceiveProps(np) {
+    UNSAFE_componentWillReceiveProps(np) {
         if (
             np.settings.get("passwordLogin") !==
             this.props.settings.get("passwordLogin")
@@ -271,6 +272,8 @@ class Settings extends React.Component {
                 });
                 break;
 
+            case "filteredServiceProviders":
+                break;
             case "fee_asset":
             case "unit":
                 const defaultSettings = defaults["unit"];
@@ -468,9 +471,7 @@ class Settings extends React.Component {
                                             paddingTop: 5,
                                             marginBottom: 30
                                         }}
-                                        content={`settings.${
-                                            menuEntries[activeSetting]
-                                        }_text`}
+                                        content={`settings.${menuEntries[activeSetting]}_text`}
                                         className="panel-bg-color"
                                     />
                                 )}

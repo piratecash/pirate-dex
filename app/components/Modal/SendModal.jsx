@@ -218,7 +218,7 @@ class SendModal extends React.Component {
         return true;
     }
 
-    componentWillReceiveProps(np) {
+    UNSAFE_componentWillReceiveProps(np) {
         if (
             np.currentAccount !== this.state.from_name &&
             np.currentAccount !== this.props.currentAccount
@@ -586,7 +586,6 @@ class SendModal extends React.Component {
                                                 this.props.currentAccount
                                             }
                                             account={this.props.currentAccount}
-                                            size={35}
                                             typeahead={true}
                                             tabIndex={tabIndex++}
                                             locked={true}
@@ -603,7 +602,6 @@ class SendModal extends React.Component {
                                     onAccountChanged={this.onFromAccountChanged.bind(
                                         this
                                     )}
-                                    size={35}
                                     typeahead={true}
                                     tabIndex={tabIndex++}
                                     locked={!!propose ? undefined : true}
@@ -617,8 +615,8 @@ class SendModal extends React.Component {
                                     onAccountChanged={this.onToAccountChanged.bind(
                                         this
                                     )}
-                                    size={35}
                                     typeahead={true}
+                                    includeMyActiveAccounts={false}
                                     tabIndex={tabIndex++}
                                 />
 
@@ -678,7 +676,7 @@ class SendModal extends React.Component {
 
                                 <FeeAssetSelector
                                     account={from_account}
-                                    trxInfo={{
+                                    transaction={{
                                         type: "transfer",
                                         options: ["price_per_kbyte"],
                                         data: {
@@ -704,20 +702,17 @@ class SendModalConnectWrapper extends React.Component {
     }
 }
 
-SendModalConnectWrapper = connect(
-    SendModalConnectWrapper,
-    {
-        listenTo() {
-            return [AccountStore];
-        },
-        getProps(props) {
-            return {
-                currentAccount: AccountStore.getState().currentAccount,
-                passwordAccount: AccountStore.getState().passwordAccount,
-                tabIndex: props.tabIndex || 0
-            };
-        }
+SendModalConnectWrapper = connect(SendModalConnectWrapper, {
+    listenTo() {
+        return [AccountStore];
+    },
+    getProps(props) {
+        return {
+            currentAccount: AccountStore.getState().currentAccount,
+            passwordAccount: AccountStore.getState().passwordAccount,
+            tabIndex: props.tabIndex || 0
+        };
     }
-);
+});
 
 export default SendModalConnectWrapper;

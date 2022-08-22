@@ -82,7 +82,7 @@ class DirectDebit extends Component {
         this._update();
     }
 
-    componentWillReceiveProps() {
+    UNSAFE_componentWillReceiveProps() {
         // always update, relies on push from backend when account permission change
         this._update();
     }

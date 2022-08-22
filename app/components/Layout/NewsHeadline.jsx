@@ -40,7 +40,7 @@ class NewsHeadline extends React.Component {
     }
 
     componentDidMount() {
-        this.getNewsThroughAsset();
+        //this.getNewsThroughAsset();
         //this.getNewsFromGitHub.call(this);
     }
 
@@ -158,18 +158,15 @@ class NewsHeadline extends React.Component {
     }
 }
 
-NewsHeadline = connect(
-    NewsHeadline,
-    {
-        listenTo() {
-            return [SettingsStore];
-        },
-        getProps() {
-            return {
-                hiddenNewsHeadline: SettingsStore.getState().hiddenNewsHeadline
-            };
-        }
+NewsHeadline = connect(NewsHeadline, {
+    listenTo() {
+        return [SettingsStore];
+    },
+    getProps() {
+        return {
+            hiddenNewsHeadline: SettingsStore.getState().hiddenNewsHeadline
+        };
     }
-);
+});
 
 export default NewsHeadline;

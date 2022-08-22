@@ -17,6 +17,7 @@ let icons = [
     "connect",
     "cross-circle",
     "dashboard",
+    "delete",
     "deposit",
     "disconnected",
     "direct_debit",
@@ -69,10 +70,18 @@ let icons = [
     "paperclip",
     "wallet",
     "prediction",
-    "merchant",
     "prediction-large",
+    "merchant",
+    "insight",
+    "create_account",
     "swap",
-    "instant-trade"
+    "instant-trade",
+    "poolmart",
+    "arrow-down-1",
+    "arrow-up-down",
+    "pools",
+    "qr-scan",
+    "deployment-unit"
 ];
 
 let iconsMap = {};

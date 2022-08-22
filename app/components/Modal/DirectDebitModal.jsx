@@ -99,7 +99,7 @@ class DirectDebitModal extends React.Component {
                 period.type.seconds * Number(period.amount),
                 num_of_periods,
                 period_start_time.valueOf(),
-                feeAsset
+                fee_asset_id
             )
                 .then(result => {
                     this.props.hideModal();
@@ -447,6 +447,11 @@ class DirectDebitModal extends React.Component {
             !period.amount ||
             !num_of_periods ||
             !period_start_time;
+
+        if (__DEV__) {
+            console.log("DirectDebitModal.render", from_account);
+        }
+
         return (
             <Modal
                 title={
@@ -617,7 +622,7 @@ class DirectDebitModal extends React.Component {
 
                                 <FeeAssetSelector
                                     account={from_account}
-                                    trxInfo={{
+                                    transaction={{
                                         type:
                                             operation &&
                                             operation.type === "update"
@@ -640,20 +645,15 @@ class DirectDebitModal extends React.Component {
     }
 }
 
-export default connect(
-    DirectDebitModal,
-    {
-        listenTo() {
-            return [AccountStore, SettingsStore];
-        },
-        getProps() {
-            return {
-                currentAccount: AccountStore.getState().currentAccount,
-                passwordAccount: AccountStore.getState().passwordAccount,
-                fee_asset_symbol: SettingsStore.getState().settings.get(
-                    "fee_asset"
-                )
-            };
-        }
+export default connect(DirectDebitModal, {
+    listenTo() {
+        return [AccountStore, SettingsStore];
+    },
+    getProps() {
+        return {
+            currentAccount: AccountStore.getState().currentAccount,
+            passwordAccount: AccountStore.getState().passwordAccount,
+            fee_asset_symbol: SettingsStore.getState().settings.get("fee_asset")
+        };
     }
-);
+});

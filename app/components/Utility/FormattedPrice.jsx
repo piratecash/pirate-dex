@@ -14,6 +14,7 @@ import {Asset, Price} from "common/MarketClasses";
 import PropTypes from "prop-types";
 import {withRouter} from "react-router-dom";
 import {Tooltip} from "bitshares-ui-style-guide";
+import MarketsActions from "actions/MarketsActions";
 import {Link} from "react-router-dom";
 
 /**
@@ -51,7 +52,7 @@ class FormattedPrice extends React.Component {
         this.closePopover = this.closePopover.bind(this);
     }
 
-    componentWillReceiveProps(np) {
+    UNSAFE_componentWillReceiveProps(np) {
         if (
             np.base_asset !== this.props.base_asset ||
             np.quote_asset !== this.props.quote_asset
@@ -97,6 +98,7 @@ class FormattedPrice extends React.Component {
         e.preventDefault();
         const {marketName, first, second} = this.state;
         const inverted = this.props.marketDirections.get(marketName);
+        MarketsActions.switchMarket();
         this.props.history.push(
             `/market/${
                 !inverted ? first.get("symbol") : second.get("symbol")
@@ -216,8 +218,15 @@ class FormattedPrice extends React.Component {
                     className={noPopOver ? "clickable inline-block" : ""}
                     onClick={noPopOver ? this.onFlip.bind(this) : null}
                 >
-                    <AssetName name={quote.get("symbol")} noTip={noPopOver} />/
-                    <AssetName name={base.get("symbol")} noTip={noPopOver} />
+                    <AssetName
+                        name={quote.get("symbol")}
+                        noTip={!this.props.noTip}
+                    />
+                    /
+                    <AssetName
+                        name={base.get("symbol")}
+                        noTip={!this.props.noTip}
+                    />
                 </span>
             </Tooltip>
         );

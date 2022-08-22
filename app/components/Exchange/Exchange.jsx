@@ -349,7 +349,7 @@ class Exchange extends React.Component {
             chartType: ws.get("chartType", "price_chart"),
             chartHeight: chart_height,
             chartZoom: ws.get("chartZoom", true),
-            chartTools: ws.get("chartTools", true),
+            chartTools: ws.get("chartTools", false),
             hideFunctionButtons: ws.get("hideFunctionButtons", true),
             currentPeriod: ws.get("currentPeriod", 3600 * 24 * 30 * 3), // 3 months
             showMarketPicker: false,
@@ -504,7 +504,7 @@ class Exchange extends React.Component {
         });
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         window.addEventListener("resize", this._setDimensions, {
             capture: false,
             passive: true
@@ -714,7 +714,7 @@ class Exchange extends React.Component {
         }
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         this._initPsContainer();
         if (
             nextProps.quoteAsset !== this.props.quoteAsset ||
@@ -1047,7 +1047,7 @@ class Exchange extends React.Component {
         const inverted = this.props.marketDirections.get(marketName);
         const shouldFlip =
             (inverted && first.get("id") !== this.props.baseAsset.get("id")) ||
-            (!inverted && first.get("id") !== this.props.baseAsset.get("id"));
+            (!inverted && first.get("id") === this.props.baseAsset.get("id"));
         if (shouldFlip) {
             let setting = {};
             setting[marketName] = !inverted;
@@ -1963,6 +1963,9 @@ class Exchange extends React.Component {
             true
         );
 
+        let smallScreen = width < 850 ? true : false;
+        let tinyScreen = width < 640 ? true : false;
+
         hideScrollbars = tinyScreen ? true : hideScrollbars;
 
         if (quoteAsset.size && baseAsset.size && currentAccount.size) {
@@ -2037,9 +2040,6 @@ class Exchange extends React.Component {
             description = quoteAsset.getIn(["options", "description"]);
             description = assetUtils.parseDescription(description).main;
         }
-
-        let smallScreen = width < 850 ? true : false;
-        let tinyScreen = width < 640 ? true : false;
 
         const minChartHeight = 300;
         const thisChartHeight = Math.max(
@@ -2754,7 +2754,7 @@ class Exchange extends React.Component {
                 className={"exchange--chart-control"}
                 style={{
                     height: 33,
-                    right: chartType == "price_chart" ? "5rem" : "15rem",
+                    right: chartType == "price_chart" ? "6rem" : "15rem",
                     top: "1px",
                     position: "absolute",
                     zIndex: 1,
@@ -3036,7 +3036,9 @@ class Exchange extends React.Component {
                         "small-12 order-5",
                         verticalOrderBook ? "xlarge-order-5" : "",
                         !verticalOrderBook && !verticalOrderForm
-                            ? "xlarge-order-2"
+                            ? centerContainerWidth < 1200
+                                ? "xlarge-order-5"
+                                : "xlarge-order-2"
                             : ""
                     )}
                     style={{paddingRight: 5}}
@@ -3538,13 +3540,13 @@ class Exchange extends React.Component {
                     <BorrowModal
                         visible={this.state.isBorrowQuoteModalVisible}
                         hideModal={this.hideBorrowQuoteModal}
-                        quote_asset={quoteAsset.get("id")}
-                        backing_asset={quoteAsset.getIn([
+                        quoteAssetObj={quoteAsset.get("id")}
+                        backingAssetObj={quoteAsset.getIn([
                             "bitasset",
                             "options",
                             "short_backing_asset"
                         ])}
-                        account={currentAccount}
+                        accountObj={currentAccount}
                     />
                 ) : null}
                 {baseIsBitAsset &&
@@ -3553,13 +3555,13 @@ class Exchange extends React.Component {
                     <BorrowModal
                         visible={this.state.isBorrowBaseModalVisible}
                         hideModal={this.hideBorrowBaseModal}
-                        quote_asset={baseAsset.get("id")}
-                        backing_asset={baseAsset.getIn([
+                        quoteAssetObj={baseAsset.get("id")}
+                        backingAssetObj={baseAsset.getIn([
                             "bitasset",
                             "options",
                             "short_backing_asset"
                         ])}
-                        account={currentAccount}
+                        accountObj={currentAccount}
                     />
                 ) : null}
 

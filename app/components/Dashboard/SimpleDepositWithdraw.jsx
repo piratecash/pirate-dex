@@ -69,11 +69,11 @@ class DepositWithdrawContent extends DecimalChecker {
         this._getCurrentBalance = this._getCurrentBalance.bind(this);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         this._getDepositAddress();
     }
 
-    componentWillReceiveProps(np) {
+    UNSAFE_componentWillReceiveProps(np) {
         if (
             np.asset &&
             this.props.asset &&
@@ -415,7 +415,7 @@ class DepositWithdrawContent extends DecimalChecker {
                     <FeeAssetSelector
                         label="showcases.barter.fee_when_proposal_executes"
                         account={account}
-                        trxInfo={{
+                        transaction={{
                             type: "transfer",
                             options: ["price_per_kbyte"],
                             data: {
@@ -746,21 +746,16 @@ class DepositWithdrawContent extends DecimalChecker {
     }
 }
 
-DepositWithdrawContent = connect(
-    DepositWithdrawContent,
-    {
-        listenTo() {
-            return [SettingsStore];
-        },
-        getProps(props) {
-            return {
-                fee_asset_symbol: SettingsStore.getState().settings.get(
-                    "fee_asset"
-                )
-            };
-        }
+DepositWithdrawContent = connect(DepositWithdrawContent, {
+    listenTo() {
+        return [SettingsStore];
+    },
+    getProps(props) {
+        return {
+            fee_asset_symbol: SettingsStore.getState().settings.get("fee_asset")
+        };
     }
-);
+});
 
 DepositWithdrawContent = BindToChainState(DepositWithdrawContent);
 

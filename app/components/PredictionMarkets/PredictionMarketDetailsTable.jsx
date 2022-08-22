@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import PropTypes from "prop-types";
 import counterpart from "counterpart";
 import LinkToAccountById from "../Utility/LinkToAccountById";
-import {Table, Button, Icon, Tooltip} from "bitshares-ui-style-guide";
+import {Button, Icon, Tooltip} from "bitshares-ui-style-guide";
 import {ChainStore} from "bitsharesjs";
 import PaginatedList from "components/Utility/PaginatedList";
 import ChainTypes from "../Utility/ChainTypes";
@@ -10,12 +10,6 @@ import FormattedAsset from "../Utility/FormattedAsset";
 
 export default class PredictionMarketDetailsTable extends Component {
     getHeader() {
-        const precision = Math.pow(
-            10,
-            ChainStore.getAsset(
-                this.props.predictionMarketData.predictionMarket.asset_id
-            ).get("precision")
-        );
         const currentAccountId = this.props.currentAccount.get("id");
         return [
             {
@@ -26,8 +20,8 @@ export default class PredictionMarketDetailsTable extends Component {
                     return a.order_id > b.order_id
                         ? 1
                         : a.order_id < b.order_id
-                            ? -1
-                            : 0;
+                        ? -1
+                        : 0;
                 },
                 render: item => {
                     return (
@@ -74,8 +68,8 @@ export default class PredictionMarketDetailsTable extends Component {
                     return a.opinion > b.opinion
                         ? 1
                         : a.opinion < b.opinion
-                            ? -1
-                            : 0;
+                        ? -1
+                        : 0;
                 },
                 render: item => {
                     return (
@@ -108,8 +102,8 @@ export default class PredictionMarketDetailsTable extends Component {
                     return a.likelihood > b.likelihood
                         ? 1
                         : a.likelihood < b.likelihood
-                            ? -1
-                            : 0;
+                        ? -1
+                        : 0;
                 },
                 render: item => {
                     return (
@@ -131,8 +125,8 @@ export default class PredictionMarketDetailsTable extends Component {
                     return a.amount > b.amount
                         ? 1
                         : a.amount < b.amount
-                            ? -1
-                            : 0;
+                        ? -1
+                        : 0;
                 },
                 render: item => {
                     return (
@@ -187,8 +181,8 @@ export default class PredictionMarketDetailsTable extends Component {
                     return a.amount > b.amount
                         ? 1
                         : a.amount < b.amount
-                            ? -1
-                            : 0;
+                        ? -1
+                        : 0;
                 },
                 render: item => {
                     return (
@@ -276,9 +270,9 @@ export default class PredictionMarketDetailsTable extends Component {
                     : null;
                 if (this.props.detailsSearchTerm) {
                     if (
-                        !(accountName + "\0" + item.opinion)
+                        (accountName + "\0" + item.opinion)
                             .toUpperCase()
-                            .indexOf(this.props.detailsSearchTerm) !== -1
+                            .indexOf(this.props.detailsSearchTerm) === -1
                     ) {
                         return false;
                     }

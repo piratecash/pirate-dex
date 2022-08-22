@@ -10,13 +10,13 @@ import {Apis} from "bitsharesjs-ws";
  * @private
  */
 function _isTestnet() {
-    const chainId = (Apis.instance().chain_id || "4018d784").substr(0, 8);
-    if (chainId === "4018d784") {
-        return false;
-    } else {
-        // treat every other chain as testnet, exact would be chainId === "39f5e2ed"
-        return true;
-    }
+    const testnet =
+        "39f5e2ede1f8bc1a3a54a7914414e3779e33193f1f5693510e73cb7a87617447"; // just for the record
+    const mainnet =
+        "4018d7844c78f6a6c41c6a552b898022310fc5dec06da467ee7905a8dad512c8";
+
+    // treat every other chain as testnet
+    return Apis.instance().chain_id !== mainnet;
 }
 
 /**
@@ -44,7 +44,8 @@ export function getFaucet() {
     return {
         url: "https://faucet.bitshares.eu/onboarding", // 2017-12-infrastructure worker proposal
         show: true,
-        editable: false
+        editable: false,
+        referrer: "onboarding.bitshares.foundation"
     };
 }
 
@@ -62,7 +63,7 @@ export function getTestFaucet() {
  * @returns {*}
  */
 export function getLogo() {
-    return require("assets/logo-ico-blue.png");
+    return require("assets/logo-ico-blue.png").default;
 }
 
 /**
@@ -91,16 +92,22 @@ export function getDefaultLogin() {
 export function getUnits() {
     if (_isTestnet()) {
         return ["TEST"];
-    } else {
-        return [
-            "BTS",
-            "PIRATE.BTC",
-            "PIRATE.LTC",
-            "PIRATE.DOGE",
-            "PIRATE.PIRATE",
-            "PIRATE.COSA"
-        ];
     }
+    return [
+        "BTS",
+        "PIRATE.BTC",
+        "PIRATE.LTC",
+        "PIRATE.DOGE",
+        "PIRATE.PIRATE",
+        "PIRATE.COSA"
+    ];
+}
+
+export function getDefaultMarket() {
+    if (_isTestnet()) {
+        return "USD_TEST";
+    }
+    return "PIRATE.PIRATE_PIRATE.BTC";
 }
 
 /**
@@ -108,8 +115,10 @@ export function getUnits() {
  *
  * @returns {[string]}
  */
-
 export function getMyMarketsBases() {
+    if (_isTestnet()) {
+        return ["TEST"];
+    }
     return [
         "PIRATE.PIRATE",
         "PIRATE.BTC",
@@ -126,22 +135,26 @@ export function getMyMarketsBases() {
  * @returns {[string]}
  */
 export function getMyMarketsQuotes() {
+    if (_isTestnet()) {
+        return ["TEST"];
+    }
     let tokens = {
         nativeTokens: [],
-        bridgeTokens: [],
         gdexTokens: [],
         openledgerTokens: [],
         rudexTokens: [],
-        sparkTokens: [],
-        xbtsxTokens: [],
-        otherTokens: [
+        piratecashTockens: [
             "PIRATE.PIRATE",
             "PIRATE.BTC",
             "PIRATE.LTC",
             "PIRATE.BCC",
             "PIRATE.DOGE",
             "PIRATE.COSA"
-        ]
+        ],
+        xbtsxTokens: [],
+        honestTokens: [],
+        ioxbankTokens: [],
+        otherTokens: []
     };
 
     let allTokens = [];
@@ -157,6 +170,9 @@ export function getMyMarketsQuotes() {
  * @returns {list of string tuples}
  */
 export function getFeaturedMarkets(quotes = []) {
+    if (_isTestnet()) {
+        return [["USD", "TEST"]];
+    }
     return [
         ["PIRATE.PIRATE", "BTS"],
         ["PIRATE.PIRATE", "PIRATE.BTC"],
@@ -188,6 +204,9 @@ export function getFeaturedMarkets(quotes = []) {
  * @returns {[string,string,string,string,string,string,string]}
  */
 export function getAssetNamespaces() {
+    if (_isTestnet()) {
+        return [];
+    }
     return ["PIRATE."];
 }
 
@@ -196,7 +215,7 @@ export function getAssetNamespaces() {
  * @returns {[string,string]}
  */
 export function getAssetHideNamespaces() {
-    // e..g "OPEN.", "bit"
+    // e..g "XBTSX.", "bit"
     return ["PIRATE."];
 }
 
@@ -206,7 +225,12 @@ export function getAssetHideNamespaces() {
  * @returns {boolean}
  */
 export function allowedGateway(gateway) {
-    return ["PIRATE"].indexOf(gateway) >= 0;
+    const allowedGateways = ["PIRATE"];
+    if (!gateway) {
+        // answers the question: are any allowed?
+        return allowedGateways.length > 0;
+    }
+    return allowedGateways.indexOf(gateway) >= 0;
 }
 
 export function getSupportedLanguages() {
@@ -231,4 +255,8 @@ export function getConfigurationAsset() {
         explanation:
             "This asset is used for decentralized configuration of the BitShares UI placed under bitshares.org."
     };
+}
+
+export function getSteemNewsTag() {
+    return null;
 }

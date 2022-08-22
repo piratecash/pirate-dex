@@ -50,35 +50,34 @@ class FeeAssetSettings extends React.Component {
                 >
                     {counterpart.translate("settings.change_default_fee_asset")}
                 </Button>
-                <SetDefaultFeeAssetModal
-                    key="change_fee_asset_modal"
-                    className="modal"
-                    show={this.state.showModal}
-                    current_asset={this.state.current_asset}
-                    displayFees={false}
-                    forceDefault={true}
-                    onChange={value => {
-                        this.setState({current_asset: value});
-                    }}
-                    close={() => {
-                        this.setState({showModal: false});
-                    }}
-                />
+                {this.state.showModal && (
+                    <SetDefaultFeeAssetModal
+                        key="change_fee_asset_modal"
+                        className="modal"
+                        show={this.state.showModal}
+                        current_asset={this.state.current_asset}
+                        displayFees={false}
+                        forceDefault={true}
+                        onChange={value => {
+                            this.setState({current_asset: value});
+                        }}
+                        close={() => {
+                            this.setState({showModal: false});
+                        }}
+                    />
+                )}
             </div>
         );
     }
 }
 
-export default connect(
-    FeeAssetSettings,
-    {
-        listenTo() {
-            return [SettingsStore];
-        },
-        getProps(props) {
-            return {
-                fee_asset: SettingsStore.getState().settings.get("fee_asset")
-            };
-        }
+export default connect(FeeAssetSettings, {
+    listenTo() {
+        return [SettingsStore];
+    },
+    getProps(props) {
+        return {
+            fee_asset: SettingsStore.getState().settings.get("fee_asset")
+        };
     }
-);
+});

@@ -3,18 +3,16 @@ import PropTypes from "prop-types";
 import counterpart from "counterpart";
 import LinkToAssetById from "../Utility/LinkToAssetById";
 import LinkToAccountById from "../Utility/LinkToAccountById";
-import {Table, Button} from "bitshares-ui-style-guide";
+import {Button} from "bitshares-ui-style-guide";
 import {ChainStore} from "bitsharesjs";
 import PaginatedList from "components/Utility/PaginatedList";
 import ChainTypes from "../Utility/ChainTypes";
 import MarketsActions from "../../actions/MarketsActions";
 import debounceRender from "react-debounce-render";
 import FormattedAsset from "../Utility/FormattedAsset";
-import utils from "../../lib/common/utils";
+import utils from "common/utils";
 
 require("./prediction.scss");
-
-const ISSUERS_WHITELIST = ["1.2.1634961"]; // "iamredbar1", "sports-owner", "twat123"
 
 class PredictionMarketsOverviewTable extends Component {
     constructor(props) {
@@ -43,7 +41,7 @@ class PredictionMarketsOverviewTable extends Component {
             this.props.currentAccount.get("id") === id;
         return [
             {
-                title: "#",
+                title: counterpart.translate("account.asset"),
                 dataIndex: "asset_id",
                 align: "left",
                 defaultSortOrder: "ascend",
@@ -51,8 +49,8 @@ class PredictionMarketsOverviewTable extends Component {
                     return a.symbol > b.symbol
                         ? 1
                         : a.symbol < b.symbol
-                            ? -1
-                            : 0;
+                        ? -1
+                        : 0;
                 },
                 render: item => {
                     return (
@@ -124,8 +122,8 @@ class PredictionMarketsOverviewTable extends Component {
                     return a.marketConfidence > b.marketConfidence
                         ? 1
                         : a.marketConfidence < b.marketConfidence
-                            ? -1
-                            : 0;
+                        ? -1
+                        : 0;
                 },
                 render: (item, row) => {
                     const ticker = Object.assign(
@@ -133,7 +131,7 @@ class PredictionMarketsOverviewTable extends Component {
                         this.state.ticker[row.asset_id]
                     );
 
-                    if (ticker) {
+                    if (this.state.ticker[row.asset_id]) {
                         if (
                             !ticker.quote_volume ||
                             ticker.quote_volume === "0" ||
@@ -145,10 +143,7 @@ class PredictionMarketsOverviewTable extends Component {
                         } else {
                             ticker.quote_volume = utils.convert_typed_to_satoshi(
                                 parseFloat(ticker.quote_volume),
-                                ChainStore.getAsset(
-                                    row.asset[1].bitasset_data.options
-                                        .short_backing_asset
-                                )
+                                ChainStore.getAsset(row.short_backing_asset)
                             );
                         }
                         if (
@@ -175,10 +170,7 @@ class PredictionMarketsOverviewTable extends Component {
                                 &nbsp;
                                 <FormattedAsset
                                     amount={ticker.quote_volume}
-                                    asset={
-                                        row.asset[1].bitasset_data.options
-                                            .short_backing_asset
-                                    }
+                                    asset={row.short_backing_asset}
                                 />
                                 &nbsp;
                                 {/*({ticker.percent_change})&nbsp;*/}
@@ -199,8 +191,8 @@ class PredictionMarketsOverviewTable extends Component {
                     return a.marketLikelihood > b.marketLikelihood
                         ? 1
                         : a.marketLikelihood < b.marketLikelihood
-                            ? -1
-                            : 0;
+                        ? -1
+                        : 0;
                 },
                 render: (item, row) => {
                     const ticker = Object.assign(
@@ -208,7 +200,7 @@ class PredictionMarketsOverviewTable extends Component {
                         this.state.ticker[row.asset_id]
                     );
 
-                    if (ticker) {
+                    if (this.state.ticker[row.asset_id]) {
                         if (
                             !ticker.latest ||
                             ticker.latest === "0" ||
@@ -388,21 +380,22 @@ class PredictionMarketsOverviewTable extends Component {
             this.props.predictionMarkets.length
         ) {
             this.props.predictionMarkets.forEach(market => {
-                if (!(market.asset[1].id in Object.keys(this.tickersLoaded))) {
-                    this.tickersLoaded[market.asset[1].id] = {};
+                if (!(market.asset.id in Object.keys(this.tickersLoaded))) {
+                    this.tickersLoaded[market.asset.id] = {};
                     MarketsActions.getTicker(
-                        market.asset[1].bitasset_data.options
-                            .short_backing_asset,
-                        market.asset[1].id
-                    ).then(result => {
-                        let ticker = Object.assign(
-                            this.tickersLoaded,
-                            this.state.ticker
-                        );
-                        ticker[market.asset[1].id] = result;
-                        this.tickersLoaded[market.asset[1].id] = result;
-                        this.setState({ticker});
-                    });
+                        market.short_backing_asset,
+                        market.asset.id
+                    )
+                        .then(result => {
+                            let ticker = Object.assign(
+                                this.tickersLoaded,
+                                this.state.ticker
+                            );
+                            ticker[market.asset.id] = result;
+                            this.tickersLoaded[market.asset.id] = result;
+                            this.setState({ticker});
+                        })
+                        .catch(err => console.error(err));
                 }
             });
         }
@@ -418,28 +411,6 @@ class PredictionMarketsOverviewTable extends Component {
         } else {
             if (this.props.predictionMarkets) {
                 filteredMarkets = this.props.predictionMarkets;
-                if (this.props.hideUnknownHouses) {
-                    filteredMarkets = filteredMarkets.filter(item => {
-                        return ISSUERS_WHITELIST.includes(item.issuer);
-                    });
-                }
-                filteredMarkets = filteredMarkets.filter(item => {
-                    let accountName = ChainStore.getAccount(item.issuer)
-                        ? ChainStore.getAccount(item.issuer).get("name")
-                        : null;
-                    return (
-                        (
-                            accountName +
-                            "\0" +
-                            item.condition +
-                            "\0" +
-                            item.description
-                        )
-                            .toUpperCase()
-                            .indexOf(this.props.searchTerm) !== -1
-                    );
-                });
-
                 let i = 0;
                 filteredMarkets = filteredMarkets.map(item => ({
                     ...item,
@@ -472,6 +443,8 @@ class PredictionMarketsOverviewTable extends Component {
                 header={header}
                 pageSize={10}
                 rowClassName={this._decideRowClassName.bind(this)}
+                loading={this.props.loading}
+                totalLabel="utility.total_x_assets"
             />
         );
     }
@@ -481,17 +454,15 @@ PredictionMarketsOverviewTable.propTypes = {
     predictionMarkets: PropTypes.array.isRequired,
     onMarketAction: PropTypes.func.isRequired,
     currentAccount: ChainTypes.ChainAccount.isRequired,
-    searchTerm: PropTypes.string,
-    selectedPredictionMarket: PropTypes.object,
-    hideUnknownHouses: PropTypes.bool
+    selectedPredictionMarket: PropTypes.object
 };
 
 PredictionMarketsOverviewTable.defaultProps = {
     predictionMarkets: []
 };
 
-export default (PredictionMarketsOverviewTable = debounceRender(
+export default PredictionMarketsOverviewTable = debounceRender(
     PredictionMarketsOverviewTable,
     150,
     {leading: false}
-));
+);

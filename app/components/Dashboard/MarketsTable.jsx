@@ -30,11 +30,11 @@ class MarketsTable extends React.Component {
         }
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         this.update(nextProps);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         this.update();
         ChainStore.subscribe(this.update);
     }
@@ -230,8 +230,8 @@ class MarketsTable extends React.Component {
                         parseFloat(record.hour_24) > 0
                             ? "change-up"
                             : parseFloat(record.hour_24) < 0
-                                ? "change-down"
-                                : "";
+                            ? "change-down"
+                            : "";
                     return (
                         <span
                             style={{whiteSpace: "nowrap", textAlign: "right"}}
@@ -307,7 +307,6 @@ class MarketsTable extends React.Component {
 
     _onError(imgName) {
         if (!this.state.imgError) {
-            this.refs[imgName.toLowerCase()].src = "asset-symbols/bts.png";
             this.setState({
                 imgError: true
             });
@@ -340,6 +339,10 @@ class MarketsTable extends React.Component {
             ? "gold-star"
             : "grey-star";
 
+        const imageSrc = this.state.imgError
+            ? `${__BASE_URL__}asset-symbols/${imgName.toLowerCase()}.png`
+            : `${__BASE_URL__}asset-symbols/bts.png`;
+
         return {
             key: marketID,
             star: (
@@ -357,11 +360,10 @@ class MarketsTable extends React.Component {
             asset: (
                 <Link to={`/market/${quote}_${base}`}>
                     <img
-                        ref={imgName.toLowerCase()}
                         className="column-hide-small"
                         onError={this._onError.bind(this, imgName)}
                         style={{maxWidth: 20, marginRight: 10}}
-                        src={`${__BASE_URL__}asset-symbols/${imgName.toLowerCase()}.png`}
+                        src={imageSrc}
                     />
                     <AssetName dataPlace="top" name={quote} />
                     &nbsp;
@@ -580,24 +582,21 @@ class MarketsTable extends React.Component {
     }
 }
 
-export default connect(
-    MarketsTable,
-    {
-        listenTo() {
-            return [SettingsStore, MarketsStore];
-        },
-        getProps() {
-            let {marketDirections, hiddenMarkets} = SettingsStore.getState();
-            return {
-                marketDirections,
-                hiddenMarkets,
-                allMarketStats: MarketsStore.getState().allMarketStats,
-                starredMarkets: SettingsStore.getState().starredMarkets,
-                onlyLiquid: SettingsStore.getState().viewSettings.get(
-                    "onlyLiquid",
-                    true
-                )
-            };
-        }
+export default connect(MarketsTable, {
+    listenTo() {
+        return [SettingsStore, MarketsStore];
+    },
+    getProps() {
+        let {marketDirections, hiddenMarkets} = SettingsStore.getState();
+        return {
+            marketDirections,
+            hiddenMarkets,
+            allMarketStats: MarketsStore.getState().allMarketStats,
+            starredMarkets: SettingsStore.getState().starredMarkets,
+            onlyLiquid: SettingsStore.getState().viewSettings.get(
+                "onlyLiquid",
+                true
+            )
+        };
     }
-);
+});

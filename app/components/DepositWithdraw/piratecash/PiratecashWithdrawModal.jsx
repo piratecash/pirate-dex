@@ -8,7 +8,9 @@ import counterpart from "counterpart";
 import AmountSelector from "components/Utility/AmountSelector";
 import AccountActions from "actions/AccountActions";
 import {validateAddress, WithdrawAddresses} from "common/PiratecashMethods";
-import {ChainStore} from "bitsharesjs/es";
+import {connect} from "alt-react";
+import SettingsStore from "stores/SettingsStore";
+import {ChainStore} from "bitsharesjs";
 import {checkFeeStatusAsync, checkBalance} from "common/trxHelper";
 import {Price, Asset} from "common/MarketClasses";
 import {debounce} from "lodash-es";
@@ -52,7 +54,9 @@ class PiratecashWithdrawModal extends React.Component {
             withdraw_address_first: true,
             empty_withdraw_value: false,
             from_account: props.account,
-            fee_asset_id: "1.3.0",
+            fee_asset_id:
+                ChainStore.assets_by_symbol.get(props.fee_asset_symbol) ||
+                "1.3.0",
             feeStatus: {}
         };
 
@@ -66,7 +70,7 @@ class PiratecashWithdrawModal extends React.Component {
         this.hideConfirmationModal = this.hideConfirmationModal.bind(this);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         this._updateFee();
         this._checkFeeStatus();
     }
@@ -75,7 +79,7 @@ class PiratecashWithdrawModal extends React.Component {
         this.unMounted = true;
     }
 
-    componentWillReceiveProps(np) {
+    UNSAFE_componentWillReceiveProps(np) {
         if (
             np.account !== this.state.from_account &&
             np.account !== this.props.account
@@ -84,7 +88,6 @@ class PiratecashWithdrawModal extends React.Component {
                 {
                     from_account: np.account,
                     feeStatus: {},
-                    fee_asset_id: "1.3.0",
                     feeAmount: new Asset({amount: 0})
                 },
                 () => {
@@ -287,8 +290,8 @@ class PiratecashWithdrawModal extends React.Component {
     onSubmit() {
         if (
             !this.state.withdraw_address_check_in_progress &&
-            (this.state.withdraw_address &&
-                this.state.withdraw_address.length) &&
+            this.state.withdraw_address &&
+            this.state.withdraw_address.length &&
             this.state.withdraw_amount !== null
         ) {
             if (!this.state.withdraw_address_is_valid) {
@@ -321,7 +324,7 @@ class PiratecashWithdrawModal extends React.Component {
                 });
                 let asset = this.props.asset;
 
-                const {feeAmount} = this.state;
+                const {feeAmount, fee_asset_id} = this.state;
 
                 let amount = parseFloat(
                     String.prototype.replace.call(
@@ -348,7 +351,7 @@ class PiratecashWithdrawModal extends React.Component {
                             ? ":" + new Buffer(this.state.memo, "utf-8")
                             : ""),
                     null,
-                    feeAmount ? feeAmount.asset_id : "1.3.0"
+                    feeAmount ? feeAmount.asset_id : fee_asset_id
                 );
 
                 this.setState({
@@ -396,7 +399,7 @@ class PiratecashWithdrawModal extends React.Component {
             ""
         );
 
-        const {feeAmount} = this.state;
+        const {feeAmount, fee_asset_id} = this.state;
 
         AccountActions.transfer(
             this.props.account.get("id"),
@@ -410,7 +413,7 @@ class PiratecashWithdrawModal extends React.Component {
                     ? ":" + new Buffer(this.state.memo, "utf-8")
                     : ""),
             null,
-            feeAmount ? feeAmount.asset_id : "1.3.0"
+            feeAmount ? feeAmount.asset_id : fee_asset_id
         );
     }
 
@@ -582,7 +585,8 @@ class PiratecashWithdrawModal extends React.Component {
 
         if (
             !this.state.withdraw_address_check_in_progress &&
-            (this.state.withdraw_address && this.state.withdraw_address.length)
+            this.state.withdraw_address &&
+            this.state.withdraw_address.length
         ) {
             if (!this.state.withdraw_address_is_valid) {
                 invalid_address_message = (
@@ -760,7 +764,6 @@ class PiratecashWithdrawModal extends React.Component {
                         <div className="content-block gate_fee">
                             <AmountSelector
                                 refCallback={this.setNestedRef.bind(this)}
-                                label="transfer.fee"
                                 disabled={true}
                                 amount={this.state.feeAmount.getAmount({
                                     real: true
@@ -869,4 +872,15 @@ class PiratecashWithdrawModal extends React.Component {
     }
 }
 
-export default BindToChainState(PiratecashWithdrawModal, {keep_updating: true});
+PiratecashWithdrawModal = BindToChainState(PiratecashWithdrawModal);
+
+export default connect(PiratecashWithdrawModal, {
+    listenTo() {
+        return [SettingsStore];
+    },
+    getProps(props) {
+        return {
+            fee_asset_symbol: SettingsStore.getState().settings.get("fee_asset")
+        };
+    }
+});

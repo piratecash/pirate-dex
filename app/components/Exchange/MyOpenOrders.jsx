@@ -6,11 +6,12 @@ import MarketsActions from "actions/MarketsActions";
 import Translate from "react-translate-component";
 import TransitionWrapper from "../Utility/TransitionWrapper";
 import SettingsActions from "actions/SettingsActions";
-import {ChainStore} from "bitsharesjs";
+import {ChainStore, FetchChain} from "bitsharesjs";
 import {LimitOrder, CallOrder} from "common/MarketClasses";
 import ReactTooltip from "react-tooltip";
 import {Button} from "bitshares-ui-style-guide";
 import {MarketsOrderView, MarketOrdersRowView} from "./View/MarketOrdersView";
+import NotificationActions from "actions/NotificationActions";
 
 class MarketOrdersRow extends React.Component {
     shouldComponentUpdate(nextProps) {
@@ -73,41 +74,46 @@ class MarketOrders extends React.Component {
     }
 
     componentDidUpdate(prevState) {
-        if (prevState.showAll != this.state.showAll) {
-            if (this.state.showAll && !this.state.hideScrollbars) {
+        let {hideScrollbars} = this.props;
+        let {showAll} = this.state;
+
+        if (prevState.showAll != showAll) {
+            if (showAll && !hideScrollbars) {
                 this.updateContainer(2);
-            } else if (this.state.showAll && this.state.hideScrollbar) {
-                this.updateContainer(1);
-            } else if (!this.state.showAll && !this.state.hideScrollbar) {
+            } else if (!showAll && !hideScrollbars) {
                 this.updateContainer(3);
+            } else if (showAll && hideScrollbars) {
+                this.updateContainer(1);
             } else {
                 this.updateContainer(0);
             }
         }
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (nextProps.activeTab !== this.state.activeTab) {
             this.changeTab(nextProps.activeTab);
         }
 
-        // Reset showAll on Marhet Switch
+        // Reset on Market Switch
         if (
             nextProps.baseSymbol !== this.props.baseSymbol ||
             nextProps.quoteSymbol !== this.props.quoteSymbol
         ) {
             this.setState({showAll: false});
+            this.updateContainer(0);
+
+            if (!this.props.hideScrollbars) {
+                this.updateContainer(1);
+            }
         }
 
-        if (
-            nextProps.baseSymbol !== this.props.baseSymbol ||
-            nextProps.quoteSymbol !== this.props.quoteSymbol ||
-            nextProps.hideScrollbars !== this.props.hideScrollbars
-        ) {
-            if (nextProps.hideScrollbars) {
-                this.updateContainer(0);
-            } else {
-                this.updateContainer(3);
+        // Reset on hideScrollbars switch
+        if (nextProps.hideScrollbars !== this.props.hideScrollbars) {
+            this.updateContainer(0);
+
+            if (!nextProps.hideScrollbars) {
+                this.updateContainer(1);
             }
         }
     }
@@ -117,11 +123,13 @@ class MarketOrders extends React.Component {
      * type:int [0:destroy, 1:init, 2:update, 3:update w/ scrollTop] (default: 2)
      */
     updateContainer(type = 2) {
-        let containerNode = this.refs.container;
+        let containerNode = this.refs.view.refs.container;
+        let containerTransition = this.refs.contentTransition;
 
         if (!containerNode) return;
 
         if (type == 0) {
+            containerNode.scrollTop = 0;
             Ps.destroy(containerNode);
         } else if (type == 1) {
             Ps.initialize(containerNode);
@@ -200,17 +208,36 @@ class MarketOrders extends React.Component {
         }
     }
 
+    _getSelectedOrders(keys) {
+        let orders = this.props.currentAccount
+            .get("orders")
+            .toArray()
+            .filter(item => keys.indexOf(item) != -1);
+        return FetchChain("getObject", orders);
+    }
+
     _cancelLimitOrders() {
-        MarketsActions.cancelLimitOrders(
-            this.props.currentAccount.get("id"),
-            this.state.selectedOrders
-        )
-            .then(() => {
-                this.resetSelected();
-            })
-            .catch(err => {
-                console.log("cancel orders error:", err);
-            });
+        this._getSelectedOrders(this.state.selectedOrders).then(orders => {
+            let fallbackFeeAssets = orders
+                .toJS()
+                .map(item => item.sell_price.base.asset_id);
+            MarketsActions.cancelLimitOrders(
+                this.props.currentAccount.get("id"),
+                this.state.selectedOrders,
+                fallbackFeeAssets
+            )
+                .then(() => {
+                    this.resetSelected();
+                })
+                .catch(err => {
+                    if (
+                        typeof err === "string" &&
+                        err.startsWith("Insufficient balance")
+                    )
+                        NotificationActions.error(err);
+                    else console.log("cancel orders error:", err);
+                });
+        });
     }
 
     _getOrders() {
@@ -277,20 +304,6 @@ class MarketOrders extends React.Component {
                 }
             });
         return limitOrders.concat(callOrders);
-    }
-
-    changeTab(tab) {
-        SettingsActions.changeViewSetting({
-            ordersTab: tab
-        });
-        this.setState({
-            activeTab: tab
-        });
-
-        // Ensure that focus goes back to top of scrollable container when tab is changed
-        this.updateContainer(3);
-
-        setTimeout(ReactTooltip.rebuild, 1000);
     }
 
     render() {
@@ -483,6 +496,7 @@ class MarketOrders extends React.Component {
 
         return (
             <MarketsOrderView
+                ref="view"
                 // Styles and Classes
                 style={this.props.style}
                 className={this.props.className}

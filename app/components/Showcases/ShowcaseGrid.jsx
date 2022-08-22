@@ -11,13 +11,13 @@ class ShowcaseGrid extends Component {
         this.state = {currentAccount: null};
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         this.setState({
             currentAccount: ChainStore.getAccount(this.props.currentAccount)
         });
     }
 
-    componentWillReceiveProps(np) {
+    UNSAFE_componentWillReceiveProps(np) {
         if (np.currentAccount !== this.props.currentAccount) {
             this.setState({
                 currentAccount: ChainStore.getAccount(np.currentAccount)
@@ -124,7 +124,9 @@ class ShowcaseGrid extends Component {
                 },
                 description: "showcases.merchant_protocol.description",
                 icon: "merchant",
-                disabled: false
+                disabled: hasAccount
+                    ? false
+                    : "Please login to use this functionality"
             },
             {
                 title: "showcases.timed_transfer.title",

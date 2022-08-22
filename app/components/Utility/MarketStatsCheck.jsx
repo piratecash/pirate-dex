@@ -53,11 +53,11 @@ class MarketStatsCheck extends React.Component {
             .filter(a => !!a);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         this._startUpdates(this.props);
     }
 
-    componentWillReceiveProps(np) {
+    UNSAFE_componentWillReceiveProps(np) {
         const currentDirectMarkets = this._checkDirectMarkets(this.props);
         const newDirectMarkets = this._checkDirectMarkets(np);
         if (!utils.are_equal_shallow(currentDirectMarkets, newDirectMarkets)) {
@@ -94,7 +94,11 @@ class MarketStatsCheck extends React.Component {
                     allMarketStats: props.allMarketStats
                 });
 
-                if (useDirectMarket && toAsset.get("id") !== asset.get("id")) {
+                if (
+                    useDirectMarket &&
+                    toAsset &&
+                    toAsset.get("id") !== asset.get("id")
+                ) {
                     if (!this.directStatsIntervals[directMarket]) {
                         setTimeout(() => {
                             this.directStatsIntervals[

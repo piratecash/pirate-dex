@@ -20,6 +20,7 @@ import SettleModal from "../Modal/SettleModal";
 import {Button, Select, Popover, Tooltip} from "bitshares-ui-style-guide";
 import ReactTooltip from "react-tooltip";
 import AccountStore from "../../stores/AccountStore";
+import GatewayStore from "../../stores/GatewayStore";
 
 class BuySell extends React.Component {
     static propTypes = {
@@ -495,10 +496,10 @@ class BuySell extends React.Component {
             isBid && quoteMarketFee
                 ? quoteMarketFee
                 : !isBid && baseMarketFee
-                    ? baseMarketFee
-                    : quoteMarketFee || baseMarketFee
-                        ? emptyCell
-                        : null;
+                ? baseMarketFee
+                : quoteMarketFee || baseMarketFee
+                ? emptyCell
+                : null;
 
         let hasBalance = isBid
             ? balanceAmount.getAmount({real: true}) >= parseFloat(total)
@@ -524,10 +525,10 @@ class BuySell extends React.Component {
         let disabledText = invalidPrice
             ? counterpart.translate("exchange.invalid_price")
             : invalidAmount
-                ? counterpart.translate("exchange.invalid_amount")
-                : noBalance
-                    ? counterpart.translate("exchange.no_balance")
-                    : null;
+            ? counterpart.translate("exchange.invalid_amount")
+            : noBalance
+            ? counterpart.translate("exchange.no_balance")
+            : null;
 
         // Fee asset selection
         if (
@@ -1037,8 +1038,8 @@ class BuySell extends React.Component {
                                             value: isPredictionMarket
                                                 ? "exchange.short"
                                                 : isBid
-                                                    ? "exchange.buy"
-                                                    : "exchange.sell",
+                                                ? "exchange.buy"
+                                                : "exchange.sell",
                                             arg: "direction"
                                         }
                                     ]}
@@ -1269,14 +1270,20 @@ class BuySell extends React.Component {
                                         {this.props.currentBridges &&
                                         !this.props.backedCoin ? (
                                             <Tooltip
-                                                title={counterpart.translate(
-                                                    "exchange.quick_deposit_bridge",
-                                                    {
-                                                        target: isBid
-                                                            ? baseName
-                                                            : quoteName
-                                                    }
-                                                )}
+                                                title={
+                                                    GatewayStore.isDown("TRADE")
+                                                        ? counterpart.translate(
+                                                              "external_service_provider.is_down"
+                                                          )
+                                                        : counterpart.translate(
+                                                              "exchange.quick_deposit_bridge",
+                                                              {
+                                                                  target: isBid
+                                                                      ? baseName
+                                                                      : quoteName
+                                                              }
+                                                          )
+                                                }
                                             >
                                                 <Button
                                                     style={{margin: 5}}
@@ -1284,6 +1291,9 @@ class BuySell extends React.Component {
                                                         this
                                                     )}
                                                     disabled={
+                                                        GatewayStore.isDown(
+                                                            "TRADE"
+                                                        ) ||
                                                         !this.props
                                                             .currentAccount ||
                                                         this.props.currentAccount.get(
@@ -1305,9 +1315,15 @@ class BuySell extends React.Component {
                                         {this.props.backedCoin &&
                                         !this.props.currentBridges ? (
                                             <Tooltip
-                                                title={counterpart.translate(
-                                                    "tooltip.gateway"
-                                                )}
+                                                title={
+                                                    GatewayStore.isDown("OPEN")
+                                                        ? counterpart.translate(
+                                                              "external_service_provider.is_down"
+                                                          )
+                                                        : counterpart.translate(
+                                                              "tooltip.gateway"
+                                                          )
+                                                }
                                             >
                                                 <Button
                                                     style={{margin: 5}}
@@ -1315,6 +1331,9 @@ class BuySell extends React.Component {
                                                         this
                                                     )}
                                                     disabled={
+                                                        GatewayStore.isDown(
+                                                            "OPEN"
+                                                        ) ||
                                                         !this.props
                                                             .currentAccount ||
                                                         this.props.currentAccount.get(
@@ -1358,14 +1377,22 @@ class BuySell extends React.Component {
                                                 content={
                                                     <div>
                                                         <Tooltip
-                                                            title={counterpart.translate(
-                                                                "exchange.quick_deposit_gateway",
-                                                                {
-                                                                    asset: isBid
-                                                                        ? baseName
-                                                                        : quoteName
-                                                                }
-                                                            )}
+                                                            title={
+                                                                GatewayStore.isDown(
+                                                                    "OPEN"
+                                                                )
+                                                                    ? counterpart.translate(
+                                                                          "external_service_provider.is_down"
+                                                                      )
+                                                                    : counterpart.translate(
+                                                                          "exchange.quick_deposit_gateway",
+                                                                          {
+                                                                              asset: isBid
+                                                                                  ? baseName
+                                                                                  : quoteName
+                                                                          }
+                                                                      )
+                                                            }
                                                         >
                                                             <Button
                                                                 style={{
@@ -1374,24 +1401,38 @@ class BuySell extends React.Component {
                                                                 onClick={this.onDeposit.bind(
                                                                     this
                                                                 )}
+                                                                disabled={GatewayStore.isDown(
+                                                                    "OPEN"
+                                                                )}
                                                             >
                                                                 <Translate content="exchange.quick_deposit_gateway_button" />
                                                             </Button>
                                                         </Tooltip>
 
                                                         <Tooltip
-                                                            title={counterpart.translate(
-                                                                "exchange.quick_deposit_bridge",
-                                                                {
-                                                                    target: isBid
-                                                                        ? baseName
-                                                                        : quoteName
-                                                                }
-                                                            )}
+                                                            title={
+                                                                GatewayStore.isDown(
+                                                                    "TRADE"
+                                                                )
+                                                                    ? counterpart.translate(
+                                                                          "external_service_provider.is_down"
+                                                                      )
+                                                                    : counterpart.translate(
+                                                                          "exchange.quick_deposit_bridge",
+                                                                          {
+                                                                              target: isBid
+                                                                                  ? baseName
+                                                                                  : quoteName
+                                                                          }
+                                                                      )
+                                                            }
                                                         >
                                                             <Button
                                                                 onClick={this.onBuy.bind(
                                                                     this
+                                                                )}
+                                                                disabled={GatewayStore.isDown(
+                                                                    "TRADE"
                                                                 )}
                                                             >
                                                                 <Translate content="exchange.quick_deposit_bridge_button" />
@@ -1518,16 +1559,15 @@ class BuySell extends React.Component {
                     </form>
                 </div>
 
-                {isGloballySettled &&
-                    !!this.props.currentAccount && (
-                        <SettleModal
-                            visible={this.state.isSettleModalVisible}
-                            hideModal={this.hideSettleModal}
-                            showModal={this.showSettleModal}
-                            asset={otherAsset.get("id")}
-                            account={this.props.currentAccount}
-                        />
-                    )}
+                {isGloballySettled && !!this.props.currentAccount && (
+                    <SettleModal
+                        visible={this.state.isSettleModalVisible}
+                        hideModal={this.hideSettleModal}
+                        showModal={this.showSettleModal}
+                        asset={otherAsset.get("id")}
+                        account={this.props.currentAccount}
+                    />
+                )}
             </div>
         );
     }

@@ -52,7 +52,7 @@ class CreateAccountPassword extends React.Component {
         this.scrollToInput = this.scrollToInput.bind(this);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         if (!WalletDb.getWallet()) {
             SettingsActions.changeSetting({
                 setting: "passwordLogin",
@@ -274,9 +274,15 @@ class CreateAccountPassword extends React.Component {
                             <Translate content="wallet.generated" />
                             &nbsp;&nbsp;
                             <Tooltip
-                                title={counterpart.translate(
-                                    "tooltip.generate"
-                                )}
+                                title={
+                                    <div
+                                        dangerouslySetInnerHTML={{
+                                            __html: counterpart.translate(
+                                                "tooltip.generate"
+                                            )
+                                        }}
+                                    />
+                                }
                             >
                                 <span className="tooltip">
                                     <Icon
@@ -296,9 +302,9 @@ class CreateAccountPassword extends React.Component {
                                     rows="3"
                                     readOnly
                                     disabled
-                                >
-                                    {this.state.generatedPassword}
-                                </textarea>
+                                    value={this.state.generatedPassword}
+                                />
+
                                 <CopyButton
                                     text={this.state.generatedPassword}
                                     tip="tooltip.copy_password"

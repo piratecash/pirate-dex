@@ -16,7 +16,7 @@ import {
 const CORE_ASSET = "BTS"; // Setting this to BTS to prevent loading issues when used with BTS chain which is the most usual case currently
 
 const STORAGE_KEY = "__graphene__";
-let ss = new ls(STORAGE_KEY);
+let ss = ls(STORAGE_KEY);
 
 /**
  * SettingsStore takes care of maintaining user set settings values and notifies all listeners
@@ -109,6 +109,7 @@ class SettingsStore {
             locale: "en",
             apiServer: settingsAPIs.DEFAULT_WS_NODE,
             filteredApiServers: [],
+            filteredServiceProviders: ["all"],
             faucet_address: settingsAPIs.DEFAULT_FAUCET,
             unit: CORE_ASSET,
             fee_asset: CORE_ASSET,
@@ -149,7 +150,8 @@ class SettingsStore {
                 "ja"
             ],
             apiServer: settingsAPIs.WS_NODE_LIST.slice(0), // clone all default servers as configured in apiConfig.js
-            filteredApiServers: [],
+            filteredApiServers: [[]],
+            filteredServiceProviders: [[]],
             unit: getUnits(),
             fee_asset: getUnits(),
             showProposedTx: [{translate: "yes"}, {translate: "no"}],
@@ -227,7 +229,17 @@ class SettingsStore {
                         }
                     } else if (settings[key] !== defaultSettings[key]) {
                         // only save if its not the default
-                        returnSettings[key] = settings[key];
+                        if (settings[key] instanceof Array) {
+                            if (
+                                JSON.stringify(settings[key]) !==
+                                JSON.stringify(defaultSettings[key])
+                            ) {
+                                returnSettings[key] = settings[key];
+                            }
+                        } else {
+                            // only save if its not the default
+                            returnSettings[key] = settings[key];
+                        }
                     }
                 }
                 // all other cases are defaults, do not put the value in local storage
@@ -542,15 +554,6 @@ class SettingsStore {
                 this._saveSettings();
             }
         }
-        // else {
-        //     console.warn(
-        //         "Trying to save unchanged value (" +
-        //             payload.setting +
-        //             ": " +
-        //             payload.value +
-        //             "), consider refactoring to avoid this"
-        //     );
-        // }
     }
 
     onChangeViewSetting(payload) {

@@ -181,6 +181,8 @@ const MarketUtils = {
                   precision: fromAsset.get("precision")
               });
 
+        if (!toAsset) return;
+
         let price = this.getFinalPrice(
             coreAsset,
             fromAsset,
@@ -211,8 +213,8 @@ const MarketUtils = {
                 ? quote.get("precision")
                 : quote.precision
             : base.toJS
-                ? base.get("precision")
-                : base.precision;
+            ? base.get("precision")
+            : base.precision;
 
         let buy, sell;
         let callPrice;
