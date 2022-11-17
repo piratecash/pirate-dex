@@ -257,6 +257,7 @@ export function getConfigurationAsset() {
     };
 }
 
-export function getSteemNewsTag() {
-    return null;
+export function getHiveNewsTag() {
+    return 'bitshares';
 }
+
