@@ -574,6 +574,7 @@
         }
     },
     "credit_offer": {
+        "current_available_balance": "Current Available Balance",
         "accepted_pawn": "Acceptable",
         "account": "Account",
         "active": "Active",
