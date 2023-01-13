@@ -1437,7 +1437,25 @@ class Asset extends React.Component {
             </Panel>
         );
     }
-
+    renderFeesCollateralClaiming(asset) {
+        let dynamic = this.props.getDynamicObject(asset.dynamic_asset_data_id);
+        if (dynamic) dynamic = dynamic.toJS();
+        return (
+            <Panel
+                header={
+                    <Translate content="explorer.asset.fee_pool.accumulated_collateral_fees" />
+                }
+            >
+                <FeePoolOperation
+                    asset={asset.symbol}
+                    dynamic={dynamic}
+                    funderAccountName={this.props.currentAccount}
+                    hideBalance
+                    type="claim_collateral_fees"
+                />
+            </Panel>
+        );
+    }
     // TODO: Blacklist Authorities: <Account list like Voting>
     // TODO: Blacklist Market: Base/Market, Base/Market
     renderPermissions(asset) {
@@ -2369,6 +2387,7 @@ class Asset extends React.Component {
                                     {this.renderFeePoolFunding(asset)}
                                     {this.renderFeePoolClaiming(asset)}
                                     {this.renderFeesClaiming(asset)}
+                                    {this.renderFeesCollateralClaiming(asset)}
                                     {this.renderAssetOwnerUpdate(asset)}
                                     {"bitasset" in asset &&
                                         !asset.bitasset.is_prediction_market &&
