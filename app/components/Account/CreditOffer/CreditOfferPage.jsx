@@ -426,13 +426,12 @@ class CreditOfferPage extends React.Component {
                 asset_id: asset.get("id"),
                 precision: asset.get("precision")
             });
-            this.setState(
-                {
-                    maxAmount: true,
-                    amount: balance.getAmount({real: true})
-                },
-                this._checkBalance
-            );
+            this.setState({maxAmount: true});
+
+            this._onAmountChanged({
+                amount: balance.getAmount({real: true}),
+                asset: asset.get("id")
+            });
         }
     }
 
@@ -474,7 +473,12 @@ class CreditOfferPage extends React.Component {
         let maxReal = maxAssetAmount.getAmount({real: true});
         let maxError = amount > maxReal || maxReal <= 0;
         const isSubmitNotValid =
-            !amount || minError || maxError || !selectAsset || balanceError;
+            !amount ||
+            minError ||
+            maxError ||
+            !selectAsset ||
+            balanceError ||
+            account.get("id") == info.owner_account;
         let _error = maxError ? "has-error" : "";
         if (currentBalance && currentBalance > 0) {
             balance = (
@@ -514,13 +518,37 @@ class CreditOfferPage extends React.Component {
                 </span>
             );
         }
-        
+
         const borrowingAsset = selectAsset.toJS();
         const borrowingAssetPermissions = assetUtils.getFlagBooleans(
             borrowingAsset.options.flags,
-            !!borrowingAsset.bitasset_data_id,
+            !!borrowingAsset.bitasset_data_id
         );
-        
+
+        const issuer = ChainStore.getObject(
+            borrowingAsset.issuer,
+            false,
+            false
+        );
+        const issuerName = issuer ? issuer.get("name") : "";
+
+        let overrideAuthorityMessage = [
+            counterpart.translate(
+                "credit_offer.override_authority_warning_p1",
+                {symbol: borrowingAsset.symbol}
+            ),
+            " ",
+            <a target="_blank" href={`/account/${issuerName}`}>
+                {issuerName}
+            </a>,
+            <br />,
+            counterpart.translate("credit_offer.override_authority_warning_p2"),
+            " ",
+            <a target="_blank" href={`/asset/${borrowingAsset.symbol}`}>
+                {borrowingAsset.symbol}
+            </a>
+        ];
+
         return (
             <Modal
                 wrapClassName="modal--transaction-confirm"
@@ -530,6 +558,13 @@ class CreditOfferPage extends React.Component {
                 overlay={true}
                 onCancel={this.hideAcceptModal}
                 footer={[
+                    (info.owner_account === info.owner_account && (
+                        <Translate
+                            component="span"
+                            content="credit_offer.info_borrow_err"
+                        />
+                    )) ||
+                        null,
                     <Button
                         key={"send"}
                         disabled={isSubmitNotValid}
@@ -542,9 +577,9 @@ class CreditOfferPage extends React.Component {
                     </Button>
                 ]}
             >
-                { borrowingAssetPermissions.override_authority && (
+                {borrowingAssetPermissions.override_authority && (
                     <div style={{marginBottom: 12}}>
-                        <Alert message={counterpart.translate('credit_offer.override_authority_warning')}></Alert>
+                        <Alert message={overrideAuthorityMessage}></Alert>
                     </div>
                 )}
                 <div className="grid-block vertical no-overflow">
