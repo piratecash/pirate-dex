@@ -4890,6 +4890,8 @@ export const scamAccountsOther = [
     "binance-bts-1-local",
     "1.2.1823877",
     "binance-bts-1-trc20",
+    "1.2.1823195",
+    "trc20-network-1",
     // BATCH END 2023-07-06
 
     // BATCH START 2023-07-07
