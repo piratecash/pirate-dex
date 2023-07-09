@@ -5133,6 +5133,14 @@ export const scamAccountsOther = [
     "jonson-1839",
     "1.2.1824053",
     "binance-bts-1-recovery",
+    "1.2.1823704",
+    "miner5000",
+    "1.2.1823914",
+    "binance-bts-miner",
+    "1.2.1823851",
+    "binance-bts-1-miner",
+    "1.2.1823750",
+    "binance-bts-1-minning",
     // BATCH END 2023-07-09
 
     // BATCH START 2023-07-10
