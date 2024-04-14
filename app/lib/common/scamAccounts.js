@@ -2443,6 +2443,8 @@ export const scamAccountsOther = [
     "1.2.1829998",
     "witnesses-security",
     "1.2.1831730",
+    "l0test",
+    "1.2.1830342",
 
     // BATCH START 2023-06-21
     "1.2.1822947",
