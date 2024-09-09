@@ -654,16 +654,19 @@ class RecentTransactions extends React.Component {
 }
 RecentTransactions = BindToChainState(RecentTransactions);
 
-RecentTransactions = connect(RecentTransactions, {
-    listenTo() {
-        return [SettingsStore];
-    },
-    getProps() {
-        return {
-            marketDirections: SettingsStore.getState().marketDirections
-        };
+RecentTransactions = connect(
+    RecentTransactions,
+    {
+        listenTo() {
+            return [SettingsStore];
+        },
+        getProps() {
+            return {
+                marketDirections: SettingsStore.getState().marketDirections
+            };
+        }
     }
-});
+);
 
 class TransactionWrapper extends React.Component {
     static propTypes = {

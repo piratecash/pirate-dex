@@ -17,8 +17,7 @@ class PoolmartStore extends BaseStore {
             onGetLiquidityPoolsByShareAsset:
                 PoolmartActions.GET_LIQUIDITY_POOLS_BY_SHARE_ASSET,
             onResetLiquidityPools: PoolmartActions.RESET_LIQUIDITY_POOLS,
-            onGetLiquidityPoolsAccount:
-                PoolmartActions.GET_LIQUIDITY_POOLS_ACCOUNT
+            onGetLiquidityPoolsAccount:PoolmartActions.GET_LIQUIDITY_POOLS_ACCOUNT
         });
     }
 
@@ -64,7 +63,7 @@ class PoolmartStore extends BaseStore {
         }
     }
 
-    onGetLiquidityPoolsAccount(payload) {
+    onGetLiquidityPoolsAccount(payload){
         console.log("onGetLiquidityPoolsAccount");
         if (!payload) {
             return false;

@@ -1321,23 +1321,27 @@ class QuickTrade extends Component {
     }
 }
 
-QuickTrade = connect(QuickTrade, {
-    listenTo() {
-        return [AssetStore, MarketsStore];
-    },
-    getProps() {
-        return {
-            searchAssets: AssetStore.getState().assets,
-            assetsLoading: AssetStore.getState().assetsLoading,
-            marketData: MarketsStore.getState().marketData,
-            activeMarketHistory: MarketsStore.getState().activeMarketHistory,
-            bucketSize: MarketsStore.getState().bucketSize,
-            currentGroupOrderLimit: MarketsStore.getState()
-                .currentGroupOrderLimit,
-            feedPrice: MarketsStore.getState().feedPrice,
-            marketLimitOrders: MarketsStore.getState().marketLimitOrders
-        };
+QuickTrade = connect(
+    QuickTrade,
+    {
+        listenTo() {
+            return [AssetStore, MarketsStore];
+        },
+        getProps() {
+            return {
+                searchAssets: AssetStore.getState().assets,
+                assetsLoading: AssetStore.getState().assetsLoading,
+                marketData: MarketsStore.getState().marketData,
+                activeMarketHistory: MarketsStore.getState()
+                    .activeMarketHistory,
+                bucketSize: MarketsStore.getState().bucketSize,
+                currentGroupOrderLimit: MarketsStore.getState()
+                    .currentGroupOrderLimit,
+                feedPrice: MarketsStore.getState().feedPrice,
+                marketLimitOrders: MarketsStore.getState().marketLimitOrders
+            };
+        }
     }
-});
+);
 
-export default QuickTrade = bindToCurrentAccount(QuickTrade);
+export default (QuickTrade = bindToCurrentAccount(QuickTrade));

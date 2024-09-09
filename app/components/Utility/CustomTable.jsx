@@ -186,17 +186,20 @@ class CustomTable extends React.Component {
     }
 }
 
-export default CustomTable = connect(CustomTable, {
-    listenTo() {
-        return [SettingsStore];
-    },
-    getProps(nextProps) {
-        if (!nextProps.viewSettings) {
-            return {
-                viewSettings: SettingsStore.getState().viewSettings
-            };
-        } else {
-            return {};
+export default (CustomTable = connect(
+    CustomTable,
+    {
+        listenTo() {
+            return [SettingsStore];
+        },
+        getProps(nextProps) {
+            if (!nextProps.viewSettings) {
+                return {
+                    viewSettings: SettingsStore.getState().viewSettings
+                };
+            } else {
+                return {};
+            }
         }
     }
-});
+));

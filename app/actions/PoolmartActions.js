@@ -226,7 +226,9 @@ class PoolmartActions {
 
                 Apis.instance()
                     .db_api()
-                    .exec("get_liquidity_pools_by_owner", [account_name])
+                    .exec("get_liquidity_pools_by_owner", [
+                        account_name
+                    ])
                     .then(liquidityPools => {
                         const tmpAssetIds = [];
                         liquidityPools.forEach(pool => {
@@ -241,46 +243,46 @@ class PoolmartActions {
                                 tmpAssetIds.push(pool.share_asset);
                             }
                         });
-                        Apis.instance()
-                            .db_api()
-                            .exec("lookup_asset_symbols", [tmpAssetIds])
-                            .then(assetObjects => {
-                                let tmpAssets = Immutable.Map();
-                                if (assetObjects.length) {
-                                    assetObjects.forEach(asset => {
-                                        tmpAssets = tmpAssets.set(
-                                            asset.id,
-                                            Immutable.fromJS(asset)
-                                        );
+                            Apis.instance()
+                                .db_api()
+                                .exec("lookup_asset_symbols", [tmpAssetIds])
+                                .then(assetObjects => {
+                                    let tmpAssets = Immutable.Map();
+                                    if (assetObjects.length) {
+                                        assetObjects.forEach(asset => {
+                                            tmpAssets = tmpAssets.set(
+                                                asset.id,
+                                                Immutable.fromJS(asset)
+                                            );
+                                        });
+                                    }
+                                    liquidityPools.map(pool => {
+                                        if (tmpAssets.has(pool.asset_a)) {
+                                            pool.asset_a_obj = tmpAssets.get(
+                                                pool.asset_a
+                                            );
+                                        } else {
+                                            pool.asset_a_obj = undefined;
+                                        }
+                                        if (tmpAssets.has(pool.asset_b)) {
+                                            pool.asset_b_obj = tmpAssets.get(
+                                                pool.asset_b
+                                            );
+                                        } else {
+                                            pool.asset_b_obj = undefined;
+                                        }
+                                        if (tmpAssets.has(pool.share_asset)) {
+                                            pool.share_asset_obj = tmpAssets.get(
+                                                pool.share_asset
+                                            );
+                                        } else {
+                                            pool.share_asset_obj = undefined;
+                                        }
+                                        return pool;
                                     });
-                                }
-                                liquidityPools.map(pool => {
-                                    if (tmpAssets.has(pool.asset_a)) {
-                                        pool.asset_a_obj = tmpAssets.get(
-                                            pool.asset_a
-                                        );
-                                    } else {
-                                        pool.asset_a_obj = undefined;
-                                    }
-                                    if (tmpAssets.has(pool.asset_b)) {
-                                        pool.asset_b_obj = tmpAssets.get(
-                                            pool.asset_b
-                                        );
-                                    } else {
-                                        pool.asset_b_obj = undefined;
-                                    }
-                                    if (tmpAssets.has(pool.share_asset)) {
-                                        pool.share_asset_obj = tmpAssets.get(
-                                            pool.share_asset
-                                        );
-                                    } else {
-                                        pool.share_asset_obj = undefined;
-                                    }
-                                    return pool;
+                                    delete inProgress[id];
+                                    dispatch({loading: false, liquidityPools});
                                 });
-                                delete inProgress[id];
-                                dispatch({loading: false, liquidityPools});
-                            });
                     })
                     .catch(error => {
                         console.log(

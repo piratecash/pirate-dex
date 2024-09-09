@@ -100,7 +100,12 @@ function BindToChainState(Component, options = {}) {
                     .filter(flow(secondEl, isAssetType))
                     .map(firstEl);
                 this.chain_liquidity_pools = prop_types_array
-                    .filter(flow(secondEl, isLiquidityPoolType))
+                    .filter(
+                        flow(
+                            secondEl,
+                            isLiquidityPoolType
+                        )
+                    )
                     .map(firstEl);
                 this.chain_objects_list = prop_types_array
                     .filter(flow(secondEl, isObjectsListType))
@@ -543,7 +548,7 @@ function BindToChainState(Component, options = {}) {
                     if (this.state[key]) new_state[key] = null;
                 }
             }
-
+            
             //console.log("----- Wrapper update ----->", this.all_chain_props, this.all_chain_props.length, all_objects_counter, resolved_objects_counter);
             if (all_objects_counter <= resolved_objects_counter)
                 new_state.resolved = true;
@@ -615,7 +620,9 @@ function BindToChainState(Component, options = {}) {
                         return (
                             <React.Fragment>
                                 <LoadingIndicator />
-                                <span className="text-center">Loading ...</span>
+                                <span className="text-center">
+                                    Loading ...
+                                </span>
                             </React.Fragment>
                         );
                     } else {

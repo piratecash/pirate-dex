@@ -4,15 +4,7 @@ import Immutable from "immutable";
 import big from "bignumber.js";
 import counterpart from "counterpart";
 import {connect} from "alt-react";
-import {
-    Form,
-    Modal,
-    Button,
-    Input,
-    Row,
-    Col,
-    Alert
-} from "bitshares-ui-style-guide";
+import {Form, Modal, Button, Input, Row, Col, Alert} from "bitshares-ui-style-guide";
 import ApplicationApi from "api/ApplicationApi";
 import AccountStore from "stores/AccountStore";
 import AmountSelector from "../Utility/AmountSelectorStyleGuide";
@@ -86,9 +78,10 @@ class PoolExchangeModal extends React.Component {
             account,
             pool.get("id"),
             pool.getIn([`asset_${amountToSellTag}`, "symbol"]),
-            parseFloat(amountToSell) * amountToSellPrecision,
+            Math.round(parseFloat(amountToSell) * amountToSellPrecision),
             pool.getIn([`asset_${minToReceiveTag}`, "symbol"]),
-            parseFloat(minToReceive) * minToReceivePrecision
+            Math.round(parseFloat(minToReceive) * minToReceivePrecision)
+
         )
             .then(() => {
                 console.log("exchange:");
@@ -97,14 +90,14 @@ class PoolExchangeModal extends React.Component {
             .catch(e => {
                 console.error("exchange:", e);
             });
-    };
+    }
 
     switchAsset() {
         const tmp1 = this.state.amountToSellTag;
         const tmp2 = this.state.minToReceiveTag;
         this.setState({
-            amountToSellTag: tmp2,
-            minToReceiveTag: tmp1,
+        amountToSellTag: tmp2,
+        minToReceiveTag: tmp1,
             amountToSell: null,
             minToReceive: null,
             fee: null
@@ -116,8 +109,8 @@ class PoolExchangeModal extends React.Component {
 
         let asset_a = pool.get(`asset_${amountToSellTag}`);
         let asset_b = pool.get(`asset_${minToReceiveTag}`);
-        let precision_a = asset_a.get("precision");
-        let precision_b = asset_b.get("precision");
+        let precision_a = asset_a.get('precision');
+        let precision_b = asset_b.get('precision');
 
         const balances_a = accountObj.getIn(["balances", asset_a.get("id")]);
         const balances_b = accountObj.getIn(["balances", asset_b.get("id")]);
@@ -125,18 +118,14 @@ class PoolExchangeModal extends React.Component {
         let balance_a = new big(0);
         let balance_b = new big(0);
 
-        if (balances_a) {
+        if (balances_a){
             const balObj_A = ChainStore.getObject(balances_a);
-            balance_a = new big(balObj_A.get("balance")).dividedBy(
-                new big(10).toPower(precision_a)
-            );
+            balance_a = new big(balObj_A.get("balance")).dividedBy(new big(10).toPower(precision_a));
         }
 
-        if (balances_b) {
+        if (balances_b){
             const balObj_B = ChainStore.getObject(balances_b);
-            balance_b = new big(balObj_B.get("balance")).dividedBy(
-                new big(10).toPower(precision_b)
-            );
+            balance_b = new big(balObj_B.get("balance")).dividedBy(new big(10).toPower(precision_b));
         }
 
         if (pool === null || pool === undefined) return null;
@@ -154,17 +143,21 @@ class PoolExchangeModal extends React.Component {
                 precision: precision_b
             }
         };
+
+
+
     }
 
     getPairs() {
+
         const {pool, account} = this.props;
         const {amountToSellTag, minToReceiveTag} = this.state;
         const accountObj = ChainStore.getAccount(account);
 
         let asset_a = pool.get(`asset_${amountToSellTag}`);
         let asset_b = pool.get(`asset_${minToReceiveTag}`);
-        let precision_a = asset_a.get("precision");
-        let precision_b = asset_b.get("precision");
+        let precision_a = asset_a.get('precision');
+        let precision_b = asset_b.get('precision');
 
         const balances_a = accountObj.getIn(["balances", asset_a.get("id")]);
         const balances_b = accountObj.getIn(["balances", asset_b.get("id")]);
@@ -172,18 +165,14 @@ class PoolExchangeModal extends React.Component {
         let balance_a = new big(0);
         let balance_b = new big(0);
 
-        if (balances_a) {
+        if (balances_a){
             const balObj_A = ChainStore.getObject(balances_a);
-            balance_a = new big(balObj_A.get("balance")).dividedBy(
-                new big(10).toPower(precision_a)
-            );
+            balance_a = new big(balObj_A.get("balance")).dividedBy(new big(10).toPower(precision_a));
         }
 
-        if (balances_b) {
+        if (balances_b){
             const balObj_B = ChainStore.getObject(balances_b);
-            balance_b = new big(balObj_B.get("balance")).dividedBy(
-                new big(10).toPower(precision_b)
-            );
+            balance_b = new big(balObj_B.get("balance")).dividedBy(new big(10).toPower(precision_b));
         }
 
         if (pool === null || pool === undefined) return null;
@@ -207,11 +196,11 @@ class PoolExchangeModal extends React.Component {
         const tmp1 = this.state.amountToSellTag;
         const tmp2 = this.state.minToReceiveTag;
         this.setState({
-            amountToSellTag: tmp1,
-            minToReceiveTag: tmp2,
-            amountToSell: null,
-            minToReceive: null,
-            fee: null
+        amountToSellTag: tmp1,
+        minToReceiveTag: tmp2,
+        amountToSell: null,
+        minToReceive: null,
+        fee: null
         });
         const {pool, account} = this.props;
         const {amountToSellTag, minToReceiveTag} = this.state;
@@ -221,33 +210,15 @@ class PoolExchangeModal extends React.Component {
         const asset_b = pool.get(`asset_${tmp2}`);
 
         let poolamounta = Number(pool.get(`balance_${tmp1}`));
-        let poolamountap = Number(
-            new big(10).toPower(pool.get(`asset_${tmp1}`).get("precision"))
-        );
+        let poolamountap = Number(new big(10).toPower(pool.get(`asset_${tmp1}`).get("precision")));
         let poolamountb = Number(pool.get(`balance_${tmp2}`));
-        let poolamountbp = Number(
-            new big(10).toPower(pool.get(`asset_${tmp2}`).get("precision"))
-        );
+        let poolamountbp = Number(new big(10).toPower(pool.get(`asset_${tmp2}`).get("precision")));
 
-        const maker_market_fee_percenta = asset_a.getIn([
-            "options",
-            "market_fee_percent"
-        ]);
-        const maker_market_fee_percentb = asset_b.getIn([
-            "options",
-            "market_fee_percent"
-        ]);
+        const maker_market_fee_percenta = asset_a.getIn(["options", "market_fee_percent"]);
+        const maker_market_fee_percentb = asset_b.getIn(["options", "market_fee_percent"]);
 
-        let maker_fee_a =
-            (Number(e.amount) *
-                Number(poolamountap) *
-                Number(maker_market_fee_percenta)) /
-            10000;
-        let maker_fee_b =
-            (Number(e.amount) *
-                Number(poolamountbp) *
-                Number(maker_market_fee_percentb)) /
-            10000;
+        let maker_fee_a = (Number(e.amount) * Number(poolamountap)) * Number(maker_market_fee_percenta) / 10000;
+        let maker_fee_b = (Number(e.amount) * Number(poolamountbp)) * Number(maker_market_fee_percentb) / 10000;
 
         const assetaflags = asset_a.getIn(["options", "flags"]);
         const assetbflags = asset_b.getIn(["options", "flags"]);
@@ -255,146 +226,65 @@ class PoolExchangeModal extends React.Component {
         const max_market_feea = asset_a.getIn(["options", "max_market_fee"]); // / Number(new big(10).toPower(pool.get(`asset_${tmp1}`).get("precision")));
         const max_market_feeb = asset_b.getIn(["options", "max_market_fee"]); // / Number(new big(10).toPower(pool.get(`asset_${tmp2}`).get("precision")));
 
-        const taker_fee_percenta = asset_a.getIn([
-            "options",
-            "extensions",
-            "taker_fee_percent"
-        ]);
-        const taker_fee_percentb = asset_b.getIn([
-            "options",
-            "extensions",
-            "taker_fee_percent"
-        ]);
+        const taker_fee_percenta = asset_a.getIn(["options", "extensions", "taker_fee_percent"]);
+        const taker_fee_percentb = asset_b.getIn(["options", "extensions", "taker_fee_percent"]);
 
         function flagsa() {
-            if (assetaflags % 2 == 0) {
-                return 0;
-            }
-            if (maker_market_fee_percenta === 0) {
-                return 0;
-            }
-            if (maker_market_fee_percenta > 0) {
-                return Math.min(
-                    Number(max_market_feea),
-                    Math.ceil(
-                        Number(e.amount) *
-                            Number(poolamountap) *
-                            (Number(maker_market_fee_percenta) / 10000)
-                    )
-                );
-            }
+        if (assetaflags % 2 == 0) { return 0;}
+        if (maker_market_fee_percenta === 0) {return 0;}
+        if (maker_market_fee_percenta > 0) {
+        return Math.min(Number(max_market_feea), Math.ceil((Number(e.amount) * Number(poolamountap)) * (Number(maker_market_fee_percenta) / 10000)))
+        }
         }
         function flagsb() {
-            if (assetbflags % 2 == 0) {
-                return 0;
-            }
-            if (maker_market_fee_percentb === 0) {
-                return 0;
-            }
-            if (maker_market_fee_percentb > 0) {
-                return Math.min(
-                    Number(max_market_feeb),
-                    Math.ceil(
-                        Number(e.amount) *
-                            Number(poolamountbp) *
-                            (Number(maker_market_fee_percentb) / 10000)
-                    )
-                );
-            }
+        if (assetbflags % 2 == 0) { return 0;}
+        if (maker_market_fee_percentb === 0) {return 0;}
+        if (maker_market_fee_percentb > 0) {
+        return Math.min(Number(max_market_feeb), Math.ceil((Number(e.amount) * Number(poolamountbp)) * (Number(maker_market_fee_percentb) / 10000)))
+        }
         }
 
+
         function taker_market_fee_percenta() {
-            if (assetaflags % 2 == 0) {
-                return 0;
-            }
-            if (
-                typeof taker_fee_percenta == "undefined" &&
-                maker_market_fee_percenta > 0
-            ) {
-                return Number(maker_market_fee_percenta) / 10000;
-            }
-            if (
-                typeof taker_fee_percenta == "undefined" &&
-                maker_market_fee_percenta === 0
-            ) {
-                return 0;
-            } else {
-                return Number(taker_fee_percenta) / 10000;
-            }
+        if (assetaflags % 2 == 0) { return 0;}
+        if (typeof taker_fee_percenta == 'undefined' && maker_market_fee_percenta > 0) {
+        return Number(maker_market_fee_percenta) / 10000;}
+        if (typeof taker_fee_percenta == 'undefined' && maker_market_fee_percenta === 0) { return 0;
+        }
+        else {
+        return Number(taker_fee_percenta) / 10000;
+        }
         }
 
         function taker_market_fee_percentb() {
-            if (assetbflags % 2 == 0) {
-                return 0;
-            }
-            if (
-                typeof taker_fee_percentb == "undefined" &&
-                maker_market_fee_percentb > 0
-            ) {
-                return Number(maker_market_fee_percentb) / 10000;
-            }
-            if (
-                typeof taker_fee_percentb == "undefined" &&
-                maker_market_fee_percentb === 0
-            ) {
-                return 0;
-            } else {
-                return Number(taker_fee_percentb) / 10000;
-            }
+        if (assetbflags % 2 == 0) { return 0;}
+        if (typeof taker_fee_percentb == 'undefined' && maker_market_fee_percentb > 0) {
+        return Number(maker_market_fee_percentb) / 10000;}
+        if (typeof taker_fee_percentb == 'undefined' && maker_market_fee_percentb === 0) { return 0;
         }
+        else {
+        return Number(taker_fee_percentb) / 10000;
+        }
+        }
+        
+        let tmp_delta_a = Number(poolamounta) - Math.ceil( Number(poolamounta) * Number(poolamountb) / ( Number(poolamountb) + ( (Number(e.amount) * Number(poolamountbp)) - Number(flagsb()))))
+        let tmp_delta_b = Number(poolamountb) - Math.ceil( Number(poolamountb) * Number(poolamounta) / ( Number(poolamounta) + ( (Number(e.amount) * Number(poolamountap)) - Number(flagsa()))))
 
-        let tmp_delta_a =
-            Number(poolamounta) -
-            Math.ceil(
-                (Number(poolamounta) * Number(poolamountb)) /
-                    (Number(poolamountb) +
-                        (Number(e.amount) * Number(poolamountbp) -
-                            Number(flagsb())))
-            );
-        let tmp_delta_b =
-            Number(poolamountb) -
-            Math.ceil(
-                (Number(poolamountb) * Number(poolamounta)) /
-                    (Number(poolamounta) +
-                        (Number(e.amount) * Number(poolamountap) -
-                            Number(flagsa())))
-            );
+        let tmp_a = (Number(tmp_delta_a) * Number(pool.get("taker_fee_percent")) / 10000);
+        let tmp_b = (Number(tmp_delta_b) * Number(pool.get("taker_fee_percent")) / 10000);
 
-        let tmp_a =
-            (Number(tmp_delta_a) * Number(pool.get("taker_fee_percent"))) /
-            10000;
-        let tmp_b =
-            (Number(tmp_delta_b) * Number(pool.get("taker_fee_percent"))) /
-            10000;
+        let taker_market_fee_percent_a = (Number(taker_market_fee_percenta()));
+        let taker_market_fee_percent_b = (Number(taker_market_fee_percentb()));
 
-        let taker_market_fee_percent_a = Number(taker_market_fee_percenta());
-        let taker_market_fee_percent_b = Number(taker_market_fee_percentb());
-
-        let tmp_delta_b_floor = Math.floor(Number(tmp_delta_b));
-        let tmp_b_ceil = Math.ceil(Number(tmp_b));
-        let max_mar = Number(max_market_feeb);
-        let tmp_b_taker_ceil = Math.ceil(
-            tmp_b_ceil * Number(taker_market_fee_percent_b)
-        );
-        let total = tmp_delta_b_floor - tmp_b_ceil - tmp_b_taker_ceil;
+        let tmp_delta_b_floor = Math.floor(Number(tmp_delta_b))
+        let tmp_b_ceil = Math.ceil(Number(tmp_b))
+        let max_mar = Number(max_market_feeb)
+        let tmp_b_taker_ceil = Math.ceil(tmp_b_ceil * Number(taker_market_fee_percent_b))
+        let total = tmp_delta_b_floor - tmp_b_ceil - tmp_b_taker_ceil
 
         this.setState({
-            amountToSell: Number(e.amount),
-            minToReceive:
-                (Number(tmp_delta_b) -
-                    Math.floor(Number(tmp_b)) -
-                    Math.ceil(
-                        Math.min(
-                            Number(max_market_feeb),
-                            Math.ceil(
-                                Math.ceil(
-                                    Number(tmp_delta_b) *
-                                        Number(taker_market_fee_percent_b)
-                                )
-                            )
-                        )
-                    )) /
-                Number(poolamountbp)
+                amountToSell: Number(e.amount),
+                minToReceive: (Number(tmp_delta_b) - Math.floor(Number(tmp_b)) - Math.ceil(Math.min(Number(max_market_feeb),Math.ceil(Math.ceil(Number(tmp_delta_b) * Number(taker_market_fee_percent_b)))))) / Number(poolamountbp)
         });
     }
 
@@ -402,8 +292,8 @@ class PoolExchangeModal extends React.Component {
         const tmp1 = this.state.amountToSellTag;
         const tmp2 = this.state.minToReceiveTag;
         this.setState({
-            minToReceive: null,
-            fee: null
+        minToReceive: null,
+        fee: null
         });
         const {pool, account} = this.props;
         const {amountToSellTag, minToReceiveTag} = this.state;
@@ -413,33 +303,15 @@ class PoolExchangeModal extends React.Component {
         const asset_b = pool.get(`asset_${tmp2}`);
 
         let poolamounta = Number(pool.get(`balance_${tmp1}`));
-        let poolamountap = Number(
-            new big(10).toPower(pool.get(`asset_${tmp1}`).get("precision"))
-        );
+        let poolamountap = Number(new big(10).toPower(pool.get(`asset_${tmp1}`).get("precision")));
         let poolamountb = Number(pool.get(`balance_${tmp2}`));
-        let poolamountbp = Number(
-            new big(10).toPower(pool.get(`asset_${tmp2}`).get("precision"))
-        );
+        let poolamountbp = Number(new big(10).toPower(pool.get(`asset_${tmp2}`).get("precision")));
 
-        const maker_market_fee_percenta = asset_a.getIn([
-            "options",
-            "market_fee_percent"
-        ]);
-        const maker_market_fee_percentb = asset_b.getIn([
-            "options",
-            "market_fee_percent"
-        ]);
+        const maker_market_fee_percenta = asset_a.getIn(["options", "market_fee_percent"]);
+        const maker_market_fee_percentb = asset_b.getIn(["options", "market_fee_percent"]);
 
-        let maker_fee_a =
-            (Number(e.amount) *
-                Number(poolamountap) *
-                Number(maker_market_fee_percenta)) /
-            10000;
-        let maker_fee_b =
-            (Number(e.amount) *
-                Number(poolamountbp) *
-                Number(maker_market_fee_percentb)) /
-            10000;
+        let maker_fee_a = (Number(e.amount) * Number(poolamountap)) * Number(maker_market_fee_percenta) / 10000;
+        let maker_fee_b = (Number(e.amount) * Number(poolamountbp)) * Number(maker_market_fee_percentb) / 10000;
 
         const assetaflags = asset_a.getIn(["options", "flags"]);
         const assetbflags = asset_b.getIn(["options", "flags"]);
@@ -447,130 +319,63 @@ class PoolExchangeModal extends React.Component {
         const max_market_feea = asset_a.getIn(["options", "max_market_fee"]); // / Number(new big(10).toPower(pool.get(`asset_${tmp1}`).get("precision")));
         const max_market_feeb = asset_b.getIn(["options", "max_market_fee"]); // / Number(new big(10).toPower(pool.get(`asset_${tmp2}`).get("precision")));
 
-        const taker_fee_percenta = asset_a.getIn([
-            "options",
-            "extensions",
-            "taker_fee_percent"
-        ]);
-        const taker_fee_percentb = asset_b.getIn([
-            "options",
-            "extensions",
-            "taker_fee_percent"
-        ]);
+        const taker_fee_percenta = asset_a.getIn(["options", "extensions", "taker_fee_percent"]);
+        const taker_fee_percentb = asset_b.getIn(["options", "extensions", "taker_fee_percent"]);
 
         function flagsa() {
-            if (assetaflags % 2 == 0) {
-                return 0;
-            }
-            if (maker_market_fee_percenta === 0) {
-                return 0;
-            }
-            if (maker_market_fee_percenta > 0) {
-                return Math.min(
-                    Number(max_market_feea),
-                    Math.ceil(
-                        Number(e.amount) *
-                            Number(poolamountap) *
-                            (Number(maker_market_fee_percenta) / 10000)
-                    )
-                );
-            }
+        if (assetaflags % 2 == 0) { return 0;}
+        if (maker_market_fee_percenta === 0) {return 0;}
+        if (maker_market_fee_percenta > 0) {
+        return Math.min(Number(max_market_feea), Math.ceil((Number(e.amount) * Number(poolamountap)) * (Number(maker_market_fee_percenta) / 10000)))
+        }
         }
         function flagsb() {
-            if (assetbflags % 2 == 0) {
-                return 0;
-            }
-            if (maker_market_fee_percentb === 0) {
-                return 0;
-            }
-            if (maker_market_fee_percentb > 0) {
-                return Math.min(
-                    Number(max_market_feeb),
-                    Math.ceil(
-                        Number(e.amount) *
-                            Number(poolamountbp) *
-                            (Number(maker_market_fee_percentb) / 10000)
-                    )
-                );
-            }
+        if (assetbflags % 2 == 0) { return 0;}
+        if (maker_market_fee_percentb === 0) {return 0;}
+        if (maker_market_fee_percentb > 0) {
+        return Math.min(Number(max_market_feeb), Math.ceil((Number(e.amount) * Number(poolamountbp)) * (Number(maker_market_fee_percentb) / 10000)))
+        }
         }
 
+
         function taker_market_fee_percenta() {
-            if (assetaflags % 2 == 0) {
-                return 0;
-            }
-            if (
-                typeof taker_fee_percenta == "undefined" &&
-                maker_market_fee_percenta > 0
-            ) {
-                return Number(maker_market_fee_percenta) / 10000;
-            }
-            if (
-                typeof taker_fee_percenta == "undefined" &&
-                maker_market_fee_percenta === 0
-            ) {
-                return 0;
-            } else {
-                return Number(taker_fee_percenta) / 10000;
-            }
+        if (assetaflags % 2 == 0) { return 0;}
+        if (typeof taker_fee_percenta == 'undefined' && maker_market_fee_percenta > 0) {
+        return Number(maker_market_fee_percenta) / 10000;}
+        if (typeof taker_fee_percenta == 'undefined' && maker_market_fee_percenta === 0) { return 0;
+        }
+        else {
+        return Number(taker_fee_percenta) / 10000;
+        }
         }
 
         function taker_market_fee_percentb() {
-            if (assetbflags % 2 == 0) {
-                return 0;
-            }
-            if (
-                typeof taker_fee_percentb == "undefined" &&
-                maker_market_fee_percentb > 0
-            ) {
-                return Number(maker_market_fee_percentb) / 10000;
-            }
-            if (
-                typeof taker_fee_percentb == "undefined" &&
-                maker_market_fee_percentb === 0
-            ) {
-                return 0;
-            } else {
-                return Number(taker_fee_percentb) / 10000;
-            }
+        if (assetbflags % 2 == 0) { return 0;}
+        if (typeof taker_fee_percentb == 'undefined' && maker_market_fee_percentb > 0) {
+        return Number(maker_market_fee_percentb) / 10000;}
+        if (typeof taker_fee_percentb == 'undefined' && maker_market_fee_percentb === 0) { return 0;
+        }
+        else {
+        return Number(taker_fee_percentb) / 10000;
+        }
         }
 
-        let tmp_delta_a =
-            Number(poolamounta) -
-            Math.ceil(
-                (Number(poolamounta) * Number(poolamountb)) /
-                    (Number(poolamountb) +
-                        (Number(e.amount) * Number(poolamountbp) -
-                            Number(flagsb())))
-            );
-        let tmp_delta_b =
-            Number(poolamountb) -
-            Math.ceil(
-                (Number(poolamountb) * Number(poolamounta)) /
-                    (Number(poolamounta) +
-                        (Number(e.amount) * Number(poolamountap) -
-                            Number(flagsa())))
-            );
+        let tmp_delta_a = Number(poolamounta) - Math.ceil( Number(poolamounta) * Number(poolamountb) / ( Number(poolamountb) + ( (Number(e.amount) * Number(poolamountbp)) - Number(flagsb()))))
+        let tmp_delta_b = Number(poolamountb) - Math.ceil( Number(poolamountb) * Number(poolamounta) / ( Number(poolamounta) + ( (Number(e.amount) * Number(poolamountap)) - Number(flagsa()))))
 
-        let tmp_a =
-            (Number(tmp_delta_a) * Number(pool.get("taker_fee_percent"))) /
-            10000;
-        let tmp_b =
-            (Number(tmp_delta_b) * Number(pool.get("taker_fee_percent"))) /
-            10000;
+        let tmp_a = (Number(tmp_delta_a) * Number(pool.get("taker_fee_percent")) / 10000);
+        let tmp_b = (Number(tmp_delta_b) * Number(pool.get("taker_fee_percent")) / 10000);
 
-        let taker_market_fee_percent_a = Number(taker_market_fee_percenta());
-        let taker_market_fee_percent_b = Number(taker_market_fee_percentb());
+        let taker_market_fee_percent_a = (Number(taker_market_fee_percenta()));
+        let taker_market_fee_percent_b = (Number(taker_market_fee_percentb()));
 
-        let tmp_delta_b_floor = Math.floor(Number(tmp_delta_b));
-        let tmp_b_ceil = Math.ceil(Number(tmp_b));
-        let max_mar = Number(max_market_feeb);
-        let tmp_b_taker_ceil = Math.ceil(
-            tmp_b_ceil * Number(taker_market_fee_percent_b)
-        );
+        let tmp_delta_b_floor = Math.floor(Number(tmp_delta_b))
+        let tmp_b_ceil = Math.ceil(Number(tmp_b))
+        let max_mar = Number(max_market_feeb)
+        let tmp_b_taker_ceil = Math.ceil(tmp_b_ceil * Number(taker_market_fee_percent_b))
 
         this.setState({
-            minToReceive: Number(e.amount)
+            minToReceive: Number(e.amount),
         });
     }
     render() {
@@ -588,7 +393,9 @@ class PoolExchangeModal extends React.Component {
                     <Button
                         key={"submit"}
                         disabled={!this.props.account}
-                        onClick={this.props.account ? this.onSubmit : null}
+                        onClick={
+                            this.props.account ? this.onSubmit : null
+                        }
                     >
                         {counterpart.translate("wallet.submit")}
                     </Button>,
@@ -634,6 +441,10 @@ class PoolExchangeModal extends React.Component {
                                                         amount: pairs.amountToSell.balance.toNumber(),
                                                         asset: null
                                                     });
+
+
+
+
                                                 }}
                                             >
                                                 <AccountBalance
@@ -651,7 +462,8 @@ class PoolExchangeModal extends React.Component {
                                     className="mt-10 mb-10"
                                     style={{textAlign: "center"}}
                                 >
-                                    <Button onClick={this.switchAsset}>
+                                    <Button onClick={this.switchAsset}
+                                >
                                         <Icon
                                             name="arrow-up-down"
                                             size="1_5x"
@@ -686,6 +498,7 @@ class PoolExchangeModal extends React.Component {
                                                         amount: pairs.minToReceive.balance.toNumber(),
                                                         asset: null
                                                     });
+
                                                 }}
                                             >
                                                 <AccountBalance
@@ -741,13 +554,16 @@ class PoolExchangeModal extends React.Component {
     }
 }
 
-export default connect(BindToChainState(PoolExchangeModal), {
-    listenTo() {
-        return [AccountStore];
-    },
-    getProps(props) {
-        return {
-            account: AccountStore.getState().currentAccount
-        };
+export default connect(
+    BindToChainState(PoolExchangeModal),
+    {
+        listenTo() {
+            return [AccountStore];
+        },
+        getProps(props) {
+            return {
+                account: AccountStore.getState().currentAccount
+            };
+        }
     }
-});
+);

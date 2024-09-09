@@ -122,14 +122,18 @@ export default class AccountUtils {
             raiseIfInsufficient
         );
         if (feeAssets.length > 0) {
-            if (feeAssets.indexOf(default_fee_asset.id) !== -1) {
+            if (
+                feeAssets.indexOf(default_fee_asset.id) !== -1
+            ) {
                 return default_fee_asset.id;
-            } else if (feeAssets.indexOf(feeAssetId) !== -1) {
+            } else if (
+                feeAssets.indexOf(feeAssetId) !== -1
+            ) {
                 return feeAssetId;
             } else {
                 // take any that allows to pay the fee
                 return feeAssets[0];
-            }
+            }    
         } else {
             // can't pay fee, show user his chosen default
             return default_fee_asset.id;

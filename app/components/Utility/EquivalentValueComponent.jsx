@@ -115,10 +115,10 @@ class ValueComponent extends MarketStatsCheck {
                     toSymbol.indexOf("BTC") !== -1
                         ? 4
                         : this.props.fullDecimals
-                        ? 0
-                        : this.props.noDecimals
-                        ? toAsset.get("precision")
-                        : toAsset.get("precision") - 2
+                            ? 0
+                            : this.props.noDecimals
+                                ? toAsset.get("precision")
+                                : toAsset.get("precision") - 2
                 }
                 {...others}
             />
@@ -141,16 +141,19 @@ class EquivalentValueComponent extends React.Component {
     }
 }
 
-EquivalentValueComponent = connect(EquivalentValueComponent, {
-    listenTo() {
-        return [MarketsStore];
-    },
-    getProps() {
-        return {
-            allMarketStats: MarketsStore.getState().allMarketStats
-        };
+EquivalentValueComponent = connect(
+    EquivalentValueComponent,
+    {
+        listenTo() {
+            return [MarketsStore];
+        },
+        getProps() {
+            return {
+                allMarketStats: MarketsStore.getState().allMarketStats
+            };
+        }
     }
-});
+);
 
 const balanceToAsset = function(balance) {
     const isBalanceObject = balance.getIn(["balance", "amount"]);

@@ -281,16 +281,19 @@ class AccountReferralsTable extends React.Component {
 
 AccountReferralsTable = BindToChainState(AccountReferralsTable);
 
-AccountReferralsTable = connect(AccountReferralsTable, {
-    listenTo() {
-        return [AccountStore];
-    },
-    getProps() {
-        return {
-            myActiveAccounts: AccountStore.getState().myActiveAccounts,
-            myHiddenAccounts: AccountStore.getState().myHiddenAccounts
-        };
+AccountReferralsTable = connect(
+    AccountReferralsTable,
+    {
+        listenTo() {
+            return [AccountStore];
+        },
+        getProps() {
+            return {
+                myActiveAccounts: AccountStore.getState().myActiveAccounts,
+                myHiddenAccounts: AccountStore.getState().myHiddenAccounts
+            };
+        }
     }
-});
+);
 
 export default AccountReferralsTable;

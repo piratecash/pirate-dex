@@ -147,17 +147,20 @@ class NodeSelector extends React.Component {
         );
     }
 }
-NodeSelector = connect(NodeSelector, {
-    listenTo() {
-        return [SettingsStore];
-    },
-    getProps() {
-        return {
-            filteredApiServers: SettingsStore.getState().settings.get(
-                "filteredApiServers",
-                []
-            )
-        };
+NodeSelector = connect(
+    NodeSelector,
+    {
+        listenTo() {
+            return [SettingsStore];
+        },
+        getProps() {
+            return {
+                filteredApiServers: SettingsStore.getState().settings.get(
+                    "filteredApiServers",
+                    []
+                )
+            };
+        }
     }
-});
+);
 export default NodeSelector;

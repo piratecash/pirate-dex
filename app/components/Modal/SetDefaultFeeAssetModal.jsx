@@ -235,18 +235,21 @@ SetDefaultFeeAssetModal.defaultProps = {
     show: false
 };
 
-SetDefaultFeeAssetModal = connect(SetDefaultFeeAssetModal, {
-    listenTo() {
-        return [SettingsStore, AccountStore];
-    },
-    getProps(props) {
-        const currentAccount =
-            props.currentAccount ||
-            ChainStore.getAccount(AccountStore.getState().currentAccount);
-        return {
-            settings: SettingsStore.getState().settings,
-            currentAccount
-        };
+SetDefaultFeeAssetModal = connect(
+    SetDefaultFeeAssetModal,
+    {
+        listenTo() {
+            return [SettingsStore, AccountStore];
+        },
+        getProps(props) {
+            const currentAccount =
+                props.currentAccount ||
+                ChainStore.getAccount(AccountStore.getState().currentAccount);
+            return {
+                settings: SettingsStore.getState().settings,
+                currentAccount
+            };
+        }
     }
-});
+);
 export default SetDefaultFeeAssetModal;

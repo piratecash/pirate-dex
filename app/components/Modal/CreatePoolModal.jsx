@@ -28,7 +28,7 @@ import {
     lookupAccountAssets
 } from "./MarketPickerHelpers";
 
-import ApplicationApi from "../../api/ApplicationApi";
+import ApplicationApi from "../../api/ApplicationApi"
 import AssetActions from "actions/AssetActions";
 
 class SearchListItem extends React.Component {
@@ -78,10 +78,7 @@ class CreatePoolModal extends React.Component {
         this.onSetTakerFee = this.onSetTakerFee.bind(this);
         this.onSetUnstackFee = this.onSetUnstackFee.bind(this);
         this.getAssetList = debounce(AssetActions.getAssetList.defer, 150);
-        this.getAssetsByIssuer = debounce(
-            AssetActions.getAssetsByIssuer.defer,
-            150
-        );
+        this.getAssetsByIssuer = debounce(AssetActions.getAssetsByIssuer.defer, 150);
         this._checkAndUpdateMarketList = this._checkAndUpdateMarketList.bind(
             this
         );
@@ -129,7 +126,7 @@ class CreatePoolModal extends React.Component {
         };
     }
 
-    initAlertState() {
+    initAlertState(){
         return {
             showAlertChangeAssetA: false,
             showAlertChangeAssetB: false,
@@ -140,53 +137,56 @@ class CreatePoolModal extends React.Component {
             showAlertInputTrankerFee: false,
             showAlertInputUnstakeFee: false,
             showAlertInputPool: false
-        };
+        }
     }
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.marketPickerAsset !== this.props.marketPickerAsset)
-            console.log("componentWillReceiveProps is invoked.");
+        console.log("componentWillReceiveProps is invoked.");
         if (nextProps.searchList !== this.props.searchList)
-            if (this.state.searchAssetA) {
-                assetFilter(
-                    {
-                        searchAssets: this.props.searchList,
-                        marketPickerAsset: this.props.marketPickerAsset
-                    },
-                    {
-                        inputValue: this.state.filterAssetA,
-                        lookupQuote: this.state.lookupQuote
-                    },
-                    this.setState,
-                    this._checkAndUpdateMarketList
-                );
-            } else if (this.state.searchAssetB) {
-                assetFilter(
-                    {
-                        searchAssets: this.props.searchList,
-                        marketPickerAsset: this.props.marketPickerAsset
-                    },
-                    {
-                        inputValue: this.state.filterAssetB,
-                        lookupQuote: this.state.lookupQuote
-                    },
-                    this.setState,
-                    this._checkAndUpdateMarketList
-                );
-            } else if (this.state.searchPoolName) {
-                assetFilter(
-                    {
-                        searchAssets: this.props.searchList,
-                        marketPickerAsset: this.props.marketPickerAsset
-                    },
-                    {
-                        inputValue: this.state.poolName,
-                        lookupQuote: this.state.lookupQuote
-                    },
-                    this.setState,
-                    this._checkAndUpdateMarketList
-                );
-            }
+        if (this.state.searchAssetA) {
+            assetFilter(
+                {
+                    searchAssets: this.props.searchList,
+                    marketPickerAsset: this.props.marketPickerAsset
+                },
+                {
+                    inputValue: this.state.filterAssetA,
+                    lookupQuote: this.state.lookupQuote
+                },
+                this.setState,
+                this._checkAndUpdateMarketList
+            );
+        }
+        else if (this.state.searchAssetB){
+            assetFilter(
+                {
+                    searchAssets: this.props.searchList,
+                    marketPickerAsset: this.props.marketPickerAsset
+                },
+                {
+                    inputValue: this.state.filterAssetB,
+                    lookupQuote: this.state.lookupQuote
+                },
+                this.setState,
+                this._checkAndUpdateMarketList
+            );
+        }
+        else if (this.state.searchPoolName){
+            assetFilter(
+                {
+                    searchAssets: this.props.searchList,
+                    marketPickerAsset: this.props.marketPickerAsset
+                },
+                {
+                    inputValue: this.state.poolName,
+                    lookupQuote: this.state.lookupQuote
+                },
+                this.setState,
+                this._checkAndUpdateMarketList
+            );
+        }
+
     }
 
     shouldComponentUpdate(np, ns) {
@@ -219,28 +219,31 @@ class CreatePoolModal extends React.Component {
             if (needFetchIssuer) return;
             clearInterval(this.intervalId);
 
-            if (this.state.searchPoolName) {
+
+            if (this.state.searchPoolName){
                 this.setState({
                     poolNameArray: marketsList,
                     activeSearch: false
                 });
-            } else if (this.state.searchAssetA) {
+            }
+            else if (this.state.searchAssetA){
                 this.setState({
                     assetsAArray: marketsList,
                     activeSearch: false
                 });
-            } else if (this.state.searchAssetB) {
+            }
+            else if (this.state.searchAssetB){
                 this.setState({
                     assetsBArray: marketsList,
                     activeSearch: false
                 });
             }
-        }, 300);
+            }, 300);
     }
 
     onCancel() {
         this.props.hideModal();
-        this.setState(this._getInitialState());
+	this.setState(this._getInitialState());
         this.onClose();
     }
 
@@ -249,75 +252,61 @@ class CreatePoolModal extends React.Component {
     }
 
     onCreatePool() {
-        if (!this.state.poolName) {
-            this.setState({
-                showAlertInputPool: true
-            });
+        if (!this.state.poolName){
+            this.setState(
+                {
+                    showAlertInputPool: true
+                }
+            );
             return;
-        } else if (!this.state.assetsA) {
-            this.setState({
-                showAlertInputAssetA: true
-            });
+        }
+        else if (!this.state.assetsA)
+        {
+            this.setState(
+                {
+                    showAlertInputAssetA: true
+                }
+            );
             return;
-        } else if (!this.state.assetsB) {
-            this.setState({
-                showAlertInputAssetB: true
-            });
+        } else if (!this.state.assetsB){
+            this.setState(
+                {
+                    showAlertInputAssetB: true
+                }
+            );
             return;
-        } else if (!this.state.takerFee) {
-            this.setState({
-                showAlertInputTrankerFee: true
-            });
+        } else if (!this.state.takerFee){
+            this.setState(
+                {
+                    showAlertInputTrankerFee: true
+                }
+            );
             return;
-        } else if (!this.state.unstakeFee) {
-            this.setState({
-                showAlertInputUnstakeFee: true
-            });
+        } else if (!this.state.unstakeFee){
+            this.setState(
+                {
+                    showAlertInputUnstakeFee: true
+                }
+            );
             return;
         }
 
-        if (
-            this.state.assetsA &&
-            this.state.assetsB &&
-            this.state.takerFee &&
-            this.state.unstakeFee
-        ) {
-            let assetA_id = Number(
-                this.state.assetsA[1]["id"].replace("1.3.", "")
-            );
-            let assetB_id = Number(
-                this.state.assetsB[1]["id"].replace("1.3.", "")
-            );
-            if (assetA_id > assetB_id) {
-                console.log(
-                    this.state.assetsB[1]["quote"],
-                    this.state.assetsA[1]["quote"]
-                );
-                ApplicationApi.liquidityPoolCreate(
-                    this.props.account,
-                    this.state.assetsB[1]["quote"],
-                    this.state.assetsA[1]["quote"],
-                    this.state.poolName,
-                    this.state.takerFee * 100.0,
-                    this.state.unstakeFee * 100.0
-                ); //.then(() => {
-                this.props.hideModal();
-            } else {
-                console.log(
-                    this.state.assetsA[1]["quote"],
-                    this.state.assetsB[1]["quote"]
-                );
-                ApplicationApi.liquidityPoolCreate(
-                    this.props.account,
-                    this.state.assetsA[1]["quote"],
-                    this.state.assetsB[1]["quote"],
-                    this.state.poolName,
-                    this.state.takerFee * 100.0,
-                    this.state.unstakeFee * 100.0
-                ); //.then(() => {
-                this.props.hideModal();
-            }
+        if (this.state.assetsA && this.state.assetsB && this.state.takerFee && this.state.unstakeFee){
+            let assetA_id = Number(this.state.assetsA[1]["id"].replace("1.3.", ""));
+            let assetB_id = Number(this.state.assetsB[1]["id"].replace("1.3.", ""));
+            if (assetA_id > assetB_id)
+            {
+console.log(this.state.assetsB[1]["quote"], this.state.assetsA[1]["quote"]);
+ApplicationApi.liquidityPoolCreate(this.props.account, this.state.assetsB[1]["quote"], this.state.assetsA[1]["quote"], this.state.poolName, this.state.takerFee * 100.0,
+this.state.unstakeFee * 100.0);//.then(() => {
+this.props.hideModal();
+}else{
+console.log(this.state.assetsA[1]["quote"], this.state.assetsB[1]["quote"]);
+            ApplicationApi.liquidityPoolCreate(this.props.account, this.state.assetsA[1]["quote"], this.state.assetsB[1]["quote"], this.state.poolName, this.state.takerFee * 100.0,
+            this.state.unstakeFee * 100.0);//.then(() => {
+            this.props.hideModal();
         }
+}
         this.onCancel();
     }
 
@@ -368,16 +357,14 @@ class CreatePoolModal extends React.Component {
 
         if (!isValidName) {
             /* Don't lookup invalid asset names */
-            this.setState(
-                {
-                    filterAssetA: toFind,
-                    activeSearch: false,
-                    marketsList: []
-                },
-                () => {
+            this.setState({
+                filterAssetA: toFind,
+                activeSearch: false,
+                marketsList: []
+            },
+            () => {
                     this.onSetAssetAArray();
-                }
-            );
+            });
 
             return;
         } else {
@@ -389,6 +376,7 @@ class CreatePoolModal extends React.Component {
                 searchAssetB: false
             });
         }
+
 
         if (this.state.filterAssetA !== toFind) {
             this.timer && clearTimeout(this.timer);
@@ -412,16 +400,14 @@ class CreatePoolModal extends React.Component {
 
         if (!isValidName) {
             /* Don't lookup invalid asset names */
-            this.setState(
-                {
-                    filterAssetB: toFind,
-                    activeSearch: false,
-                    marketsList: []
-                },
-                () => {
+            this.setState({
+                filterAssetB: toFind,
+                activeSearch: false,
+                marketsList: []
+            },
+            () => {
                     this.onSetAssetAArray();
-                }
-            );
+            });
 
             return;
         } else {
@@ -433,6 +419,7 @@ class CreatePoolModal extends React.Component {
                 searchAssetB: true
             });
         }
+
 
         if (this.state.filterAssetB !== toFind) {
             this.timer && clearTimeout(this.timer);
@@ -446,11 +433,14 @@ class CreatePoolModal extends React.Component {
                 this.setState
             );
         }, 1500);
+
     }
 
-    onSetAssetAArray() {}
+    onSetAssetAArray() {
+    }
 
-    onSetAssetBArray() {}
+    onSetAssetBArray() {
+    }
 
     onSetPoolName(name) {
         this.setState({poolName: name, searchPoolName: false});
@@ -477,7 +467,7 @@ class CreatePoolModal extends React.Component {
         });
     }
 
-    onSetTakerFee(e) {
+    onSetTakerFee(e){
         this.setState(this.initAlertState());
         // this.setState({
         //     takerFee: parseFloat(e.target.value.trim())
@@ -487,26 +477,29 @@ class CreatePoolModal extends React.Component {
         });
     }
 
-    onFormatTakerFee(e) {
-        const takerFee = this.state.takerFee;
+    onFormatTakerFee(e){
+        const takerFee = this.state.takerFee
         this.setState({
             takerFee: parseFloat(takerFee).toFixed(2)
-        });
+        })
     }
 
-    onSetUnstackFee(e) {
+
+
+    onSetUnstackFee(e){
         this.setState(this.initAlertState());
         this.setState({
             unstakeFee: e.target.value
         });
     }
 
-    onFormatUnstackFee(e) {
-        const unstakeFee = this.state.unstakeFee;
+    onFormatUnstackFee(e){
+        const unstakeFee = this.state.unstakeFee
         this.setState({
             unstakeFee: parseFloat(unstakeFee).toFixed(2)
-        });
+        })
     }
+
 
     render() {
         const footer = [];
@@ -549,26 +542,21 @@ class CreatePoolModal extends React.Component {
                                         type="text"
                                         ref="marketPicker_input"
                                         value={this.state.poolName}
-                                        onChange={this.onPoolNameChange.bind(
-                                            this,
-                                            false
-                                        )}
+                                        onChange={this.onPoolNameChange.bind(this, false)}
                                         placeholder={counterpart.translate(
                                             "account.liquidity_pools.pool_name"
                                         )}
                                         maxLength="16"
                                         addonAfter={<AntIcon type="search" />}
                                     />
-                                    {this.state.showAlertInputPool ? (
-                                        <Alert
-                                            message={counterpart.translate(
-                                                "account.liquidity_pools.alert_request_input_pool"
-                                            )}
-                                            type="warning"
-                                            showIcon
-                                            style={{marginBottom: "2em"}}
-                                        />
-                                    ) : null}
+                                    {this.state.showAlertInputPool ? (<Alert
+                                        message={counterpart.translate(
+                                            "account.liquidity_pools.alert_request_input_pool"
+                                        )}
+                                        type="warning"
+                                        showIcon
+                                        style={{marginBottom: "2em"}}
+                                    />):null}
                                 </Form.Item>
                             </div>
                             {this.state.searchPoolName && (
@@ -598,36 +586,29 @@ class CreatePoolModal extends React.Component {
                                         type="text"
                                         ref="marketPicker_input"
                                         value={this.state.filterAssetA}
-                                        onChange={this.onAssetASearch.bind(
-                                            this,
-                                            true
-                                        )}
+                                        onChange={this.onAssetASearch.bind(this, true)}
                                         placeholder={counterpart.translate(
                                             "account.liquidity_pools.asset_a"
                                         )}
                                         maxLength="16"
                                         addonAfter={<AntIcon type="search" />}
                                     />
-                                    {this.state.showAlertChangeAssetA ? (
-                                        <Alert
-                                            message={counterpart.translate(
-                                                "account.liquidity_pools.alert_asset_a"
-                                            )}
-                                            type="warning"
-                                            showIcon
-                                            style={{marginBottom: "2em"}}
-                                        />
-                                    ) : null}
-                                    {this.state.showAlertInputAssetA ? (
-                                        <Alert
-                                            message={counterpart.translate(
-                                                "account.liquidity_pools.alert_request_input_asset_a"
-                                            )}
-                                            type="warning"
-                                            showIcon
-                                            style={{marginBottom: "2em"}}
-                                        />
-                                    ) : null}
+                                    {this.state.showAlertChangeAssetA ? (<Alert
+                                        message={counterpart.translate(
+                                            "account.liquidity_pools.alert_asset_a"
+                                        )}
+                                        type="warning"
+                                        showIcon
+                                        style={{marginBottom: "2em"}}
+                                    />):null}
+                                    {this.state.showAlertInputAssetA ? (<Alert
+                                        message={counterpart.translate(
+                                            "account.liquidity_pools.alert_request_input_asset_a"
+                                        )}
+                                        type="warning"
+                                        showIcon
+                                        style={{marginBottom: "2em"}}
+                                    />):null}
                                 </Form.Item>
                             </div>
                             {this.state.searchAssetA && (
@@ -657,36 +638,30 @@ class CreatePoolModal extends React.Component {
                                         type="text"
                                         ref="marketPicker_input"
                                         value={this.state.filterAssetB}
-                                        onChange={this.onAssetBSearch.bind(
-                                            this,
-                                            true
-                                        )}
+                                        onChange={this.onAssetBSearch.bind(this, true)}
                                         placeholder={counterpart.translate(
                                             "account.liquidity_pools.asset_b"
                                         )}
                                         maxLength="16"
                                         addonAfter={<AntIcon type="search" />}
                                     />
-                                    {this.state.showAlertChangeAssetB ? (
-                                        <Alert
-                                            message={counterpart.translate(
-                                                "account.liquidity_pools.alert_asset_b"
-                                            )}
-                                            type="warning"
-                                            showIcon
-                                            style={{marginBottom: "2em"}}
-                                        />
-                                    ) : null}
-                                    {this.state.showAlertInputAssetB ? (
-                                        <Alert
-                                            message={counterpart.translate(
-                                                "account.liquidity_pools.alert_request_input_asset_b"
-                                            )}
-                                            type="warning"
-                                            showIcon
-                                            style={{marginBottom: "2em"}}
-                                        />
-                                    ) : null}
+                                    {this.state.showAlertChangeAssetB ? (<Alert
+                                        message={counterpart.translate(
+                                            "account.liquidity_pools.alert_asset_b"
+                                        )}
+                                        type="warning"
+                                        showIcon
+                                        style={{marginBottom: "2em"}}
+                                    />):null}
+                                    {this.state.showAlertInputAssetB ? (<Alert
+                                        message={counterpart.translate(
+                                            "account.liquidity_pools.alert_request_input_asset_b"
+                                        )}
+                                        type="warning"
+                                        showIcon
+                                        style={{marginBottom: "2em"}}
+                                    />):null}
+
                                 </Form.Item>
                             </div>
                             {this.state.searchAssetB && (
@@ -708,6 +683,7 @@ class CreatePoolModal extends React.Component {
                                     )}
                                 </div>
                             )}
+
                         </div>
                         <div className="form-group inputAddon small-12">
                             <Input
@@ -725,26 +701,22 @@ class CreatePoolModal extends React.Component {
                                 addonAfter="Taker Fee %"
                                 maxLength="16"
                             />
-                            {this.state.showAlertChangeTrankerFee ? (
-                                <Alert
-                                    message={counterpart.translate(
-                                        "account.liquidity_pools.alert_taker_fee"
-                                    )}
-                                    type="warning"
-                                    showIcon
-                                    style={{marginBottom: "2em"}}
-                                />
-                            ) : null}
-                            {this.state.showAlertInputTrankerFee ? (
-                                <Alert
-                                    message={counterpart.translate(
-                                        "account.liquidity_pools.alert_request_input_taker_fee"
-                                    )}
-                                    type="warning"
-                                    showIcon
-                                    style={{marginBottom: "2em"}}
-                                />
-                            ) : null}
+                            {this.state.showAlertChangeTrankerFee ? (<Alert
+                                        message={counterpart.translate(
+                                            "account.liquidity_pools.alert_taker_fee"
+                                        )}
+                                        type="warning"
+                                        showIcon
+                                        style={{marginBottom: "2em"}}
+                            />):null}
+                            {this.state.showAlertInputTrankerFee ? (<Alert
+                                        message={counterpart.translate(
+                                            "account.liquidity_pools.alert_request_input_taker_fee"
+                                        )}
+                                        type="warning"
+                                        showIcon
+                                        style={{marginBottom: "2em"}}
+                            />):null}
                         </div>
 
                         <div className="form-group inputAddon small-12">
@@ -763,26 +735,22 @@ class CreatePoolModal extends React.Component {
                                 addonAfter="Unstake Fee %"
                                 maxLength="16"
                             />
-                            {this.state.showAlertChangeUnstakeFee ? (
-                                <Alert
-                                    message={counterpart.translate(
-                                        "account.liquidity_pools.alert_unstack_fee"
-                                    )}
-                                    type="warning"
-                                    showIcon
-                                    style={{marginBottom: "2em"}}
-                                />
-                            ) : null}
-                            {this.state.showAlertInputUnstakeFee ? (
-                                <Alert
-                                    message={counterpart.translate(
-                                        "account.liquidity_pools.alert_request_input_unstack_fee"
-                                    )}
-                                    type="warning"
-                                    showIcon
-                                    style={{marginBottom: "2em"}}
-                                />
-                            ) : null}
+                            {this.state.showAlertChangeUnstakeFee ? (<Alert
+                                        message={counterpart.translate(
+                                            "account.liquidity_pools.alert_unstack_fee"
+                                        )}
+                                        type="warning"
+                                        showIcon
+                                        style={{marginBottom: "2em"}}
+                            />):null}
+                            {this.state.showAlertInputUnstakeFee ? (<Alert
+                                        message={counterpart.translate(
+                                            "account.liquidity_pools.alert_request_input_unstack_fee"
+                                        )}
+                                        type="warning"
+                                        showIcon
+                                        style={{marginBottom: "2em"}}
+                            />):null}
                         </div>
 
                         <div className="form-group" />

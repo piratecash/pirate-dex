@@ -614,7 +614,7 @@ class AssetActions {
         };
     }
 
-    getAssetsByIssuer(issuer, count, start, includeGateways = false) {
+    getAssetsByIssuer(issuer, count, start, includeGateways = false){
         let id = issuer + "_" + count;
         console.log("getAssetsByIssuer id = ", id);
         return dispatch => {
@@ -633,19 +633,21 @@ class AssetActions {
                         assets.forEach(asset => {
                             ChainStore._updateObject(asset, false);
                             dynamicIDS.push(asset.dynamic_asset_data_id);
-                        });
+                            });
                         let dynamicPromise = Apis.instance()
                             .db_api()
                             .exec("get_objects", [dynamicIDS]);
-                        Promise.all([dynamicPromise]).then(results => {
-                            delete inProgress[id];
-                            dispatch({
-                                assets: assets,
-                                dynamic: results[0],
-                                loading: false
-                            });
-                            return assets && assets.length;
-                        });
+                        Promise.all([dynamicPromise]).then(
+                            results => {
+                                delete inProgress[id];
+                                dispatch({
+                                    assets: assets,
+                                    dynamic: results[0],
+                                    loading: false
+                                });
+                                return assets && assets.length;
+                            }
+                        );
                     })
                     .catch(error => {
                         console.log(

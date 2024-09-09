@@ -565,10 +565,10 @@ class AccountAssetCreate extends React.Component {
                     : new big(new_state.max_supply)
                           .times(Math.pow(10, new_state.precision))
                           .gt(GRAPHENE_MAX_SHARE_SUPPLY)
-                    ? counterpart.translate(
-                          "account.user_issued_assets.too_large"
-                      )
-                    : null;
+                        ? counterpart.translate(
+                              "account.user_issued_assets.too_large"
+                          )
+                        : null;
         } catch (err) {
             console.log("err:", err);
             errors.max_supply = counterpart.translate(
@@ -787,8 +787,8 @@ class AccountAssetCreate extends React.Component {
                 update.description.visible
                     ? false
                     : update.description.visible === false
-                    ? true
-                    : false
+                        ? true
+                        : false
             )
         );
 
@@ -1282,19 +1282,19 @@ class AccountAssetCreate extends React.Component {
                                                     marginLeft: "30px"
                                                 }}
                                             >
-                                                <label>
-                                                    <Translate content="account.user_issued_assets.taker_fee_percent" />{" "}
+                                                 <label>
+                                                   <Translate content="account.user_issued_assets.taker_fee_percent" />{" "}
                                                     (%)
-                                                    <input
-                                                        type="number"
-                                                        value={
-                                                            update.taker_fee_percent
-                                                        }
-                                                        onChange={this._onUpdateInput.bind(
-                                                            this,
-                                                            "taker_fee_percent"
-                                                        )}
-                                                    />
+                                                        <input
+                                                            type="number"
+                                                            value={
+                                                                update.taker_fee_percent
+                                                            }
+                                                            onChange={this._onUpdateInput.bind(
+                                                                this,
+                                                                "taker_fee_percent"
+                                                            )}
+                                                        />
                                                 </label>
                                                 <label>
                                                     <Translate content="account.user_issued_assets.market_fee" />{" "}

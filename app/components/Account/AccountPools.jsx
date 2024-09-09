@@ -17,12 +17,15 @@ import Icon from "../Icon/Icon";
 import PoolExchangeModal from "../Modal/PoolExchangeModal";
 import PoolStakeModal from "../Modal/PoolStakeModal";
 import CreatePoolModal from "../Modal/CreatePoolModal";
-import DeletePoolModal from "../Modal/DeletePoolModal";
+import DeletePoolModal from "../Modal/DeletePoolModal"
 import {Tabs, Tab} from "../Utility/Tabs";
 import {Map, List} from "immutable";
 import AssetStore from "stores/AssetStore";
 import AssetWrapper from "../Utility/AssetWrapper";
 import ApplicationApi from "api/ApplicationApi";
+
+
+
 
 class AccountPools extends React.Component {
     static propTypes = {
@@ -79,13 +82,12 @@ class AccountPools extends React.Component {
     }
 
     _getLiquidityPools() {
+
         if (this.timer) {
             clearTimeout(this.timer);
         }
         this.timer = setTimeout(() => {
-            PoolmartActions.getLiquidityPoolsAccount.defer(
-                this.props.account_name
-            );
+            PoolmartActions.getLiquidityPoolsAccount.defer(this.props.account_name);
         }, 500);
     }
 
@@ -218,7 +220,7 @@ class AccountPools extends React.Component {
         });
     }
 
-    _deletePool(pool) {
+    _deletePool(pool){
         console.log("_deletePool invoked.");
 
         const {account} = this.props;
@@ -228,18 +230,24 @@ class AccountPools extends React.Component {
             isDeletePoolModalVisible: false
         });
 
-        ApplicationApi.liquidityPoolDelete(account, selectedPool["id"]).then(
-            () => {
-                if (this.timer) {
-                    clearTimeout(this.timer);
-                }
-                this.timer = setTimeout(() => {
-                    PoolmartActions.getLiquidityPoolsAccount.defer(
-                        this.props.account_name
-                    );
-                }, 500);
+        ApplicationApi.liquidityPoolDelete(
+            account,
+            selectedPool["id"]
+        ).then(() => {
+
+            if (this.timer) {
+                clearTimeout(this.timer);
             }
-        );
+            this.timer = setTimeout(() => {
+                PoolmartActions.getLiquidityPoolsAccount.defer(this.props.account_name);
+            }, 500);
+
+        });
+
+
+
+
+
     }
 
     render() {
@@ -273,8 +281,8 @@ class AccountPools extends React.Component {
                     a.share_asset_str > b.share_asset_str
                         ? 1
                         : a.share_asset_str < b.share_asset_str
-                        ? -1
-                        : 0
+                            ? -1
+                            : 0
             },
             {
                 key: "asset_a_str",
@@ -293,8 +301,8 @@ class AccountPools extends React.Component {
                     a.asset_a_str > b.asset_a_str
                         ? 1
                         : a.asset_a_str < b.asset_a_str
-                        ? -1
-                        : 0
+                            ? -1
+                            : 0
             },
             {
                 key: "asset_a_qty",
@@ -321,8 +329,8 @@ class AccountPools extends React.Component {
                     a.asset_b_str > b.asset_b_str
                         ? 1
                         : a.asset_b_str < b.asset_b_str
-                        ? -1
-                        : 0
+                            ? -1
+                            : 0
             },
             {
                 key: "asset_b_qty",
@@ -415,149 +423,126 @@ class AccountPools extends React.Component {
             dataSource.push(row);
         });
         return (
-            <div className="tabs-container generic-bordered-box">
-                <Tabs
-                    segmented={false}
-                    setting="issuedAssetsTab"
-                    className="account-tabs"
-                    tabsClass="account-overview bordered-header content-block"
-                    contentClass="padding"
-                >
-                    <Tab title="account.liquidity_pools.liquidity_pools">
-                        <div className="grid-block vertical">
-                            <div className="grid-content no-padding">
-                                <SearchInput
-                                    placeholder={counterpart.translate(
-                                        "poolmart.liquidity_pools.asset_a"
-                                    )}
-                                    value={this.state.filterAssetA}
-                                    onChange={this._onFilterAssetA.bind(this)}
-                                    style={{
-                                        width: "200px",
-                                        marginBottom: "12px",
-                                        marginTop: "4px"
-                                    }}
-                                />
-                                <SearchInput
-                                    placeholder={counterpart.translate(
-                                        "poolmart.liquidity_pools.asset_b"
-                                    )}
-                                    value={this.state.filterAssetB}
-                                    onChange={this._onFilterAssetB.bind(this)}
-                                    style={{
-                                        width: "200px",
-                                        marginLeft: "20px",
-                                        marginBottom: "12px",
-                                        marginTop: "4px"
-                                    }}
-                                />
-                                <SearchInput
-                                    placeholder={counterpart.translate(
-                                        "poolmart.liquidity_pools.share_asset"
-                                    )}
-                                    value={this.state.filterShareAsset}
-                                    onChange={this._onFilterShareAsset.bind(
-                                        this
-                                    )}
-                                    style={{
-                                        width: "200px",
-                                        marginLeft: "20px",
-                                        marginBottom: "12px",
-                                        marginTop: "4px"
-                                    }}
-                                />
-                                <Select
-                                    style={{
-                                        width: "150px",
-                                        marginLeft: "24px",
-                                        marginTop: "4px"
-                                    }}
-                                    value={this.state.limit}
-                                    onChange={this._handleRowsChange.bind(this)}
-                                >
-                                    <Select.Option key={"10"}>
-                                        10 rows
-                                    </Select.Option>
-                                    <Select.Option key={"25"}>
-                                        25 rows
-                                    </Select.Option>
-                                    <Select.Option key={"50"}>
-                                        50 rows
-                                    </Select.Option>
-                                    <Select.Option key={"100"}>
-                                        100 rows
-                                    </Select.Option>
-                                </Select>
-                            </div>
-                            <div className="grid-content no-padding">
-                                <Table
-                                    columns={columns}
-                                    rowKey="id"
-                                    dataSource={dataSource}
-                                    pagination={{
-                                        pageSize: this.state.limit,
-                                        total: dataSource.length
-                                    }}
-                                />
-                            </div>
-                            <div className="content-block">
-                                <button
-                                    className="button"
-                                    onClick={this._createButtonClick.bind(
-                                        this,
-                                        this.props.account_name
-                                    )}
-                                >
-                                    <Translate content="account.liquidity_pools.create_pool" />
-                                </button>
-                            </div>
-                            {this.state.isExchangeModalVisible && (
-                                <PoolExchangeModal
-                                    isModalVisible={
-                                        this.state.isExchangeModalVisible
-                                    }
-                                    onHideModal={this._hideExchangeModal.bind(
-                                        this
-                                    )}
-                                    pool={this.state.selectedPool.share_asset}
-                                />
-                            )}
-                            {this.state.isStakeModalVisible && (
-                                <PoolStakeModal
-                                    isModalVisible={
-                                        this.state.isStakeModalVisible
-                                    }
-                                    onHideModal={this._hideStakeModal.bind(
-                                        this
-                                    )}
-                                    pool={this.state.selectedPool.share_asset}
-                                />
-                            )}
-                            {this.state.isDeletePoolModalVisible && (
-                                <DeletePoolModal
-                                    isModalVisible={
-                                        this.state.isDeletePoolModalVisible
-                                    }
-                                    onHideModal={this._hideDeleteModal.bind(
-                                        this
-                                    )}
-                                    onDeletePool={this._deletePool.bind(this)}
-                                    pool={this.state.selectedPool.share_asset}
-                                />
-                            )}
-                            <CreatePoolModal
-                                showModal={this.showCreatePoolModal}
-                                hideModal={this.hideCreatePoolModal}
-                                visible={this.state.isCreatePoolModalVisible}
-                                account={this.props.account}
-                                assetsList={assetsList}
-                                searchList={this.props.assets}
-                                name={this.props.account_name}
-                            />
-                        </div>
-                    </Tab>
-                </Tabs>
+        <div className="tabs-container generic-bordered-box">
+            <Tabs
+                segmented={false}
+                setting="issuedAssetsTab"
+                className="account-tabs"
+                tabsClass="account-overview bordered-header content-block"
+                contentClass="padding">
+                <Tab title="account.liquidity_pools.liquidity_pools">
+            <div className="grid-block vertical">
+                <div className="grid-content no-padding">
+                    <SearchInput
+                        placeholder={counterpart.translate(
+                            "poolmart.liquidity_pools.asset_a"
+                        )}
+                        value={this.state.filterAssetA}
+                        onChange={this._onFilterAssetA.bind(this)}
+                        style={{
+                            width: "200px",
+                            marginBottom: "12px",
+                            marginTop: "4px"
+                        }}
+                    />
+                    <SearchInput
+                        placeholder={counterpart.translate(
+                            "poolmart.liquidity_pools.asset_b"
+                        )}
+                        value={this.state.filterAssetB}
+                        onChange={this._onFilterAssetB.bind(this)}
+                        style={{
+                            width: "200px",
+                            marginLeft: "20px",
+                            marginBottom: "12px",
+                            marginTop: "4px"
+                        }}
+                    />
+                    <SearchInput
+                        placeholder={counterpart.translate(
+                            "poolmart.liquidity_pools.share_asset"
+                        )}
+                        value={this.state.filterShareAsset}
+                        onChange={this._onFilterShareAsset.bind(this)}
+                        style={{
+                            width: "200px",
+                            marginLeft: "20px",
+                            marginBottom: "12px",
+                            marginTop: "4px"
+                        }}
+                    />
+                    <Select
+                        style={{
+                            width: "150px",
+                            marginLeft: "24px",
+                            marginTop: "4px"
+                        }}
+                        value={this.state.limit}
+                        onChange={this._handleRowsChange.bind(this)}
+                    >
+                        <Select.Option key={"10"}>10 rows</Select.Option>
+                        <Select.Option key={"25"}>25 rows</Select.Option>
+                        <Select.Option key={"50"}>50 rows</Select.Option>
+                        <Select.Option key={"100"}>100 rows</Select.Option>
+                    </Select>
+                </div>
+                <div className="grid-content no-padding">
+                    <Table
+                        columns={columns}
+                        rowKey="id"
+                        dataSource={dataSource}
+                        pagination={{
+                            pageSize: this.state.limit,
+                            total: dataSource.length
+                        }}
+                    />
+                </div>
+                <div className="content-block">
+                                    <button
+                                        className="button"
+                                        onClick={this._createButtonClick.bind(
+                                            this,
+                                            this.props.account_name
+                                        )}
+                                    >
+                                        <Translate content="account.liquidity_pools.create_pool" />
+                                    </button>
+                                </div>
+                {this.state.isExchangeModalVisible && (
+                    <PoolExchangeModal
+                        isModalVisible={this.state.isExchangeModalVisible}
+                        onHideModal={this._hideExchangeModal.bind(this)}
+                        pool={this.state.selectedPool.share_asset}
+                    />
+                )}
+                {this.state.isStakeModalVisible && (
+                    <PoolStakeModal
+                        isModalVisible={this.state.isStakeModalVisible}
+                        onHideModal={this._hideStakeModal.bind(this)}
+                        pool={this.state.selectedPool.share_asset}
+                    />
+                )}
+                {this.state.isDeletePoolModalVisible && (
+                    <DeletePoolModal
+                        isModalVisible={this.state.isDeletePoolModalVisible}
+                        onHideModal={this._hideDeleteModal.bind(this)}
+                        onDeletePool={this._deletePool.bind(this)}
+                        pool={this.state.selectedPool.share_asset}
+                    />
+                )}
+                <CreatePoolModal
+                    showModal={this.showCreatePoolModal}
+                    hideModal={this.hideCreatePoolModal}
+                    visible={this.state.isCreatePoolModalVisible}
+                    account={this.props.account}
+                    assetsList={assetsList}
+                    searchList={this.props.assets}
+                    name={this.props.account_name}
+                />
             </div>
+            </Tab>
+            </Tabs>
+        </div>
         );
     }
 }
@@ -570,27 +555,30 @@ class AccountPoolsStoreWrapper extends React.Component {
     }
 }
 
-export default connect(AccountPoolsStoreWrapper, {
-    listenTo() {
-        return [PoolmartStore, AssetStore];
-    },
-    getProps(props) {
-        let assets = Map(),
-            assetsList = List();
-        if (props.account.get("assets", []).size) {
-            props.account.get("assets", []).forEach(id => {
-                assetsList = assetsList.push(id);
-            });
+export default connect(
+    AccountPoolsStoreWrapper,
+    {
+        listenTo() {
+            return [PoolmartStore, AssetStore];
+        },
+        getProps(props) {
+            let assets = Map(),
+                assetsList = List();
+            if (props.account.get("assets", []).size) {
+                props.account.get("assets", []).forEach(id => {
+                    assetsList = assetsList.push(id);
+                });
+            }
+            let liquidityPools = PoolmartStore.getState().liquidityPools;
+            assets = AssetStore.getState().assets;
+            return {
+                liquidityPools: PoolmartStore.getState().liquidityPools,
+                liquidityPoolsLoading: PoolmartStore.getState()
+                    .liquidityPoolsLoading,
+                lastPoolId: PoolmartStore.getState().lastPoolId,
+                assets: assets,
+                assetsList: assetsList
+            };
         }
-        let liquidityPools = PoolmartStore.getState().liquidityPools;
-        assets = AssetStore.getState().assets;
-        return {
-            liquidityPools: PoolmartStore.getState().liquidityPools,
-            liquidityPoolsLoading: PoolmartStore.getState()
-                .liquidityPoolsLoading,
-            lastPoolId: PoolmartStore.getState().lastPoolId,
-            assets: assets,
-            assetsList: assetsList
-        };
     }
-});
+);

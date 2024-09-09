@@ -735,18 +735,22 @@ class PredictionMarkets extends Component {
     }
 }
 
-PredictionMarkets = connect(PredictionMarkets, {
-    listenTo() {
-        return [AssetStore, MarketsStore];
-    },
-    getProps() {
-        return {
-            assets: AssetStore.getState().assets,
-            bucketSize: MarketsStore.getState().bucketSize,
-            currentGroupOrderLimit: MarketsStore.getState().currentGroupLimit,
-            marketLimitOrders: MarketsStore.getState().marketLimitOrders
-        };
+PredictionMarkets = connect(
+    PredictionMarkets,
+    {
+        listenTo() {
+            return [AssetStore, MarketsStore];
+        },
+        getProps() {
+            return {
+                assets: AssetStore.getState().assets,
+                bucketSize: MarketsStore.getState().bucketSize,
+                currentGroupOrderLimit: MarketsStore.getState()
+                    .currentGroupLimit,
+                marketLimitOrders: MarketsStore.getState().marketLimitOrders
+            };
+        }
     }
-});
+);
 
-export default PredictionMarkets = bindToCurrentAccount(PredictionMarkets);
+export default (PredictionMarkets = bindToCurrentAccount(PredictionMarkets));

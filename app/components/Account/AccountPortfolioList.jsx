@@ -1008,8 +1008,7 @@ class AccountPortfolioList extends React.Component {
             const canWithdraw =
                 backedCoin &&
                 backedCoin.withdrawalAllowed &&
-                hasBalance &&
-                balanceObject.get("balance") != 0;
+                hasBalance && balanceObject.get("balance") != 0;
 
             const canBuy = !!this.props.bridgeCoins.get(symbol);
 

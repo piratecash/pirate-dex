@@ -20,7 +20,7 @@ class DeletePoolModal extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            isModalVisible: props.isModalVisible
+            isModalVisible: props.isModalVisible,
         };
         this.hideModal = this.hideModal.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
@@ -46,10 +46,11 @@ class DeletePoolModal extends React.Component {
                 overlay={true}
                 onCancel={this.hideModal}
                 footer={[
-                    <Button key={"send"} onClick={this.onSubmit.bind(this)}>
-                        {counterpart.translate(
-                            "poolmart.liquidity_pools.delete_pool"
-                        )}
+                    <Button
+                        key={"send"}
+                        onClick={this.onSubmit.bind(this)}
+                    >
+                        {counterpart.translate("poolmart.liquidity_pools.delete_pool")}
                     </Button>,
                     <Button
                         key={"Cancel"}

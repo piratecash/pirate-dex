@@ -79,6 +79,7 @@ class AssetStore extends BaseStore {
         }
     }
 
+
     onLookupAsset(payload) {
         this.searchTerms[payload.searchID] = payload.symbol;
         this.lookupResults = payload.assets;

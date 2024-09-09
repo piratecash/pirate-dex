@@ -205,8 +205,8 @@ class GatewaySelectorModal extends React.Component {
     }
 
     _getEnabledRowKeys() {
-        return this._getRows().map(item =>
-            this.state.onChainConfig[item.key] ? undefined : item.key
+        return this._getRows().map(
+            item => (this.state.onChainConfig[item.key] ? undefined : item.key)
         );
     }
 
@@ -395,22 +395,25 @@ class GatewaySelectorModal extends React.Component {
     }
 }
 
-GatewaySelectorModal = connect(GatewaySelectorModal, {
-    listenTo() {
-        return [SettingsStore];
-    },
-    getProps() {
-        return {
-            filteredServiceProviders: SettingsStore.getState().settings.get(
-                "filteredServiceProviders",
-                []
-            ),
-            hasSeenExternalServices: SettingsStore.getState().viewSettings.get(
-                "hasSeenExternalServices",
-                false
-            )
-        };
+GatewaySelectorModal = connect(
+    GatewaySelectorModal,
+    {
+        listenTo() {
+            return [SettingsStore];
+        },
+        getProps() {
+            return {
+                filteredServiceProviders: SettingsStore.getState().settings.get(
+                    "filteredServiceProviders",
+                    []
+                ),
+                hasSeenExternalServices: SettingsStore.getState().viewSettings.get(
+                    "hasSeenExternalServices",
+                    false
+                )
+            };
+        }
     }
-});
+);
 
 export default GatewaySelectorModal;

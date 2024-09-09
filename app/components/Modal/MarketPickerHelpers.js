@@ -15,14 +15,7 @@ function lookupAssets(value, gatewayAssets = false, getAssetList, setState) {
     setState({lookupQuote: quote});
 }
 
-function lookupAccountAssets(
-    value,
-    toFind,
-    start,
-    gatewayAssets = false,
-    getAssetList,
-    setState
-) {
+function lookupAccountAssets(value, toFind, start, gatewayAssets = false, getAssetList, setState) {
     if (!value && value !== "") return;
 
     getAssetList(value, 10, start, gatewayAssets);
@@ -30,8 +23,10 @@ function lookupAccountAssets(
     setState({lookupQuote: toFind});
 }
 
+
+
 function assetFilter(
-    {searchAssets, marketPickerAsset /*, baseAsset, quoteAsset*/},
+    {searchAssets, marketPickerAsset/*, baseAsset, quoteAsset*/},
     {inputValue, lookupQuote},
     setState,
     checkAndUpdateMarketList
@@ -66,7 +61,7 @@ function assetFilter(
                     {
                         id: asset.id,
                         quote: asset.symbol,
-                        base: "",
+                        base: '',
                         issuerId: asset.issuer,
                         issuer: issuerName
                     }

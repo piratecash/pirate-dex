@@ -49,8 +49,8 @@ class PredictionMarketsOverviewTable extends Component {
                     return a.symbol > b.symbol
                         ? 1
                         : a.symbol < b.symbol
-                        ? -1
-                        : 0;
+                            ? -1
+                            : 0;
                 },
                 render: item => {
                     return (
@@ -122,8 +122,8 @@ class PredictionMarketsOverviewTable extends Component {
                     return a.marketConfidence > b.marketConfidence
                         ? 1
                         : a.marketConfidence < b.marketConfidence
-                        ? -1
-                        : 0;
+                            ? -1
+                            : 0;
                 },
                 render: (item, row) => {
                     const ticker = Object.assign(
@@ -191,8 +191,8 @@ class PredictionMarketsOverviewTable extends Component {
                     return a.marketLikelihood > b.marketLikelihood
                         ? 1
                         : a.marketLikelihood < b.marketLikelihood
-                        ? -1
-                        : 0;
+                            ? -1
+                            : 0;
                 },
                 render: (item, row) => {
                     const ticker = Object.assign(
@@ -461,8 +461,8 @@ PredictionMarketsOverviewTable.defaultProps = {
     predictionMarkets: []
 };
 
-export default PredictionMarketsOverviewTable = debounceRender(
+export default (PredictionMarketsOverviewTable = debounceRender(
     PredictionMarketsOverviewTable,
     150,
     {leading: false}
-);
+));

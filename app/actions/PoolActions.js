@@ -105,7 +105,10 @@ class PoolActions {
         share_asset,
         taker_fee_percent,
         withdrawal_fee_percent
-    ) {}
+    ){
+
+
+    }
 }
 
 export default alt.createActions(PoolActions);

@@ -213,8 +213,8 @@ const MarketUtils = {
                 ? quote.get("precision")
                 : quote.precision
             : base.toJS
-            ? base.get("precision")
-            : base.precision;
+                ? base.get("precision")
+                : base.precision;
 
         let buy, sell;
         let callPrice;

@@ -260,10 +260,10 @@ class WalletActions {
                 })
                 .catch(error => {
                     /*
-                     * Since the account creation failed, we need to decrement the
-                     * sequence used to generate private keys from the brainkey. Three
-                     * keys were generated, so we decrement three times.
-                     */
+                * Since the account creation failed, we need to decrement the
+                * sequence used to generate private keys from the brainkey. Three
+                * keys were generated, so we decrement three times.
+                */
                     WalletDb.decrementBrainKeySequence();
                     WalletDb.decrementBrainKeySequence();
                     WalletDb.decrementBrainKeySequence();

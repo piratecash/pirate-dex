@@ -179,9 +179,10 @@ class DirectDebitClaimModal extends React.Component {
 
         let from_account_balance = 0;
         if (!!balanceID) {
-            from_account_balance = (
-                await FetchChain("getObject", balanceID)
-            ).get("balance");
+            from_account_balance = (await FetchChain(
+                "getObject",
+                balanceID
+            )).get("balance");
         }
         if (setState) {
             this.setState({from_account_balance});

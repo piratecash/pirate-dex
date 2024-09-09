@@ -235,7 +235,7 @@ class OpenledgerGatewayDepositRequest extends React.Component {
         if (
             !this.props.isAvailable ||
             (isDeposit && !this.props.deposit_account && !receive_address) ||
-            (receive_address && receive_address.address === "unknown")
+                (receive_address && receive_address.address === "unknown")
         ) {
             return (
                 <div>

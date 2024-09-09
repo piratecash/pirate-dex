@@ -33,10 +33,7 @@ class AmountSelector extends DecimalChecker {
         // TODO: use asset's precision to format the number
         if (!v && typeof v !== "number") v = "";
         if (typeof v === "number") v = v.toString();
-        let value = v
-            .toString()
-            .trim()
-            .replace(/,/g, "");
+        let value = v.toString().trim().replace(/,/g, "");
 
         return value;
     }

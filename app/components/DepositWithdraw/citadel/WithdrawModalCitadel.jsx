@@ -272,8 +272,7 @@ class WithdrawModalCitadel extends React.Component {
     onSubmit() {
         if (
             !this.state.withdraw_address_check_in_progress &&
-            this.state.withdraw_address &&
-            this.state.withdraw_address.length &&
+            this.state.withdraw_address && this.state.withdraw_address.length &&
             this.state.withdraw_amount !== null
         ) {
             if (!this.state.withdraw_address_is_valid) {
@@ -603,8 +602,7 @@ class WithdrawModalCitadel extends React.Component {
 
         if (
             !this.state.withdraw_address_check_in_progress &&
-            this.state.withdraw_address &&
-            this.state.withdraw_address.length
+            this.state.withdraw_address && this.state.withdraw_address.length
         ) {
             if (!this.state.withdraw_address_is_valid) {
                 invalid_address_message = (

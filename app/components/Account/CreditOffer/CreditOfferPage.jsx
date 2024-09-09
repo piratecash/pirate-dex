@@ -94,23 +94,6 @@ class CreditOfferPage extends React.Component {
     }
 
     showAcceptModal(data) {
-        // console.log("TODO:", data);
-        let {currentAccount} = this.props;
-        let account = ChainStore.getAccount(currentAccount);
-        if (account.get("id") == data.owner_account) {
-            notify.addNotification.defer({
-                children: (
-                    <Translate
-                        component="span"
-                        content="credit_offer.info_borrow_err"
-                    />
-                ),
-                level: "error",
-                autoDismiss: 3
-            });
-            return;
-        }
-
         let assetList = data.acceptable_collateral.map(v => v[0]);
         let debtAsset = data.asset_type;
         let selectAsset = assetList[0];
