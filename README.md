@@ -1,4 +1,4 @@
-PirateDEX-UI
+BitShares-UI
 ============
 [中文版](README_zh.md)
 
@@ -23,7 +23,7 @@ nvm use v16
 Once you have node installed, clone the repository using the following commands:
 
 ```
-git clone https://github.com/piratecash/pirate-dex.git
+git clone https://github.com/bitshares/bitshares-ui.git
 cd bitshares-ui
 ```
 
@@ -74,7 +74,7 @@ This will create a bundle in the ./build/dist folder that can be hosted with the
 ### Installable (local wallet)
 
 We use Electron to provide installable wallets, available for Windows, macOS and Linux Debian platforms such as Ubuntu. 
-There is a [GitHub Action available](https://github.com/piratecash/pirate-dex/blob/master/.github/workflows/build-release-binaries.yml#L18) that shows all the steps necessary for this build.
+There is a [GitHub Action available](https://github.com/bitshares/bitshares-ui/blob/master/.github/workflows/build-release-binaries.yml#L18) that shows all the steps necessary for this build.
 
 This will compile the UI with some special modifications for use with Electron, generate installable binaries with Electron and copy the result to the root `build/binaries` folder.
 

@@ -1,4 +1,4 @@
-PirateDEX-UI
+BitShares-UI
 ============
 
 这是一个连接 BitShares API 的轻钱包。BitShares API 由 *witness_node* 程序提供。

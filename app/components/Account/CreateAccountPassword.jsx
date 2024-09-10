@@ -42,8 +42,7 @@ class CreateAccountPassword extends React.Component {
             confirm_password: "",
             understand_1: false,
             understand_2: false,
-            understand_3: false,
-            understand_4: false
+            understand_3: false
         };
         this.onFinishConfirm = this.onFinishConfirm.bind(this);
 
@@ -88,13 +87,7 @@ class CreateAccountPassword extends React.Component {
         if (!firstAccount) {
             valid = valid && this.state.registrar_account;
         }
-        return (
-            valid &&
-            this.state.understand_1 &&
-            this.state.understand_2 &&
-            this.state.understand_4 &&
-            this.state.understand_5
-        );
+        return valid && this.state.understand_1 && this.state.understand_2;
     }
 
     onAccountNameChange(e) {
@@ -364,59 +357,6 @@ class CreateAccountPassword extends React.Component {
                         </label>
                     </div>
                     <br />
-
-                    <div
-                        className="confirm-checks"
-                        onClick={this._onInput.bind(this, "understand_4")}
-                    >
-                        <label
-                            htmlFor="checkbox-4"
-                            style={{position: "relative"}}
-                        >
-                            <input
-                                type="checkbox"
-                                id="checkbox-4"
-                                onChange={() => {}}
-                                checked={this.state.understand_4}
-                                style={{
-                                    position: "absolute",
-                                    top: "-5px",
-                                    left: "0"
-                                }}
-                            />
-                            <div style={{paddingLeft: "30px"}}>
-                                <Translate content="wallet.understand_4" />
-                            </div>
-                        </label>
-                    </div>
-                    <br />
-
-                    <div
-                        className="confirm-checks"
-                        onClick={this._onInput.bind(this, "understand_5")}
-                    >
-                        <label
-                            htmlFor="checkbox-5"
-                            style={{position: "relative"}}
-                        >
-                            <input
-                                type="checkbox"
-                                id="checkbox-5"
-                                onChange={() => {}}
-                                checked={this.state.understand_5}
-                                style={{
-                                    position: "absolute",
-                                    top: "-5px",
-                                    left: "0"
-                                }}
-                            />
-                            <div style={{paddingLeft: "30px"}}>
-                                <Translate content="wallet.understand_5" />
-                            </div>
-                        </label>
-                    </div>
-                    <br />
-
                     <div
                         className="confirm-checks"
                         onClick={this._onInput.bind(this, "understand_1")}

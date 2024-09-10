@@ -65,9 +65,9 @@ jobs:
                       --------
                       | Platform | SHA256 Checksum |
                       |---|---|
-                      |[Microsoft Windows](https://github.com/piratecash/pirate-dex/releases/download/${{ github.ref_name }}/PirateDEX_${{ github.ref_name }}.exe)|`${{steps.calc_hash.outputs.exehash}}`|
-                      |[Mac](https://github.com/piratecash/pirate-dex/releases/download/${{ github.ref_name }}/PirateDEX_${{ github.ref_name }}.dmg)|`${{steps.calc_hash.outputs.dmghash}}`|
-                      |[Linux](https://github.com/piratecash/pirate-dex/releases/download/${{ github.ref_name }}/PirateDEX_${{ github.ref_name }}.deb)|`${{steps.calc_hash.outputs.debhash}}`|
+                      |[Microsoft Windows](https://github.com/bitshares/bitshares-ui/releases/download/${{ github.ref_name }}/BitShares_${{ github.ref_name }}.exe)|`${{steps.calc_hash.outputs.exehash}}`|
+                      |[Mac](https://github.com/bitshares/bitshares-ui/releases/download/${{ github.ref_name }}/BitShares_${{ github.ref_name }}.dmg)|`${{steps.calc_hash.outputs.dmghash}}`|
+                      |[Linux](https://github.com/bitshares/bitshares-ui/releases/download/${{ github.ref_name }}/BitShares_${{ github.ref_name }}.deb)|`${{steps.calc_hash.outputs.debhash}}`|
             - name: Create Release
               id: create_release
               uses: actions/create-release@v1
@@ -84,8 +84,8 @@ jobs:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               with:
                   upload_url: ${{ steps.create_release.outputs.upload_url }}
-                  asset_path: ./build/binaries/PirateDEX_${{ github.ref_name }}.dmg
-                  asset_name: PirateDEX_${{ github.ref_name }}.dmg
+                  asset_path: ./build/binaries/BitShares_${{ github.ref_name }}.dmg
+                  asset_name: BitShares_${{ github.ref_name }}.dmg
                   asset_content_type: application/octet-stream
             - name: Upload deb
               uses: actions/upload-release-asset@v1
@@ -93,8 +93,8 @@ jobs:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               with:
                   upload_url: ${{ steps.create_release.outputs.upload_url }}
-                  asset_path: ./build/binaries/PirateDEX_${{ github.ref_name }}.deb
-                  asset_name: PirateDEX_${{ github.ref_name }}.deb
+                  asset_path: ./build/binaries/BitShares_${{ github.ref_name }}.deb
+                  asset_name: BitShares_${{ github.ref_name }}.deb
                   asset_content_type: application/x-deb
             - name: Upload exe
               uses: actions/upload-release-asset@v1
@@ -102,6 +102,6 @@ jobs:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               with:
                   upload_url: ${{ steps.create_release.outputs.upload_url }}
-                  asset_path: ./build/binaries/PirateDEX_${{ github.ref_name }}.exe
-                  asset_name: PirateDEX_${{ github.ref_name }}.exe
+                  asset_path: ./build/binaries/BitShares_${{ github.ref_name }}.exe
+                  asset_name: BitShares_${{ github.ref_name }}.exe
                   asset_content_type: application/octet-stream

@@ -83,7 +83,7 @@ class Footer extends React.Component {
     componentDidMount() {
         this.checkNewVersionAvailable.call(this);
 
-        this.downloadLink = "https://pirate.cash/en/dex/#download";
+        this.downloadLink = "https://github.com/bitshares/bitshares-ui/releases/latest";
 
         let ensure = this._ensureConnectivity.bind(this);
         ifvisible.on("wakeup", function() {
@@ -112,7 +112,7 @@ class Footer extends React.Component {
     checkNewVersionAvailable() {
         if (__ELECTRON__) {
             fetch(
-                "https://api.github.com/repos/piratecash/pirate-dex/releases/latest"
+                "https://api.github.com/repos/bitshares/bitshares-ui/releases/latest"
             )
                 .then(res => {
                     return res.json();
@@ -506,7 +506,12 @@ class Footer extends React.Component {
                                         </span>
                                     )}
                                 </span>
-
+                                <span>
+                                    {" "}
+                                    -{" "}
+                                    <Link to="/help/disclaimer">Disclaimer</Link>
+                                    {" "}
+                                </span>
                                 {state.newVersion && (
                                     <Translate
                                         content="footer.update_available"

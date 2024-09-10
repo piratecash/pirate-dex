@@ -404,7 +404,6 @@ class Asset extends React.Component {
                 {asset &&
                     issuer &&
                     asset.id != "1.3.0" &&
-                    issuer.get("id") != "1.2.1610759" &&
                     issuer.get("id") != "1.2.0" && (
                         <Alert
                             message={counterpart.translate(
@@ -1139,7 +1138,7 @@ class Asset extends React.Component {
                                 <td>
                                     {bitAsset.options.extensions
                                         .force_settle_fee_percent /
-                                        1000 +
+                                        100 +
                                         "%"}
                                 </td>
                             </tr>

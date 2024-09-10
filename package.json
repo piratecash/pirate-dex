@@ -1,16 +1,10 @@
 {
-    "name": "PirateDEX",
-    "version": "5.0.230909",
+    "name": "BitShares2-light",
+    "version": "5.0.230907-rc1",
     "description": "Reference UI to showcase all features of the BitShares blockchain.",
-    "homepage": "https://github.com/piratecash/pirate-dex",
-    "author": "BitShares UI Worker <ui-dev@bitshares.org>",
-    "contributors": [
-        "Dmitriy Korniychuk",
-        "Sigve Kvalsvik <kvalsvik.crypto@gmail.com>",
-        "James Calfee",
-        "Dan Larimer",
-        "Valentine Zavgorodnev <valentine.zavgorodnev@gmail.com>"
-    ],
+    "homepage": "https://github.com/bitshares/bitshares-ui",
+    "author": "BitShares UI Devs <ui-dev@bitshares.org>",
+    "contributors": [],
     "license": "MIT",
     "engines": {
         "node": ">=16.x",
@@ -18,7 +12,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git://github.com/piratecash/pirate-dex"
+        "url": "git://github.com/bitshares/bitshares-ui"
     },
     "main": "build/electron/index.js",
     "scripts": {
@@ -90,8 +84,8 @@
     },
     "browsersList": "electron 1.7",
     "build": {
-        "productName": "PirateDEX",
-        "appId": "net.piratecash.graphene",
+        "productName": "BitShares",
+        "appId": "org.bitshares.graphene",
         "files": [
             "build/electron",
             "!node_modules"

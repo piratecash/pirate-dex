@@ -67,7 +67,7 @@ class DashboardPage extends React.Component {
                                                         .toLowerCase()}.png`}
                                                 />
                                                 &nbsp;
-                                                {q.replace("PIRATE.", "")}
+                                                {q}
                                             </span>
                                         );
 

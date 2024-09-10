@@ -259,6 +259,11 @@ class MenuDataStructure {
                     title: "icons.deposit.deposit"
                 },
                 text: "modal.deposit.submit",
+                submenu: {
+                    target: "/deposit-withdraw",
+                    text: "header.deposit_legacy",
+                    disabled: !state.enableDepositWithdraw
+                },
                 disabled: !state.enableDepositWithdraw,
                 inDropdownBehavior: MenuItemType.WhenAccount
             }),
@@ -266,6 +271,11 @@ class MenuDataStructure {
                 target: state.clickHandlers.showWithdraw,
                 icon: "withdraw",
                 text: "modal.withdraw.submit",
+                submenu: {
+                    target: "/deposit-withdraw",
+                    text: "header.withdraw_legacy",
+                    disabled: !state.enableDepositWithdraw
+                },
                 disabled: !state.enableDepositWithdraw,
                 inDropdownBehavior: MenuItemType.WhenAccount
             }),

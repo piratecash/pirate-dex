@@ -87,7 +87,7 @@ export const gdexAPIs = {
 };
 
 export const pirateCashAPIs = {
-    BASE: "https://pirate.cash/dexapi",
+    BASE: "https://piratecash.net/dexapi",
     COINS_LIST: "/coins"
 };
 

@@ -40,7 +40,7 @@ class NewsHeadline extends React.Component {
     }
 
     componentDidMount() {
-        //this.getNewsThroughAsset();
+        this.getNewsThroughAsset();
         //this.getNewsFromGitHub.call(this);
     }
 
