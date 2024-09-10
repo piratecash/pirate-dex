@@ -18,6 +18,10 @@ jobs:
             - name: Install coreutils for macOS
               run: brew install coreutils
             - uses: actions/checkout@v2
+            - name: Install Python
+              run: |
+                  brew install python
+                  python --version
             - name: Use Node.js ${{ matrix.node-version }}
               uses: actions/setup-node@v1
               with:
